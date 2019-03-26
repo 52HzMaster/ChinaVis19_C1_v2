@@ -26,17 +26,6 @@ function main() {
 
     //console.log(JSON.stringify(add_data(day1_data)));
 
-    function add_data(data) {
-        for (let i=0; i<data.length-1;i++){
-            data[i].stay = data[i+1].time - data[i].time;
-            data[i].date = date_convert(data[i].time);
-            data[i].area = area_judge(data[i].sid);
-        }
-        data[data.length-1].stay = 0;
-        data[data.length-1].date = date_convert(data[data.length-1].time);
-        data[data.length-1].area = area_judge(data[data.length-1].sid);
-        return data;
-    }
 
     let max_scale = 900;
 
@@ -101,18 +90,6 @@ function main() {
                 data.push({x:i,y:j});
         return data;
     }
-
-    let colorScale = {"area_A":"#306bff","area_B":"#34a8ff","area_C":"#44caff","area_D":"#5afaff",
-        "area_canteen":"#ffd172",
-        "area_leisure":"#c8ff32",
-        "area_sign":"#ffb48f","area_poster":"#fff277",
-        "area_wc1":"#ffd2a6","area_wc2":"#ffd2a6","area_wc3":"#ffd2a6",
-        "area_room1":"#8409ff","area_room2":"#a143ff","area_room3":"#c180ff","area_room4":"#ccb1ff","area_room5":"#8409ff","area_room6":"#a143ff",
-        "area_ladder1":"#ff7e50","area_ladder2":"#ff7e50",
-        "area_serve":"#ff6c22","area_disc":"#ff5821","area_main":"#306bff",
-        "area_in":"#16ff3c","area_out":"#ff2c31",
-        "area_other":"#c8c8c7"
-    };
 
     let floor1_area = ["area_A","area_B","area_C","area_D",
         "area_sign","area_poster",
@@ -210,10 +187,10 @@ function main() {
             });
     }
     function draw_area_f1() {
-        floor1_area.forEach((d)=>{
-            area_g1.append("g").attr("class",""+d)
+        floor1_area.forEach((area)=>{
+            area_g1.append("g").attr("class",""+area)
                 .selectAll(".grid")
-                .data(floor1_areas[d])
+                .data(floor1_areas[area])
                 .enter()
                 .append("rect")
                 .attr("class", "grid")
@@ -222,8 +199,17 @@ function main() {
                 .attr("width", gridSize)
                 .attr("height", gridSize)
                 .style({
-                    "fill":colorScale[d],
+                    "fill":colorScale[area],
                     "opacity":0.6
+                })
+                .on("mouseover",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":1});
+                })
+                .on("mouseout",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":0.6});
+                })
+                .on("click",function (d) {
+                    area_graph(area);
                 });
         });
     }
@@ -284,6 +270,7 @@ function main() {
                 });
         });
     }
+
     //area legend
     function area_legend() {
 
@@ -351,102 +338,98 @@ function main() {
             });
     }
 
-    function date_convert(seconds) {
-        let date,hour,min,sec;
-        hour = seconds / 3600;
-        seconds = seconds % 3600;
-        min = seconds / 60;
-        sec = seconds % 60;
-        date = new Date(2019,1,1,hour,min,sec);
-        return date;
-    }
-
-    function area_judge(sid) {
-        let coor = null,floor,area;
-        sensor.forEach((d) => {
-            if (d.sid == sid) {
-                coor = {x: parseInt(d.x), y: parseInt(d.y)};
-                floor = d.floor;
-            }
-        });
-        if (floor == '1') {
-            if ( (2<coor.x&&coor.x<=3)&&(1<coor.y&&coor.y<=5) )
-                area = "area_A";
-
-            else if((4<coor.x&&coor.x<=5)&&(1<coor.y&&coor.y<=5))
-                area = "area_B";
-
-            else if((6<coor.x&&coor.x<=7)&&(1<coor.y&&coor.y<=5))
-                area = "area_C";
-
-            else if ((8<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5))
-                area = "area_D";
-
-            else if((12<coor.x&&coor.x<=13)&&(2<coor.y&&coor.y<=5))
-                area = "area_sign";
-
-            else if ((3<coor.x&&coor.x<=9)&&(7<coor.y&&coor.y<=8))
-                area = "area_poster";
-
-            else if ((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
-                area = "area_wc1";
-
-            else if ((14<coor.x&&coor.x<=15)&&(27<coor.y&&coor.y<=28))
-                area = "area_wc2";
-
-            else if ((6<coor.x&&coor.x<=9)&&(10<coor.y&&coor.y<=11))
-                area = "area_room1";
-
-            else if ((10<coor.x&&coor.x<=11)&&(10<coor.y&&coor.y<=11))
-                area = "area_room2";
-
-            else if ((14<coor.x&&coor.x<=15)&&(21<coor.y&&coor.y<=24))
-                area = "area_room3";
-
-            else if ((14<coor.x&&coor.x<=15)&&(25<coor.y&&coor.y<=26))
-                area = "area_room4";
-
-            else if ((1<coor.x&&coor.x<=1)&&(10<coor.y&&coor.y<=11))
-                area = "area_ladder1";
-
-            else if ((14<coor.x&&coor.x<=14)&&(10<coor.y&&coor.y<=11))
-                area = "area_ladder2";
-
-            else if ((14<coor.x&&coor.x<=15)&&(19<coor.y&&coor.y<=20))
-                area = "area_serve";
-            else if ((2<coor.x&&coor.x<=11)&&(15<coor.y&&coor.y<=18))
-                area = "area_disc";
-
-            else if ((coor.x == 13&&coor.y == 0)||(coor.x == 15&&coor.y == 2)||(coor.x == 15&&coor.y == 4)||(coor.x == 15&&coor.y == 7))
-                area = "area_in";
-
-            else if ((coor.x == 0&&coor.y == 19)||(coor.x == 15&&coor.y == 5)||(coor.x == 15&&coor.y == 15)||(coor.x == 15&&coor.y == 17))
-                area = "area_out";
-            else
-                area = "area_other";
-        }
-        else {
-            if ( (2<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5) )
-                area = "area_canteen";
-
-            else if((10<coor.x&&coor.x<=11)&&(1<coor.y&&coor.y<=5))
-                area = "area_room5";
-
-            else if((6<coor.x&&coor.x<=7)&&(10<coor.y&&coor.y<=11))
-                area = "area_room6";
-
-            else if((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
-                area = "area_wc3";
-
-            else if((1<coor.x&&coor.x<=1)&&(10<coor.y&&coor.y<=11))
-                area = "area_ladder1";
-            else if((14<coor.x&&coor.x<=14)&&(10<coor.y&&coor.y<=11))
-                area = "area_ladder2";
-            else
-                area = "area_other";
-        }
-        return area;
-    }
-
 }
 
+function add_data(data) {
+    for (let i=0; i<data.length-1;i++){
+        data[i].stay = data[i+1].time - data[i].time;
+        data[i].date = date_convert(data[i].time);
+        data[i].area = area_judge(data[i].sid);
+    }
+    data[data.length-1].stay = 0;
+    data[data.length-1].date = date_convert(data[data.length-1].time);
+    data[data.length-1].area = area_judge(data[data.length-1].sid);
+    return data;
+}
+
+function date_convert(seconds) {
+    let date,hour,min,sec;
+    hour = seconds / 3600;
+    seconds = seconds % 3600;
+    min = seconds / 60;
+    sec = seconds % 60;
+    date = new Date(2019,1,1,hour,min,sec);
+    return date;
+}
+function area_judge(sid) {
+    let coor = null,floor,area;
+    sensor.forEach((d) => {
+        if (d.sid == sid) {
+            coor = {x: parseInt(d.x), y: parseInt(d.y)};
+            floor = d.floor;
+        }
+    });
+    if (floor == '1') {
+        if ( (2<coor.x&&coor.x<=3)&&(1<coor.y&&coor.y<=5) )
+            area = "area_A";
+        else if((4<coor.x&&coor.x<=5)&&(1<coor.y&&coor.y<=5))
+            area = "area_B";
+        else if((6<coor.x&&coor.x<=7)&&(1<coor.y&&coor.y<=5))
+            area = "area_C";
+        else if ((8<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5))
+            area = "area_D";
+        else if((12<coor.x&&coor.x<=13)&&(2<coor.y&&coor.y<=5))
+            area = "area_sign";
+        else if ((3<coor.x&&coor.x<=9)&&(7<coor.y&&coor.y<=8))
+            area = "area_poster";
+        else if ((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
+            area = "area_wc1";
+        else if ((14<coor.x&&coor.x<=15)&&(27<coor.y&&coor.y<=28))
+            area = "area_wc2";
+        else if ((6<coor.x&&coor.x<=9)&&(10<coor.y&&coor.y<=11))
+            area = "area_room1";
+        else if ((10<coor.x&&coor.x<=11)&&(10<coor.y&&coor.y<=11))
+            area = "area_room2";
+        else if ((14<coor.x&&coor.x<=15)&&(21<coor.y&&coor.y<=24))
+            area = "area_room3";
+        else if ((14<coor.x&&coor.x<=15)&&(25<coor.y&&coor.y<=26))
+            area = "area_room4";
+        else if ((coor.x === 1)&&(10<coor.y&&coor.y<=11))
+            area = "area_ladder1";
+        else if ((coor.x === 14)&&(10<coor.y&&coor.y<=11))
+            area = "area_ladder2";
+        else if ((14<coor.x&&coor.x<=15)&&(19<coor.y&&coor.y<=20))
+            area = "area_serve";
+        else if ((2<coor.x&&coor.x<=11)&&(15<coor.y&&coor.y<=18))
+            area = "area_disc";
+        else if ((2<coor.x&&coor.x<=19)&&(11<coor.y&&coor.y<=28))
+            area = "area_main";
+        else if ((coor.x == 13&&coor.y == 0)||(coor.x == 15&&coor.y == 2)||(coor.x == 15&&coor.y == 4)||(coor.x == 15&&coor.y == 7))
+            area = "area_in";
+        else if ((coor.x == 0&&coor.y == 19)||(coor.x == 15&&coor.y == 5)||(coor.x == 15&&coor.y == 15)||(coor.x == 15&&coor.y == 17))
+            area = "area_out";
+        else
+            area = "area_other";
+    }
+    else {
+        if ( (2<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5) )
+            area = "area_canteen";
+
+        else if((10<coor.x&&coor.x<=11)&&(1<coor.y&&coor.y<=5))
+            area = "area_room5";
+
+        else if((6<coor.x&&coor.x<=7)&&(10<coor.y&&coor.y<=11))
+            area = "area_room6";
+
+        else if((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
+            area = "area_wc3";
+
+        else if((1<coor.x&&coor.x<=1)&&(10<coor.y&&coor.y<=11))
+            area = "area_ladder1";
+        else if((14<coor.x&&coor.x<=14)&&(10<coor.y&&coor.y<=11))
+            area = "area_ladder2";
+        else
+            area = "area_other";
+    }
+    return area;
+}
