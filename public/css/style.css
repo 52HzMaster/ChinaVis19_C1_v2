@@ -1,0 +1,52 @@
+body{
+    margin: 0;
+    background-color: #303030;
+}
+#floor{
+    position: absolute;
+    left:18%;
+    top: 7%;
+}
+
+#time_line{
+    position: absolute;
+    left:18%;
+    width: 900px;
+    height: 20%;
+    bottom: 13%;
+}
+
+#pie{
+    position: absolute;
+    top: 7%;
+    right:1%;
+    width: 300px;
+    height: 300px;
+}
+
+#btn{
+    position: absolute;
+    left: 18%;
+    top: 2%;
+    z-index: 10;
+}
+#floor1_svg,#floor2_svg{
+}
+.grid{
+    stroke: rgba(85, 85, 85, 0.95);
+    stroke-width:1px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: white;
+    stroke-width: 2px;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 10px;
+    fill: white;
+}
