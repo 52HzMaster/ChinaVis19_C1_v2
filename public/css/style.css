@@ -2,26 +2,40 @@ body{
     margin: 0;
     background-color: #303030;
 }
+
+#all_view{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
 #floor{
     position: absolute;
+    width: 60%;
+    height: 50%;
     left:18%;
     top: 7%;
 }
 
-#time_line{
+#area_line{
     position: absolute;
-    left:18%;
-    width: 900px;
-    height: 20%;
-    bottom: 13%;
+    bottom: 22%;
+    left: 18%;
 }
 
-#pie{
+#class_block{
     position: absolute;
+    right: 1%;
     top: 7%;
+}
+
+#class_pie{
+    position: absolute;
+    top: 57%;
     right:1%;
-    width: 300px;
-    height: 300px;
+    width: 20%;
+    height: 200px;
+    background-color: aqua;
 }
 
 #btn{

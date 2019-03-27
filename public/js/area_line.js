@@ -4,11 +4,11 @@
 let area_line = {};
 let area = $("#area_line");
 area_line.width = area.width();
-area_line.height = area.height();
+area_line.height = area.height() ;
 
 area_line.svg = d3.select("#area_line").append("svg")
     .attr("width",area_line.width)
-    .attr("height",area_line.height+20);
+    .attr("height",area_line.height + 20);
 
 area_line.x_scale = d3.time.scale()
     .range([0, area_line.width]);
@@ -18,7 +18,7 @@ area_line.y_scale = d3.scale.linear()
 
 area_line.x_axis = d3.svg.axis()
     .orient("bottom")
-    .tickFormat(d3.time.format("%H:%M"))
+    .tickFormat(d3.time.format("%H:%M"));
 //.ticks(20);
 
 area_graph("area_A");
@@ -35,9 +35,16 @@ function area_graph(condition){
         },
         success: function (data, textStatus) {
 
+
+            data.forEach((d)=>{
+                d.date = new Date(d.date);
+                d.date.setHours(d.date.getHours()-8);
+            });
+
             let date_10min= [];
+
             let date_extent = d3.extent(data,(d)=>{
-                return new Date(d.date);
+                return d.date;
             });
 
             date_extent[0].setMinutes(0);
@@ -52,7 +59,6 @@ function area_graph(condition){
             }
 
             data.forEach((d)=>{
-                d.date = new Date(d.date);
                 for(let i=0;i<date_10min.length-1;i++) {
                     if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime()))
                         date_10min[i].value++;
@@ -72,7 +78,7 @@ function area_chart(data,condition) {
     d3.select("#area_line").select('svg').html("");
 
     data.forEach((d)=>{
-        d.value = d.value * 10;
+        d.value += d.value ;
     });
 
     let date_extent = d3.extent(data,(d)=>{
@@ -85,7 +91,7 @@ function area_chart(data,condition) {
             return d.value;
         })]);
 
-    area_line.x_axis.scale(area_line.x_scale)
+    area_line.x_axis.scale(area_line.x_scale);
 
     let zoom = d3.behavior.zoom()
         .x(area_line.x_scale)
@@ -103,13 +109,32 @@ function area_chart(data,condition) {
             return area_line.x_scale(d.date);
         })
         .y0(function (d) {
-            return area_line.y_scale(area_line.height);
+            return area_line.y_scale(0);
         })
         .y1(function (d) {
             return area_line.y_scale(d.value);
         });
 
     let g = area_line.svg.append("g");
+
+    let lg_g = area_line.svg.append("g")
+        .attr("transform","translate("+(area_line.width -100) +",0)");
+
+    lg_g.append("rect")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("width",20)
+        .attr("height",10)
+        .attr("rx",2)
+        .attr("rx",2)
+        .attr("fill",colorScale[condition]);
+
+    lg_g.append("text")
+        .attr("x",30)
+        .attr("y",10)
+        .attr("fill","#FFFFFF")
+        .text(condition)
+        .attr("font-size",10);
 
     g.append("path")
         .datum(data)
@@ -122,5 +147,7 @@ function area_chart(data,condition) {
     g.append("g")
         .attr("class", "x axis")
         .call(area_line.x_axis)
-        .attr("transform","translate(0,"+(area_line.height)+")");
+        .attr("transform","translate(0,"+(area_line.height )+")");
+
+
 }

@@ -1,40 +1,17 @@
+
 main();
+
 function main() {
 
-    let nest = d3.nest().key((d)=>{
-        return d.floor;
-    });
+    let floor = $("#floor");
+    let gridSize_w = (floor.width() - 200) / 30;
+    let gridSize_h = floor.height() / 16;
 
-    let nest_id = d3.nest().key((d)=>{
-        return d.id;
-    });
-
-    let nest_area = d3.nest().key((d)=>{
-        return d.area;
-    });
-
-    let sensor_data = nest.entries(sensor);
-    //let id_data = nest_id.entries(day1_data);
-
-    //let test = id_data[0].values;
-
-    //let test = day1_data.slice(0,1000);
-
-    //console.log(add_data(test));
-
-    //let day1_test = nest_area.entries(add_data(test));
-
-    //console.log(JSON.stringify(add_data(day1_data)));
-
-
-    let max_scale = 900;
-
-    let gridSize = max_scale / 30;
     let card_x = 30;
     let card_y = 16;
 
-    let width = gridSize * card_x;
-    let height = gridSize * card_y;
+    let width = gridSize_w * card_x;
+    let height = gridSize_h * card_y;
 
     let floor1_areas = {};
     let floor2_areas = {};
@@ -122,14 +99,22 @@ function main() {
         .append("svg")
         .attr("id", "floor1_svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .style({
+            "position":"absolute",
+            "right":0
+        });
 
     let floor2_svg = d3.select("#floor")
         .append("svg")
         .attr("id", "floor2_svg")
         .attr("width", width)
         .attr("height", height)
-        .style("display","none");
+        .style({
+            "display":"none",
+            "position":"absolute",
+            "right":0
+        });
 
     let floor1_g = floor1_svg.append("g");
     let sensor_g1 = floor1_svg.append("g").attr("class","sensor_f1");
@@ -158,13 +143,13 @@ function main() {
             .append("rect")
             .attr("class", "grid")
             .attr("x", function (d) {
-                return d.x * gridSize;
+                return d.x * gridSize_w;
             })
             .attr("y", function (d) {
-                return d.y * gridSize;
+                return d.y * gridSize_h;
             })
-            .attr("width", gridSize)
-            .attr("height", gridSize)
+            .attr("width", gridSize_w)
+            .attr("height", gridSize_h)
             .style({
                 "fill": "#999999"
             });
@@ -175,10 +160,10 @@ function main() {
             .enter()
             .append("rect")
             .attr("class", "grid")
-            .attr("x", function(d) { return d.y * gridSize; } )
-            .attr("y", function(d) {return d.x * gridSize; })
-            .attr("width", gridSize)
-            .attr("height", gridSize)
+            .attr("x", function(d) { return d.y * gridSize_w; } )
+            .attr("y", function(d) {return d.x * gridSize_h; })
+            .attr("width", gridSize_w)
+            .attr("height", gridSize_h)
             .style({
                 "fill":"#ffffff"
             })
@@ -194,10 +179,10 @@ function main() {
                 .enter()
                 .append("rect")
                 .attr("class", "grid")
-                .attr("x", function(d) { return d.y * gridSize; } )
-                .attr("y", function(d) { return d.x * gridSize; })
-                .attr("width", gridSize)
-                .attr("height", gridSize)
+                .attr("x", function(d) { return d.y * gridSize_w; } )
+                .attr("y", function(d) { return d.x * gridSize_h; })
+                .attr("width", gridSize_w)
+                .attr("height", gridSize_h)
                 .style({
                     "fill":colorScale[area],
                     "opacity":0.6
@@ -221,13 +206,13 @@ function main() {
             .append("rect")
             .attr("class", "grid")
             .attr("x", function (d) {
-                return d.x * gridSize;
+                return d.x * gridSize_w;
             })
             .attr("y", function (d) {
-                return d.y * gridSize;
+                return d.y * gridSize_h;
             })
-            .attr("width", gridSize)
-            .attr("height", gridSize)
+            .attr("width", gridSize_w)
+            .attr("height", gridSize_h)
             .style({
                 "fill": "#999999"
             })
@@ -241,10 +226,10 @@ function main() {
             .enter()
             .append("rect")
             .attr("class", "grid")
-            .attr("x", function(d) { return d.y * gridSize; } )
-            .attr("y", function(d) {return d.x * gridSize; })
-            .attr("width", gridSize)
-            .attr("height", gridSize)
+            .attr("x", function(d) { return d.y * gridSize_w; } )
+            .attr("y", function(d) {return d.x * gridSize_h; })
+            .attr("width", gridSize_w)
+            .attr("height", gridSize_h)
             .style({
                 "fill":"#ffffff"
             })
@@ -260,10 +245,10 @@ function main() {
                 .enter()
                 .append("rect")
                 .attr("class", "grid")
-                .attr("x", function(d) { return d.y * gridSize; } )
-                .attr("y", function(d) { return d.x * gridSize; })
-                .attr("width", gridSize)
-                .attr("height", gridSize)
+                .attr("x", function(d) { return d.y * gridSize_w; } )
+                .attr("y", function(d) { return d.x * gridSize_h; })
+                .attr("width", gridSize_w)
+                .attr("height", gridSize_h)
                 .style({
                     "fill":colorScale[d],
                     "opacity":0.6
@@ -274,21 +259,19 @@ function main() {
     //area legend
     function area_legend() {
 
-        let area_legend = d3.select("body").append("div")
+        let lg_size = height / 25;
+
+        let area_legend = d3.select("#floor").append("div")
             .attr("id","area_legend")
             .style({
                 "position":"absolute",
-                "top":"7%",
-                "left":"3%",
+                "left":0,
                 "z-index":999
             });
 
         let area_lg_svg = d3.select('#area_legend').append("svg")
             .attr("width",200)
-            .attr("height",600)
-            .style({
-
-            });
+            .attr("height",height);
 
         area_lg_svg.selectAll('.legend')
             .data(all_areas)
@@ -296,15 +279,15 @@ function main() {
             .append("rect")
             .attr("class","legend")
             .attr("x",function (d,i) {
-                return  20;
+                return  0;
             })
             .attr("y",(d,i)=>{
-                return i * 20;
+                return i * lg_size;
             })
-            .attr("width",20)
-            .attr("height",10)
-            .attr("rx",5)
-            .attr("ry",5)
+            .attr("width",lg_size)
+            .attr("height",lg_size/2)
+            .attr("rx",2)
+            .attr("ry",2)
             .style("fill",(d)=>{
                 return colorScale[d];
             })
@@ -327,109 +310,16 @@ function main() {
             .enter()
             .append("text")
             .attr("x",function (d,i) {
-                return  40;
+                return  lg_size * 2;
             })
             .attr("y",(d,i)=>{
-                return i * 20;
+                return i * lg_size;
             })
             .attr("fill","#FFFFFF")
             .text((d)=>{
                 return d;
-            });
+            })
+            .attr("font-size",lg_size/2);
     }
 
-}
-
-function add_data(data) {
-    for (let i=0; i<data.length-1;i++){
-        data[i].stay = data[i+1].time - data[i].time;
-        data[i].date = date_convert(data[i].time);
-        data[i].area = area_judge(data[i].sid);
-    }
-    data[data.length-1].stay = 0;
-    data[data.length-1].date = date_convert(data[data.length-1].time);
-    data[data.length-1].area = area_judge(data[data.length-1].sid);
-    return data;
-}
-
-function date_convert(seconds) {
-    let date,hour,min,sec;
-    hour = seconds / 3600;
-    seconds = seconds % 3600;
-    min = seconds / 60;
-    sec = seconds % 60;
-    date = new Date(2019,1,1,hour,min,sec);
-    return date;
-}
-function area_judge(sid) {
-    let coor = null,floor,area;
-    sensor.forEach((d) => {
-        if (d.sid == sid) {
-            coor = {x: parseInt(d.x), y: parseInt(d.y)};
-            floor = d.floor;
-        }
-    });
-    if (floor == '1') {
-        if ( (2<coor.x&&coor.x<=3)&&(1<coor.y&&coor.y<=5) )
-            area = "area_A";
-        else if((4<coor.x&&coor.x<=5)&&(1<coor.y&&coor.y<=5))
-            area = "area_B";
-        else if((6<coor.x&&coor.x<=7)&&(1<coor.y&&coor.y<=5))
-            area = "area_C";
-        else if ((8<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5))
-            area = "area_D";
-        else if((12<coor.x&&coor.x<=13)&&(2<coor.y&&coor.y<=5))
-            area = "area_sign";
-        else if ((3<coor.x&&coor.x<=9)&&(7<coor.y&&coor.y<=8))
-            area = "area_poster";
-        else if ((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
-            area = "area_wc1";
-        else if ((14<coor.x&&coor.x<=15)&&(27<coor.y&&coor.y<=28))
-            area = "area_wc2";
-        else if ((6<coor.x&&coor.x<=9)&&(10<coor.y&&coor.y<=11))
-            area = "area_room1";
-        else if ((10<coor.x&&coor.x<=11)&&(10<coor.y&&coor.y<=11))
-            area = "area_room2";
-        else if ((14<coor.x&&coor.x<=15)&&(21<coor.y&&coor.y<=24))
-            area = "area_room3";
-        else if ((14<coor.x&&coor.x<=15)&&(25<coor.y&&coor.y<=26))
-            area = "area_room4";
-        else if ((coor.x === 1)&&(10<coor.y&&coor.y<=11))
-            area = "area_ladder1";
-        else if ((coor.x === 14)&&(10<coor.y&&coor.y<=11))
-            area = "area_ladder2";
-        else if ((14<coor.x&&coor.x<=15)&&(19<coor.y&&coor.y<=20))
-            area = "area_serve";
-        else if ((2<coor.x&&coor.x<=11)&&(15<coor.y&&coor.y<=18))
-            area = "area_disc";
-        else if ((2<coor.x&&coor.x<=19)&&(11<coor.y&&coor.y<=28))
-            area = "area_main";
-        else if ((coor.x == 13&&coor.y == 0)||(coor.x == 15&&coor.y == 2)||(coor.x == 15&&coor.y == 4)||(coor.x == 15&&coor.y == 7))
-            area = "area_in";
-        else if ((coor.x == 0&&coor.y == 19)||(coor.x == 15&&coor.y == 5)||(coor.x == 15&&coor.y == 15)||(coor.x == 15&&coor.y == 17))
-            area = "area_out";
-        else
-            area = "area_other";
-    }
-    else {
-        if ( (2<coor.x&&coor.x<=9)&&(1<coor.y&&coor.y<=5) )
-            area = "area_canteen";
-
-        else if((10<coor.x&&coor.x<=11)&&(1<coor.y&&coor.y<=5))
-            area = "area_room5";
-
-        else if((6<coor.x&&coor.x<=7)&&(10<coor.y&&coor.y<=11))
-            area = "area_room6";
-
-        else if((4<coor.x&&coor.x<=5)&&(10<coor.y&&coor.y<=11))
-            area = "area_wc3";
-
-        else if((1<coor.x&&coor.x<=1)&&(10<coor.y&&coor.y<=11))
-            area = "area_ladder1";
-        else if((14<coor.x&&coor.x<=14)&&(10<coor.y&&coor.y<=11))
-            area = "area_ladder2";
-        else
-            area = "area_other";
-    }
-    return area;
 }

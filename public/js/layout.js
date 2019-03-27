@@ -9,3 +9,30 @@ let colorScale = {"area_A":"#306bff","area_B":"#34a8ff","area_C":"#44caff","area
     "area_in":"#16ff3c","area_out":"#ff2c31",
     "area_other":"#c8c8c7"
 };
+
+layout();
+
+function layout(){
+
+    let all_view = $("#all_view");
+    let width = all_view.width();
+    let height = all_view.height();
+
+    let floor = document.getElementById("floor");
+    let area_line = document.getElementById("area_line");
+    let class_block = document.getElementById("class_block");
+
+    floor.style.width = width * 0.6 + 'px';
+    floor.style.height = height * 0.5 + 'px';
+
+    area_line.style.width = width * 0.6 + 'px';
+    area_line.style.height = height * 0.15 + 'px';
+
+    class_block.style.width = width * 0.2 + 'px';
+    class_block.style.height = height * 0.5 + 'px';
+
+}
+
+$(window).resize(function () {
+    window.location.reload();
+});
