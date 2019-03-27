@@ -4,28 +4,28 @@
 let area_line = {};
 let area = $("#area_line");
 area_line.width = area.width();
-area_line.height = area.height() ;
+area_line.height = area.height();
 
 area_line.svg = d3.select("#area_line").append("svg")
     .attr("width",area_line.width)
-    .attr("height",area_line.height + 20);
+    .attr("height",area_line.height);
 
 area_line.x_scale = d3.time.scale()
     .range([0, area_line.width]);
 
 area_line.y_scale = d3.scale.linear()
-    .range([area_line.height, 0]);
+    .range([area_line.height - 40, 0]);
 
 area_line.x_axis = d3.svg.axis()
     .orient("bottom")
     .tickFormat(d3.time.format("%H:%M"));
 //.ticks(20);
 
-area_graph("area_A");
+area_graph("area_in");
 
 function area_graph(condition){
     $.ajax({
-        url: "/day1_pro",    //请求的url地址
+        url: day_url,    //请求的url地址
         dataType: "json",   //返回格式为json
         data:{area:condition.toLocaleString()},
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -35,15 +35,10 @@ function area_graph(condition){
         },
         success: function (data, textStatus) {
 
-
-            data.forEach((d)=>{
-                d.date = new Date(d.date);
-                d.date.setHours(d.date.getHours()-8);
-            });
-
             let date_10min= [];
 
             let date_extent = d3.extent(data,(d)=>{
+                d.date = new Date(d.date);
                 return d.date;
             });
 
@@ -60,8 +55,11 @@ function area_graph(condition){
 
             data.forEach((d)=>{
                 for(let i=0;i<date_10min.length-1;i++) {
-                    if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime()))
+                    if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime())) {
                         date_10min[i].value++;
+                        break;
+                    }
+
                 }
             });
             area_chart(date_10min,condition);
@@ -115,7 +113,11 @@ function area_chart(data,condition) {
             return area_line.y_scale(d.value);
         });
 
-    let g = area_line.svg.append("g");
+    let g = area_line.svg.append("g")
+        .attr("transform","translate(0,"+(20) +")");
+
+    let axis_g = area_line.svg.append("g")
+        .attr("transform","translate(0,"+(area_line.height -20) +")");
 
     let lg_g = area_line.svg.append("g")
         .attr("transform","translate("+(area_line.width -100) +",0)");
@@ -140,14 +142,14 @@ function area_chart(data,condition) {
         .datum(data)
         .attr('fill', colorScale[condition])
         .attr('opacity', 0.7)
-        //.attr('stroke', 'white')
+        .attr('stroke', colorScale[condition])
+        .attr('stroke-opacity',0.2)
+        .attr('stroke-width',3)
         .attr("d", area)
         .attr("id","area");
 
-    g.append("g")
+    axis_g.append("g")
         .attr("class", "x axis")
-        .call(area_line.x_axis)
-        .attr("transform","translate(0,"+(area_line.height )+")");
-
+        .call(area_line.x_axis);
 
 }

@@ -323,3 +323,55 @@ function main() {
     }
 
 }
+
+area_heatmap();
+function area_heatmap() {
+
+    let floor = $("#floor1_svg");
+
+    d3.select("#floor").append("div")
+        .attr("id","heatmap")
+        .style({
+        "width":floor.width()+'px',
+        "height":floor.height()+'px'
+        });
+
+    let heatmapInstance = h337.create({
+        container: document.querySelector('#heatmap'),
+    });
+
+    d3.select("#heatmap")
+        .style({
+            "width":floor.width()+'px',
+            "height":floor.height()+'px',
+            "position":"absolute",
+            "display":"none",
+            "right":0,
+            "z-index":999
+        });
+
+    let heatmap = $("#heatmap");
+    let points = [];
+    let max = 100;
+    let width = heatmap.width();
+    let height = heatmap.height();
+    let len = 200;
+
+    while (len--) {
+        let val = Math.floor(Math.random() * 100);
+        max = Math.max(max, val);
+        let point = {
+            x: Math.floor(Math.random() * width),
+            y: Math.floor(Math.random() * height),
+            value: val
+        };
+        points.push(point);
+    }
+
+    let data = {
+        max: max,
+        data: points
+    };
+
+    heatmapInstance.setData(data);
+}

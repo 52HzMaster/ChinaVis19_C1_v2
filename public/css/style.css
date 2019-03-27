@@ -35,7 +35,6 @@ body{
     right:1%;
     width: 20%;
     height: 200px;
-    background-color: aqua;
 }
 
 #btn{
@@ -44,8 +43,7 @@ body{
     top: 2%;
     z-index: 10;
 }
-#floor1_svg,#floor2_svg{
-}
+
 .grid{
     stroke: rgba(85, 85, 85, 0.95);
     stroke-width:1px;

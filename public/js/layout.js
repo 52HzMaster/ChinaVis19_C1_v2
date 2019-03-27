@@ -10,6 +10,8 @@ let colorScale = {"area_A":"#306bff","area_B":"#34a8ff","area_C":"#44caff","area
     "area_other":"#c8c8c7"
 };
 
+let day_url = '/day1_pro';
+
 layout();
 
 function layout(){
