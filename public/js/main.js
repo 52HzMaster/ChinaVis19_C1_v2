@@ -4,7 +4,7 @@ main();
 function main() {
 
     let floor = $("#floor");
-    let gridSize_w = (floor.width() - 200) / 30;
+    let gridSize_w = ((floor.width() - 150))/ 60;
     let gridSize_h = floor.height() / 16;
 
     let card_x = 30;
@@ -57,8 +57,8 @@ function main() {
     //厕所3
     floor2_areas.area_wc3 = area_compute(4,10,5,11);
     //扶梯1~2
-    floor2_areas.area_ladder1 = area_compute(1,10,1,11);
-    floor2_areas.area_ladder2 = area_compute(14,10,14,11);
+    floor2_areas.area_ladder3 = area_compute(1,10,1,11);
+    floor2_areas.area_ladder4 = area_compute(14,10,14,11);
 
     function area_compute(x1,y1,x2,y2) {
         let data= [];
@@ -79,14 +79,14 @@ function main() {
 
     let floor2_area = ["area_canteen","area_leisure",
         "area_wc3",
-        "area_ladder1","area_ladder2",
+        "area_ladder3","area_ladder4",
         "area_room5","area_room6"
     ];
 
     let all_areas = [
         "area_A","area_B","area_C","area_D",
         "area_sign","area_poster",
-        "area_ladder1","area_ladder2",
+        "area_ladder1","area_ladder2","area_ladder3","area_ladder4",
         "area_wc1","area_wc2","area_wc3",
         "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
         "area_serve", "area_disc","area_main",
@@ -98,22 +98,21 @@ function main() {
     let floor1_svg = d3.select("#floor")
         .append("svg")
         .attr("id", "floor1_svg")
-        .attr("width", width)
+        .attr("width", width*2)
         .attr("height", height)
         .style({
             "position":"absolute",
-            "right":0
+            'left':"100px"
         });
 
     let floor2_svg = d3.select("#floor")
         .append("svg")
         .attr("id", "floor2_svg")
-        .attr("width", width)
+        .attr("width", width*2)
         .attr("height", height)
         .style({
-            "display":"none",
             "position":"absolute",
-            "right":0
+            "left":width + 120 +"px"
         });
 
     let floor1_g = floor1_svg.append("g");
@@ -125,11 +124,11 @@ function main() {
     let area_g2= floor2_svg.append("g").attr("class","area_f2");
 
     draw_floor1();
-    draw_sensor_f1();
+    //draw_sensor_f1();
     draw_area_f1();
 
     draw_floor2();
-    draw_sensor_f2();
+    //draw_sensor_f2();
     draw_area_f2();
 
     //legend
@@ -142,6 +141,8 @@ function main() {
             .enter()
             .append("rect")
             .attr("class", "grid")
+           // .attr("rx",2)
+           // .attr("ry",2)
             .attr("x", function (d) {
                 return d.x * gridSize_w;
             })
@@ -160,8 +161,11 @@ function main() {
             .enter()
             .append("rect")
             .attr("class", "grid")
+            .attr("id",(d)=> "sensor_"+d.sid)
             .attr("x", function(d) { return d.y * gridSize_w; } )
             .attr("y", function(d) {return d.x * gridSize_h; })
+            .attr("rx",2)
+            .attr("ry",2)
             .attr("width", gridSize_w)
             .attr("height", gridSize_h)
             .style({
@@ -181,6 +185,8 @@ function main() {
                 .attr("class", "grid")
                 .attr("x", function(d) { return d.y * gridSize_w; } )
                 .attr("y", function(d) { return d.x * gridSize_h; })
+                //.attr("rx",2)
+                //.attr("ry",2)
                 .attr("width", gridSize_w)
                 .attr("height", gridSize_h)
                 .style({
@@ -226,6 +232,7 @@ function main() {
             .enter()
             .append("rect")
             .attr("class", "grid")
+            .attr("id",(d)=>"sensor_" + d.sid)
             .attr("x", function(d) { return d.y * gridSize_w; } )
             .attr("y", function(d) {return d.x * gridSize_h; })
             .attr("width", gridSize_w)
@@ -238,10 +245,10 @@ function main() {
             });
     }
     function draw_area_f2() {
-        floor2_area.forEach((d)=>{
-            area_g2.append("g").attr("class",""+d)
+        floor2_area.forEach((area)=>{
+            area_g2.append("g").attr("class",""+area)
                 .selectAll(".grid")
-                .data(floor2_areas[d])
+                .data(floor2_areas[area])
                 .enter()
                 .append("rect")
                 .attr("class", "grid")
@@ -250,8 +257,17 @@ function main() {
                 .attr("width", gridSize_w)
                 .attr("height", gridSize_h)
                 .style({
-                    "fill":colorScale[d],
+                    "fill":colorScale[area],
                     "opacity":0.6
+                })
+                .on("mouseover",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":1});
+                })
+                .on("mouseout",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":0.6});
+                })
+                .on("click",function (d) {
+                    area_graph(area);
                 });
         });
     }
@@ -259,18 +275,19 @@ function main() {
     //area legend
     function area_legend() {
 
-        let lg_size = height / 25;
+        let lg_size = height / 27;
 
         let area_legend = d3.select("#floor").append("div")
             .attr("id","area_legend")
             .style({
                 "position":"absolute",
+                "top":0,
                 "left":0,
                 "z-index":999
             });
 
         let area_lg_svg = d3.select('#area_legend').append("svg")
-            .attr("width",200)
+            .attr("width",100)
             .attr("height",height);
 
         area_lg_svg.selectAll('.legend')
@@ -291,7 +308,6 @@ function main() {
             .style("fill",(d)=>{
                 return colorScale[d];
             })
-            .attr("transform","translate(2,8)")
             .on("mouseover",(d)=>{
                 d3.select("."+d).selectAll('.grid').style({
                     "opacity":1
@@ -303,14 +319,14 @@ function main() {
                 });
             });
 
-        let legend_text = area_lg_svg.append("g").attr("transform","translate(4,17)");
+        let legend_text = area_lg_svg.append("g").attr("transform","translate(0,"+lg_size/2.4+")");
 
         legend_text.selectAll(".legend_text")
             .data(all_areas)
             .enter()
             .append("text")
             .attr("x",function (d,i) {
-                return  lg_size * 2;
+                return  lg_size + 5;
             })
             .attr("y",(d,i)=>{
                 return i * lg_size;
@@ -321,57 +337,4 @@ function main() {
             })
             .attr("font-size",lg_size/2);
     }
-
-}
-
-area_heatmap();
-function area_heatmap() {
-
-    let floor = $("#floor1_svg");
-
-    d3.select("#floor").append("div")
-        .attr("id","heatmap")
-        .style({
-        "width":floor.width()+'px',
-        "height":floor.height()+'px'
-        });
-
-    let heatmapInstance = h337.create({
-        container: document.querySelector('#heatmap'),
-    });
-
-    d3.select("#heatmap")
-        .style({
-            "width":floor.width()+'px',
-            "height":floor.height()+'px',
-            "position":"absolute",
-            "display":"none",
-            "right":0,
-            "z-index":999
-        });
-
-    let heatmap = $("#heatmap");
-    let points = [];
-    let max = 100;
-    let width = heatmap.width();
-    let height = heatmap.height();
-    let len = 200;
-
-    while (len--) {
-        let val = Math.floor(Math.random() * 100);
-        max = Math.max(max, val);
-        let point = {
-            x: Math.floor(Math.random() * width),
-            y: Math.floor(Math.random() * height),
-            value: val
-        };
-        points.push(point);
-    }
-
-    let data = {
-        max: max,
-        data: points
-    };
-
-    heatmapInstance.setData(data);
 }

@@ -35,34 +35,36 @@ function area_graph(condition){
         },
         success: function (data, textStatus) {
 
-            let date_10min= [];
+            if(data.length){
+                let date_10min= [];
 
-            let date_extent = d3.extent(data,(d)=>{
-                d.date = new Date(d.date);
-                return d.date;
-            });
+                let date_extent = d3.extent(data,(d)=>{
+                    d.date = new Date(d.date);
+                    return d.date;
+                });
 
-            date_extent[0].setMinutes(0);
-            date_extent[0].setSeconds(0);
+                date_extent[0].setMinutes(0);
+                date_extent[0].setSeconds(0);
 
-            date_extent[1].setHours(date_extent[1].getHours()+1);
-            date_extent[1].setMinutes(0);
-            date_extent[1].setSeconds(0);
+                date_extent[1].setHours(date_extent[1].getHours()+1);
+                date_extent[1].setMinutes(0);
+                date_extent[1].setSeconds(0);
 
-            for(let i = date_extent[0].getTime();i<date_extent[1].getTime();i+=600000){
-                date_10min.push({date:new Date(i),value:0});
-            }
-
-            data.forEach((d)=>{
-                for(let i=0;i<date_10min.length-1;i++) {
-                    if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime())) {
-                        date_10min[i].value++;
-                        break;
-                    }
-
+                for(let i = date_extent[0].getTime();i<date_extent[1].getTime();i+=600000){
+                    date_10min.push({date:new Date(i),value:0});
                 }
-            });
-            area_chart(date_10min,condition);
+
+                data.forEach((d)=>{
+                    for(let i=0;i<date_10min.length-1;i++) {
+                        if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime())) {
+                            date_10min[i].value++;
+                            break;
+                        }
+
+                    }
+                });
+                area_chart(date_10min,condition);
+            }
         },
         complete: function () {//请求完成的处理
         },

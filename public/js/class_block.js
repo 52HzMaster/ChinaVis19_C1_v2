@@ -12,6 +12,7 @@ all_id_block(all_id);
 function all_id_block(all_id) {
 
     let all_id_data= [];
+
     all_id.forEach((d,i)=>{
 
         $.ajax({
@@ -35,7 +36,7 @@ function all_id_block(all_id) {
                 //data[data.length-1].date = new Date(data[data.length-1].date);
 
                 all_id_data[i] =data;
-                //class_block(data);
+
             },
             complete: function () {//请求完成的处理
             },
@@ -44,12 +45,31 @@ function all_id_block(all_id) {
         });
     });
 
-    class_block(all_id_data);
+    all_id_data.forEach(function (data,i) {
+        all_id_data[i] = format(data);
+    });
+
+    //class_block(all_id_data);
+    stack_bar();
+}
+
+function format(data) {
+    let new_data =[data[0]];
+    data.forEach(function (d) {
+        if(d.area === new_data[new_data.length-1].area){
+            new_data[new_data.length-1].stay += d.stay;
+        }
+        else
+            new_data.push(d);
+    });
+    return new_data;
+}
+
+function stack_bar() {
+
 }
 
 function class_block(data) {
-
-    console.log(data);
 
     let time_line = $("#class_block");
     let width = time_line.width();
@@ -75,12 +95,12 @@ function class_block(data) {
         .on("zoom", zoomed);
 
     let stay_scale = d3.scale.linear()
-        .domain(d3.max(data, function (d) {
-            return d3.extent(d, function (d) {
+        .domain([0,d3.max(data, function (d) {
+            return d3.sum(d, function (d) {
                 return d.stay;
             })
-        }))
-        .range([0, 200]);
+        })])
+        .range([0, width]);
 
     data.forEach((dataset,index)=>{
 
@@ -91,7 +111,7 @@ function class_block(data) {
             .attr("height", height)
             .style("position", "absolute")
             .attr("transform", "translate(0," + ( index * (height + 10)) + ")")
-            .call(zoom);
+        // .call(zoom);
 
 
         let g = svg.append("g");
@@ -102,11 +122,11 @@ function class_block(data) {
             .append("rect")
             .attr("class", "v_line")
             .attr("x", function (d, i) {
-                return class_block.xScale(d.stay);
+                return stay_scale(d.stay);
             })
             .attr("y", class_block.yScale(100))
             .attr("width", (s,i) => {
-                return  s.stay;
+                return  stay_scale(s.stay);
             })
             .attr("height", height)
             .style({
@@ -117,13 +137,11 @@ function class_block(data) {
                 "stroke": "#FFFFFF",
             })
             .on("mouseover", function (d, i) {
-                d3.select(this).transition().duration(200).style("fill-opacity", 1);
                 d3.select("." + d.area).selectAll('.grid').style({
                     "opacity": 1
                 });
             })
             .on("mouseout", function (d, i) {
-                d3.select(this).transition().duration(200).style("fill-opacity", 0.6);
                 d3.select("." + d.area).selectAll('.grid').style({
                     "opacity": 0.6
                 })
@@ -133,11 +151,11 @@ function class_block(data) {
     function zoomed() {
         d3.select(this).select("g").selectAll("rect")
             .attr("x", function (d,i) {
-                return class_block.xScale(d.stay);
+                return stay_scale(d.stay);
             })
             .attr("y", class_block.yScale(100))
             .attr("width", (d,i)=>{
-                return d.stay;
+                return stay_scale(d.stay);
             })
     }
 
