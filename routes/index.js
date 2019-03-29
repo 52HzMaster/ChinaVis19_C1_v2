@@ -228,4 +228,14 @@ router.get('/sensor', function(req, res, next) {
 router.get('/', function(req, res, next) {
     res.render('index', { title: '' });
 });
+
+router.get('/test', function(req, res, next) {
+    res.render('test', { title: '' });
+});
+
+router.get('/test1', function(req, res, next) {
+    res.render('test1', { title: '' });
+});
+
+
 module.exports = router;
