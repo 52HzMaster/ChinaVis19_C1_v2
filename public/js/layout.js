@@ -24,8 +24,8 @@ function layout(){
     let area_line = document.getElementById("area_line");
     let class_block = document.getElementById("class_block");
 
-    floor.style.width = width + 'px';
-    floor.style.height = height * 0.5 + 'px';
+    floor.style.width = width * 0.6 + 'px';
+    floor.style.height = height * 0.6 + 'px';
 
     area_line.style.width = width * 0.6 + 'px';
     area_line.style.height = height * 0.15 + 'px';
