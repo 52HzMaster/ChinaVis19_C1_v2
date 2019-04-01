@@ -15,14 +15,14 @@ canvas {
 
 #floor{
     position: absolute;
-    left:20%;
+    left:2%;
     top: 7%;
 }
 
 #area_line{
     position: absolute;
-    bottom: 12%;
-    left: 18%;
+    bottom: 17%;
+    left: 2%;
 }
 
 #class_block{
@@ -41,7 +41,7 @@ canvas {
 
 #btn{
     position: absolute;
-    left: 18%;
+    left: 2%;
     top: 2%;
     z-index: 10;
 }
@@ -70,4 +70,38 @@ canvas {
     font-family: sans-serif;
     font-size: 10px;
     fill: white;
+}
+
+/*=========================================sankey*/
+
+#chart{
+    position: absolute;
+    top:2%;
+    right: 1%;
+}
+
+
+.node rect {
+    cursor: move;
+    fill-opacity: .9;
+    shape-rendering: crispEdges;
+}
+
+.node text {
+    pointer-events: none;
+    fill:#FFFFFF
+}
+
+.link {
+    fill: none;
+    stroke: #FFF;
+    stroke-opacity: .2;
+}
+
+.link text{
+    fill:#FFFFFF
+}
+
+.link:hover {
+    stroke-opacity: .5;
 }

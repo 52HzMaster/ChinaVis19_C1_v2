@@ -10,7 +10,9 @@
     <script src="/lib/three.js"></script>
     <script src="/lib//OrbitControls.js"></script>
     <script src="/lib/stats.min.js"></script>
+    <script src="/lib/sankey.js"></script>
     <style></style>
+
 
 </head>
 <body onload="draw();">
@@ -20,10 +22,7 @@
         <button id="day1">day1</button>
         <button id="day2">day2</button>
         <button id="day3">day3</button>
-
         <button id="heatmap_btn">heatmap_btn</button>
-
-
     </div>
 
     <div id="floor">
@@ -31,8 +30,9 @@
     </div>
 
     <div id="area_line"></div>
-    <div id="class_block"></div>
-    <div id="class_pie"></div>
+    <div id="chart"></div>
+    <!--<div id="class_block"></div>-->
+    <!--<div id="class_pie"></div>-->
 
 </div>
 </body>
@@ -42,11 +42,10 @@
 <script src="/js/init_data.js"></script>
 <script src="/js/area_line.js"></script>
 <!--<script src="/js/class_block.js"></script>-->
-
 <script src="/js/main.js"></script>
 <script src="/js/heatmap.js"></script>
-
 <script src="/js/floor.js"></script>
+<script src="/js/test.js"></script>
 
 
 <script>

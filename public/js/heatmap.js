@@ -77,7 +77,7 @@ function date_slice(start,end,stick) {
 
     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
         let date_start = new Date(i).Format("yyyy-MM-dd HH:mm:ss");
-        let date_end = new Date(i += stick*60*1000).Format("yyyy-MM-dd HH:mm:ss");
+        let date_end = new Date(i + stick*60*1000).Format("yyyy-MM-dd HH:mm:ss");
         extent.push([date_start,date_end]);
     }
     return extent;
@@ -105,7 +105,7 @@ function heatmap_chart(start,end,speed){
         d3.select("#heatmap_time").select("a").text(new Date(date_extent[1]).Format("HH:mm:ss"));
 
         $.ajax({
-            url: day_url + "_10min",    //请求的url地址
+            url: day_url + "date",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 date_start: date_extent[0],
@@ -117,7 +117,7 @@ function heatmap_chart(start,end,speed){
             beforeSend: function () {//请求前的处理
             },
             success: function (data, textStatus) {
-                console.log(data);
+                //console.log(data);
                 /*        data.forEach((d)=>{
                             d.date = new Date(d.date);
                         });*/
@@ -139,7 +139,8 @@ function heatmap_chart(start,end,speed){
         let points_f1 = [];
         let points_f2 = [];
 
-        let max = 0;
+        let max_f1 = 0;
+        let max_f2 = 0;
 
         data.forEach((d)=>{
 
@@ -147,7 +148,10 @@ function heatmap_chart(start,end,speed){
             let x = d3.select("#sensor_"+d.key).attr("x");
             let y = d3.select("#sensor_"+d.key).attr("y");
 
-            max = (max > d.values.length)?max:d.values.length;
+            if(floor === '1')
+                max_f1 = (max_f1 > d.values.length)?max_f1:d.values.length;
+            else
+                max_f2 = (max_f2 > d.values.length)?max_f2:d.values.length;
 
             let point = {
                 x: x,
@@ -159,14 +163,15 @@ function heatmap_chart(start,end,speed){
         });
 
         let heat_data_f1 = {
-            max: max,
+            max: max_f1,
             data: points_f1
         };
 
         let heat_data_f2 = {
-            max: max,
+            max: max_f2,
             data: points_f2
         };
+
         heatmapInstance.setData(heat_data_f1);
         heatmapInstance_f2.setData(heat_data_f2);
     }

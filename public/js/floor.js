@@ -84,11 +84,11 @@ function initModel() {
     //  |/      |/
     //  v2------v3
 
-    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 5, 16));
+    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
     floor1.name = "floor1";
     floor1.material.color.set("#FFFFFF");
     floor1.position.x = 0;
-    floor1.position.y = 2.5;
+    floor1.position.y = 1;
     floor1.position.z = 0;
 
     //scene.add(floor1);
@@ -97,7 +97,7 @@ function initModel() {
     f1_edges.name = "f1_edges";
     scene.add(f1_edges);
 
-    let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 5, 16));
+    let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
     floor2.name = "floor2";
     floor2.position.x = 0;
     floor2.position.y = 7.5;
@@ -122,35 +122,35 @@ function initModel() {
     // scene.add(floor2_bottom);
 
     //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 5, 10));
+    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 10));
     f1_areaMain.name = "area_main";
     f1_areaMain.material.color.set(colorScale['area_main']);
     f1_areaMain.material.transparent = true;
     f1_areaMain.material.opacity = 0.5;
     f1_areaMain.position.x = 9;
-    f1_areaMain.position.y = 2.5;
+    f1_areaMain.position.y = 1;
     f1_areaMain.position.z = -1;
     scene.add(f1_areaMain);
 
-    let f1_w1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 16));
+    let f1_w1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 16));
     f1_w1.material.color.set("#aaaaaa");
     f1_w1.position.x = 15;
-    f1_w1.position.y = 2.5;
+    f1_w1.position.y = 1;
     f1_w1.position.z = 0;
     scene.add(f1_w1);
 
-    let f1_w2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 16));
+    let f1_w2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 16));
     f1_w2.material.color.set("#aaaaaa");
     f1_w2.position.x = -15;
-    f1_w2.position.y = 2.5;
+    f1_w2.position.y = 1;
     f1_w2.position.z = 0;
     scene.add(f1_w2);
 
-    let f1_w3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 30));
+    let f1_w3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 30));
     f1_w3.material.color.set("#aaaaaa");
     f1_w3.rotation.y = -0.5 * Math.PI;
     f1_w3.position.x = 0;
-    f1_w3.position.y = 2.5;
+    f1_w3.position.y = 1;
     f1_w3.position.z = 8;
     scene.add(f1_w3);
 
@@ -344,10 +344,14 @@ function area_legend() {
         .attr("rx",lg_size/5)
         .attr("ry",lg_size/5)
         .style("fill",(d)=>colorScale[d])
-        .on("mouseover",(d)=>{
+        .on("mouseover",function(d){
+            d3.select(this).style("fill","#FFF");
+            console.log(scene.getChildByName("area_main"));
+            scene.getChildByName("area_main").material.color.set("#FFF");
         })
-        .on("mouseout",(d)=>{
-
+        .on("mouseout",function(d){
+            d3.select(this).style("fill",colorScale[d]);
+            scene.getChildByName("area_main").material.color.set(colorScale['area_main']);
         });
 
     let legend_text = area_lg_svg.append("g").attr("transform","translate(0,"+lg_size/2.4+")");

@@ -32,12 +32,10 @@ function layout(){
     let width = all_view.width();
     let height = all_view.height();
 
-
-
     let floor = document.getElementById("floor");
     let area_line = document.getElementById("area_line");
-    let class_block = document.getElementById("class_block");
     let mini_floor = document.getElementById("mini_floor");
+    let sankey = document.getElementById("chart");
 
     floor.style.width = width * 0.6 + 'px';
     floor.style.height = height * 0.6 + 'px';
@@ -45,9 +43,8 @@ function layout(){
     area_line.style.width = width * 0.6 + 'px';
     area_line.style.height = height * 0.15 + 'px';
 
-    class_block.style.width = width * 0.2 + 'px';
-    class_block.style.height = height * 0.5 + 'px';
-
+    sankey.style.width = width * 0.36 + 'px';
+    sankey.style.height = height * 0.5 + 'px';
 
 
     let floor_view = $("#floor");

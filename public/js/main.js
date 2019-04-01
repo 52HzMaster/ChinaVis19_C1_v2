@@ -103,7 +103,8 @@ function main() {
         .style({
             "position":"absolute",
             //'left':"100px"
-            "background":"#8f8f8f"
+            "background":"#8f8f8f",
+            "opacity":0.6
         });
 
     let floor2_svg = d3.select("#mini_floor")
@@ -115,7 +116,8 @@ function main() {
             "position":"absolute",
             //"display":"none"
             "bottom":height + 5+"px",
-            "background":"#8f8f8f"
+            "background":"#8f8f8f",
+            "opacity":0.6
         });
 
     let floor1_g = floor1_svg.append("g");

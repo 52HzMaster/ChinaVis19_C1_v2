@@ -61,7 +61,7 @@ router.get('/day1_data_id', function(req, res, next) {
 
 });
 
-router.get('/day1_data_10min', function(req, res, next) {
+router.get('/day1_data_date', function(req, res, next) {
 
     let selectData = function(db, callback) {
         //连接到表
@@ -228,14 +228,5 @@ router.get('/sensor', function(req, res, next) {
 router.get('/', function(req, res, next) {
     res.render('index', { title: '' });
 });
-
-router.get('/test', function(req, res, next) {
-    res.render('test', { title: '' });
-});
-
-router.get('/test1', function(req, res, next) {
-    res.render('test1', { title: '' });
-});
-
 
 module.exports = router;
