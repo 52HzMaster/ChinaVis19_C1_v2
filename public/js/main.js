@@ -3,8 +3,8 @@ main();
 
 function main() {
 
-    let floor = $("#floor");
-    let gridSize_w = ((floor.width() - 150))/ 60;
+    let floor = $("#mini_floor");
+    let gridSize_w = floor.width() / 30;
     let gridSize_h = floor.height() / 16;
 
     let card_x = 30;
@@ -95,24 +95,27 @@ function main() {
         "area_other"
     ];
 
-    let floor1_svg = d3.select("#floor")
+    let floor1_svg = d3.select("#mini_floor")
         .append("svg")
         .attr("id", "floor1_svg")
-        .attr("width", width*2)
+        .attr("width", width)
         .attr("height", height)
         .style({
             "position":"absolute",
-            'left':"100px"
+            //'left':"100px"
+            "background":"#8f8f8f"
         });
 
-    let floor2_svg = d3.select("#floor")
+    let floor2_svg = d3.select("#mini_floor")
         .append("svg")
         .attr("id", "floor2_svg")
-        .attr("width", width*2)
+        .attr("width", width)
         .attr("height", height)
         .style({
             "position":"absolute",
-            "left":width + 120 +"px"
+            //"display":"none"
+            "bottom":height + 5+"px",
+            "background":"#8f8f8f"
         });
 
     let floor1_g = floor1_svg.append("g");
@@ -123,16 +126,38 @@ function main() {
     let sensor_g2 = floor2_svg.append("g").attr("class","sensor_f2");
     let area_g2= floor2_svg.append("g").attr("class","area_f2");
 
-    draw_floor1();
-    //draw_sensor_f1();
+    //draw_floor1();
+    draw_sensor_f1();
     draw_area_f1();
 
-    draw_floor2();
-    //draw_sensor_f2();
+    //draw_floor2();
+    draw_sensor_f2();
     draw_area_f2();
 
+    let heatmap_time = d3.select("#mini_floor").append("div")
+        .attr("id","heatmap_time")
+        .attr("width",width)
+        .attr("height",height)
+        .style({
+            "position":"absolute",
+            "pointer-events":"none",
+            "text-align":"center",
+            "z-index":99
+        });
+
+    heatmap_time.append("a")
+        .attr("align","center")
+        .style({
+            "display":"block",
+            "font-size":width/4+'px',
+            "opacity":0.1,
+            "text-align":"center",
+            "line-height":height+"px"
+        })
+        .text("00:00:00");
+
     //legend
-    area_legend();
+    //area_legend();
 
     //floor1 sensor area
     function draw_floor1() {
@@ -164,12 +189,12 @@ function main() {
             .attr("id",(d)=> "sensor_"+d.sid)
             .attr("x", function(d) { return d.y * gridSize_w; } )
             .attr("y", function(d) {return d.x * gridSize_h; })
-            .attr("rx",2)
-            .attr("ry",2)
+            //.attr("rx",2)
+            //.attr("ry",2)
             .attr("width", gridSize_w)
             .attr("height", gridSize_h)
             .style({
-                "fill":"#ffffff"
+                "fill":"none"
             })
             .on("click",(d)=>{
                 console.log(d.x,d.y);
@@ -195,6 +220,7 @@ function main() {
                 })
                 .on("mouseover",function (d) {
                     d3.select("."+area).selectAll('.grid').style({"opacity":1});
+                    d3.select("."+area).selectAll('.grid').attr("title",area);
                 })
                 .on("mouseout",function (d) {
                     d3.select("."+area).selectAll('.grid').style({"opacity":0.6});
@@ -238,7 +264,7 @@ function main() {
             .attr("width", gridSize_w)
             .attr("height", gridSize_h)
             .style({
-                "fill":"#ffffff"
+                "fill":"none"
             })
             .on("click",(d)=>{
                 console.log(d.x,d.y);
@@ -270,71 +296,5 @@ function main() {
                     area_graph(area);
                 });
         });
-    }
-
-    //area legend
-    function area_legend() {
-
-        let lg_size = height / 27;
-
-        let area_legend = d3.select("#floor").append("div")
-            .attr("id","area_legend")
-            .style({
-                "position":"absolute",
-                "top":0,
-                "left":0,
-                "z-index":999
-            });
-
-        let area_lg_svg = d3.select('#area_legend').append("svg")
-            .attr("width",100)
-            .attr("height",height);
-
-        area_lg_svg.selectAll('.legend')
-            .data(all_areas)
-            .enter()
-            .append("rect")
-            .attr("class","legend")
-            .attr("x",function (d,i) {
-                return  0;
-            })
-            .attr("y",(d,i)=>{
-                return i * lg_size;
-            })
-            .attr("width",lg_size)
-            .attr("height",lg_size/2)
-            .attr("rx",2)
-            .attr("ry",2)
-            .style("fill",(d)=>{
-                return colorScale[d];
-            })
-            .on("mouseover",(d)=>{
-                d3.select("."+d).selectAll('.grid').style({
-                    "opacity":1
-                });
-            })
-            .on("mouseout",(d)=>{
-                d3.select("."+d).selectAll('.grid').style({
-                    "opacity":0.6
-                });
-            });
-
-        let legend_text = area_lg_svg.append("g").attr("transform","translate(0,"+lg_size/2.4+")");
-
-        legend_text.selectAll(".legend_text")
-            .data(all_areas)
-            .enter()
-            .append("text")
-            .attr("x",function (d,i) {
-                return  lg_size + 5;
-            })
-            .attr("y",(d,i)=>{
-                return i * lg_size;
-            })
-            .attr("fill","#FFFFFF")
-            .text((d)=>{
-                return d;
-            })
-            .attr("font-size",lg_size/2);
     }
 }

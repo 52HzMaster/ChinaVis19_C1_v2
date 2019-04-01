@@ -24,8 +24,8 @@ let camera;
 
 function initCamera() {
 
-    camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 15, 60);
+    camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
+    camera.position.set(0, 60, 0);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 }
@@ -67,16 +67,13 @@ function initModel() {
     scene.add(helper);
 
     //底部平面
-    let planeGeometry = new THREE.PlaneGeometry(50, 50);
-    let planeMaterial = new THREE.MeshLambertMaterial({color: "#aaaaaa"});
-
-    let plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5 * Math.PI;
-    plane.position.y = 0;
-
-    //告诉底部平面需要接收阴影
-    plane.receiveShadow = true;
-    scene.add(plane);
+    // let planeGeometry = new THREE.PlaneGeometry(50, 50);
+    // let planeMaterial = new THREE.MeshLambertMaterial({color: "#aaaaaa"});
+    //
+    // let plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -0.5 * Math.PI;
+    // plane.position.y = 0;
+    // scene.add(plane);
 
     // 创建一个立方体
     //    v6----- v5
@@ -106,25 +103,58 @@ function initModel() {
     floor2.position.y = 7.5;
     floor2.position.z = 0;
 
-    //scene.add(floor1);
+    //scene.add(floor2);
 
-    let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
-    scene.add(f2_edges);
+    // let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
+    // scene.add(f2_edges);
+
+    // floor1_top floor2_bottom
+    // let floor2_bottom = new THREE.Mesh(new THREE.PlaneGeometry(30, 16));
+    // floor2_bottom.material.color.set("#444444");
+    // floor2_bottom.material.transparent = true;
+    // floor2_bottom.material.opacity = 0.3;
+    // floor2_bottom.rotation.x =  -0.5 * Math.PI;
+    // floor2_bottom.position.y = 5;
+    // floor2_bottom.position.z = 0;
+    //
+    // //告诉底部平面需要接收阴影
+    // floor2_bottom.receiveShadow = true;
+    // scene.add(floor2_bottom);
 
     //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 10));
-    f1_areaMain.name = "f1_areaMain";
+    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 5, 10));
+    f1_areaMain.name = "area_main";
     f1_areaMain.material.color.set(colorScale['area_main']);
     f1_areaMain.material.transparent = true;
     f1_areaMain.material.opacity = 0.5;
     f1_areaMain.position.x = 9;
-    f1_areaMain.position.y = 1;
+    f1_areaMain.position.y = 2.5;
     f1_areaMain.position.z = -1;
-
     scene.add(f1_areaMain);
 
-    //告诉立方体需要投射阴影
-    f1_areaMain.castShadow = true;
+    let f1_w1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 16));
+    f1_w1.material.color.set("#aaaaaa");
+    f1_w1.position.x = 15;
+    f1_w1.position.y = 2.5;
+    f1_w1.position.z = 0;
+    scene.add(f1_w1);
+
+    let f1_w2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 16));
+    f1_w2.material.color.set("#aaaaaa");
+    f1_w2.position.x = -15;
+    f1_w2.position.y = 2.5;
+    f1_w2.position.z = 0;
+    scene.add(f1_w2);
+
+    let f1_w3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 30));
+    f1_w3.material.color.set("#aaaaaa");
+    f1_w3.rotation.y = -0.5 * Math.PI;
+    f1_w3.position.x = 0;
+    f1_w3.position.y = 2.5;
+    f1_w3.position.z = 8;
+    scene.add(f1_w3);
+
+
 }
 
 let raycaster = new THREE.Raycaster();
@@ -146,15 +176,17 @@ function onMouseClick( event ) {
     console.log(intersects);
 
     //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
-    for ( let i = 0; i < intersects.length; i++ ) {
-        if(intersects[ i ].object.name === "f1_areaMain");
-            //intersects[ i ].object.material.color.set( 0xff0000 );
 
+    switch (intersects[0].object.name) {
+        case "area_main":
+            area_graph("area_A");
+            break;
+        default:
+            break;
     }
-
 }
 
-document.addEventListener( 'click', onMouseClick, false );
+document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
 
 function onMousemove( event ) {
 
@@ -195,7 +227,7 @@ function onMouseout( event ) {
     // 获取raycaster直线和所有模型相交的数组集合
     let intersects = raycaster.intersectObjects( scene.children );
 
-    console.log(intersects);
+    console.log(scene.children);
 
     //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
     for ( let i = 0; i < intersects.length; i++ ) {
@@ -233,9 +265,9 @@ function initControls() {
     //是否自动旋转
     controls.autoRotate = false;
     //设置相机距离原点的最远距离
-    controls.minDistance = 50;
+    controls.minDistance = 10;
     //设置相机距离原点的最远距离
-    controls.maxDistance = 200;
+    controls.maxDistance = 300;
     //是否开启右键拖拽
     controls.enablePan = true;
 
@@ -275,4 +307,64 @@ function draw() {
     initStats();
     animate();
     window.onresize = onWindowResize;
+}
+
+area_legend();
+//area legend
+function area_legend() {
+
+    let lg_size = height / 30;
+
+    let area_legend = d3.select("#floor").append("div")
+        .attr("id","area_legend")
+        .style({
+            "position":"absolute",
+            "top":0,
+            "left":0,
+            "z-index":10
+        });
+
+    let area_lg_svg = d3.select('#area_legend').append("svg")
+        .attr("width",100)
+        .attr("height",height);
+
+    area_lg_svg.selectAll('.legend')
+        .data(all_areas)
+        .enter()
+        .append("rect")
+        .attr("class","legend")
+        .attr("x",function (d,i) {
+            return  0;
+        })
+        .attr("y",(d,i)=>{
+            return i * lg_size;
+        })
+        .attr("width",lg_size)
+        .attr("height",lg_size/2)
+        .attr("rx",lg_size/5)
+        .attr("ry",lg_size/5)
+        .style("fill",(d)=>colorScale[d])
+        .on("mouseover",(d)=>{
+        })
+        .on("mouseout",(d)=>{
+
+        });
+
+    let legend_text = area_lg_svg.append("g").attr("transform","translate(0,"+lg_size/2.4+")");
+
+    legend_text.selectAll(".legend_text")
+        .data(all_areas)
+        .enter()
+        .append("text")
+        .attr("x",function (d,i) {
+            return  lg_size + 5;
+        })
+        .attr("y",(d,i)=>{
+            return i * lg_size;
+        })
+        .attr("fill","#FFFFFF")
+        .text((d)=>{
+            return d;
+        })
+        .attr("font-size",lg_size/2);
 }

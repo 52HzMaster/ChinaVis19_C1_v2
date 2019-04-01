@@ -10,6 +10,18 @@ let colorScale = {"area_A":"#306bff","area_B":"#34a8ff","area_C":"#44caff","area
     "area_other":"#c8c8c7"
 };
 
+let all_areas = [
+    "area_A","area_B","area_C","area_D",
+    "area_sign","area_poster",
+    "area_ladder1","area_ladder2","area_ladder3","area_ladder4",
+    "area_wc1","area_wc2","area_wc3",
+    "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
+    "area_serve", "area_disc","area_main",
+    "area_canteen","area_leisure",
+    "area_in", "area_out",
+    "area_other"
+];
+
 let day_url = '/day1_data';
 
 layout();
@@ -20,9 +32,12 @@ function layout(){
     let width = all_view.width();
     let height = all_view.height();
 
+
+
     let floor = document.getElementById("floor");
     let area_line = document.getElementById("area_line");
     let class_block = document.getElementById("class_block");
+    let mini_floor = document.getElementById("mini_floor");
 
     floor.style.width = width * 0.6 + 'px';
     floor.style.height = height * 0.6 + 'px';
@@ -32,6 +47,15 @@ function layout(){
 
     class_block.style.width = width * 0.2 + 'px';
     class_block.style.height = height * 0.5 + 'px';
+
+
+
+    let floor_view = $("#floor");
+    let floor_width = floor_view.width();
+    let floor_height = floor_view.height();
+
+    mini_floor.style.width = floor_width / 5 + 'px';
+    mini_floor.style.height = floor_height /4 + 'px';
 
 }
 

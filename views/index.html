@@ -15,12 +15,21 @@
 </head>
 <body onload="draw();">
 <div id="all_view">
+
     <div id="btn">
         <button id="day1">day1</button>
         <button id="day2">day2</button>
         <button id="day3">day3</button>
+
+        <button id="heatmap_btn">heatmap_btn</button>
+
+
     </div>
-    <div id="floor"></div>
+
+    <div id="floor">
+        <div id="mini_floor"></div>
+    </div>
+
     <div id="area_line"></div>
     <div id="class_block"></div>
     <div id="class_pie"></div>
@@ -32,33 +41,28 @@
 <script src="/js/layout.js"></script>
 <script src="/js/init_data.js"></script>
 <script src="/js/area_line.js"></script>
-<script src="/js/class_block.js"></script>
-<script src="/js/floor.js"></script>
-<!--<script src="/js/main.js"></script>-->
+<!--<script src="/js/class_block.js"></script>-->
+
+<script src="/js/main.js"></script>
 <script src="/js/heatmap.js"></script>
+
+<script src="/js/floor.js"></script>
+
+
 <script>
-    let heat_stat = true;
-    $("#floor1").click(function () {
-        d3.select("#floor1_svg").style("display","block");
-        d3.select("#floor2_svg").style("display","none");
-    });
-    $("#floor2").click(function () {
-        d3.select("#floor1_svg").style("display","none");
-        d3.select("#floor2_svg").style("display","block");
-    });
-    $("#clear").click(function () {
-        d3.select("#floor1_svg").style("display","none");
-        d3.select("#floor2_svg").style("display","none");
-    });
+
+        // let heat_stat = true;
     $("#heatmap_btn").click(function () {
 
-        let heatmap =d3.select("#heatmap");
+        // let heatmap =d3.select("#heatmap");
 
-        heat_stat = !heat_stat;
-        if(heat_stat)
-            heatmap.style("display","none");
-        else
-            heatmap.style("display","block");
+        heatmap_chart("2019-01-01 07:00:00","2019-01-01 18:00:00",3);
+
+        // heat_stat = !heat_stat;
+        // if(heat_stat)
+        //     heatmap.style("display","none");
+        // else
+        //     heatmap.style("display","block");
 
     });
     $("#day1").click(function () {

@@ -46,6 +46,13 @@ canvas {
     z-index: 10;
 }
 
+#mini_floor{
+    position:absolute;
+    right:0;
+    bottom:0;
+    z-index:999;
+}
+
 .grid{
 /*    stroke: rgba(85, 85, 85, 0.95);
     stroke-width:1px;*/
@@ -55,7 +62,7 @@ canvas {
 .axis line {
     fill: none;
     stroke: white;
-    stroke-width: 2px;
+    stroke-width: 1px;
     shape-rendering: crispEdges;
 }
 
