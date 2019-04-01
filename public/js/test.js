@@ -32,7 +32,7 @@ function test() {
         }
     });*/
 
-    /*let nodes = [];
+/*    let nodes = [];
     let links = [
         {"source":"area_in","target":"area_sign","value":"100"},
         {"source":"area_in","target":"area_main","value":"80"},
@@ -145,8 +145,7 @@ function test() {
             ) + ")");
         sankey.relayout();
         link.attr("d", path);
-    }
-*/
+    }*/
 }
 
 
