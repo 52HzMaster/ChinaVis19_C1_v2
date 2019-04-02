@@ -22,12 +22,18 @@ function initRender() {
 
 let camera;
 
+
 function initCamera() {
 
-    camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
-    camera.position.set(0, 60, 0);
+    camera = new THREE.PerspectiveCamera(30,width/height,0.1,1000);
+    //camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 1, 100);
+    camera.position.set( 0, 60, 0 );
     camera.lookAt(new THREE.Vector3(0, 0, 0));
+    scene.add(camera);
+}
 
+function view_to_plane(){
+    camera.position.set(0, 60, 0);
 }
 
 let scene;
@@ -57,7 +63,7 @@ function initLight() {
 function initModel() {
 
     //辅助工具1
-    let helper_axes = new THREE.AxesHelper(50);
+    let helper_axes = new THREE.AxisHelper(50);
     helper_axes.position.set(0, 0, 0);
     scene.add(helper_axes);
 
@@ -84,7 +90,7 @@ function initModel() {
     //  |/      |/
     //  v2------v3
 
-    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
+    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(60, 2, 32));
     floor1.name = "floor1";
     floor1.material.color.set("#FFFFFF");
     floor1.position.x = 0;
@@ -97,11 +103,11 @@ function initModel() {
     f1_edges.name = "f1_edges";
     scene.add(f1_edges);
 
-    let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
-    floor2.name = "floor2";
-    floor2.position.x = 0;
-    floor2.position.y = 7.5;
-    floor2.position.z = 0;
+    // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
+    // floor2.name = "floor2";
+    // floor2.position.x = 0;
+    // floor2.position.y = 7.5;
+    // floor2.position.z = 0;
 
     //scene.add(floor2);
 
@@ -126,36 +132,15 @@ function initModel() {
     f1_areaMain.name = "area_main";
     f1_areaMain.material.color.set(colorScale['area_main']);
     f1_areaMain.material.transparent = true;
+    f1_areaMain.material.needsUpdate = true;
     f1_areaMain.material.opacity = 0.5;
     f1_areaMain.position.x = 9;
     f1_areaMain.position.y = 1;
     f1_areaMain.position.z = -1;
     scene.add(f1_areaMain);
 
-    let f1_w1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 16));
-    f1_w1.material.color.set("#aaaaaa");
-    f1_w1.position.x = 15;
-    f1_w1.position.y = 1;
-    f1_w1.position.z = 0;
-    scene.add(f1_w1);
-
-    let f1_w2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 16));
-    f1_w2.material.color.set("#aaaaaa");
-    f1_w2.position.x = -15;
-    f1_w2.position.y = 1;
-    f1_w2.position.z = 0;
-    scene.add(f1_w2);
-
-    let f1_w3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 30));
-    f1_w3.material.color.set("#aaaaaa");
-    f1_w3.rotation.y = -0.5 * Math.PI;
-    f1_w3.position.x = 0;
-    f1_w3.position.y = 1;
-    f1_w3.position.z = 8;
-    scene.add(f1_w3);
-
-
 }
+
 
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
@@ -173,8 +158,6 @@ function onMouseClick( event ) {
     // 获取raycaster直线和所有模型相交的数组集合
     let intersects = raycaster.intersectObjects( scene.children );
 
-    console.log(intersects);
-
     //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
 
     switch (intersects[0].object.name) {
@@ -185,10 +168,7 @@ function onMouseClick( event ) {
             break;
     }
 }
-
-document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
-
-function onMousemove( event ) {
+function onMouseMove( event ) {
 
     //通过鼠标点击的位置计算出raycaster所需要的点的位置，以屏幕中心为原点，值的范围为-1到1.
 
@@ -197,48 +177,22 @@ function onMousemove( event ) {
 
     // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
     raycaster.setFromCamera( mouse, camera );
-
     // 获取raycaster直线和所有模型相交的数组集合
     let intersects = raycaster.intersectObjects( scene.children );
 
-    console.log(intersects);
-
     //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
-    for ( let i = 0; i < intersects.length; i++ ) {
-        if(intersects[ i ].object.name === "f1_areaMain")
-            intersects[ i ].object.material.opacity = 0.8;
 
+    switch (intersects[0].object.name) {
+        case "area_main":
+            scene.getObjectByName("area_main").material.color.set("#FFF");
+            break;
+        default:
+            //scene.getObjectByName("area_main").material.color.set(colorScale['area_main']);
+            break;
     }
-
 }
-
-//document.addEventListener( 'mousemove', onMousemove, false );
-
-function onMouseout( event ) {
-
-    //通过鼠标点击的位置计算出raycaster所需要的点的位置，以屏幕中心为原点，值的范围为-1到1.
-
-    mouse.x = ( event.offsetX / width ) * 2 - 1;
-    mouse.y = - ( event.offsetY /  height ) * 2 + 1;
-
-    // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
-    raycaster.setFromCamera( mouse, camera );
-
-    // 获取raycaster直线和所有模型相交的数组集合
-    let intersects = raycaster.intersectObjects( scene.children );
-
-    console.log(scene.children);
-
-    //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
-    for ( let i = 0; i < intersects.length; i++ ) {
-        if(intersects[ i ].object.name === "f1_areaMain")
-            intersects[ i ].object.material.opacity = 0.5;
-
-    }
-
-}
-
-//document.addEventListener( 'mouseout', onMouseout, false );
+//document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
+document.getElementById('floor').addEventListener('mousemove',onMouseMove,false);
 
 //初始化性能插件
 let stats;
@@ -308,7 +262,7 @@ function draw() {
     animate();
     window.onresize = onWindowResize;
 }
-
+draw();
 area_legend();
 //area legend
 function area_legend() {
@@ -346,12 +300,12 @@ function area_legend() {
         .style("fill",(d)=>colorScale[d])
         .on("mouseover",function(d){
             d3.select(this).style("fill","#FFF");
-            console.log(scene.getChildByName("area_main"));
-            scene.getChildByName("area_main").material.color.set("#FFF");
+           // console.log(scene.getObjectByName("area_main"));
+            scene.getObjectByName("area_main").material.color.set("#FFF");
         })
         .on("mouseout",function(d){
             d3.select(this).style("fill",colorScale[d]);
-            scene.getChildByName("area_main").material.color.set(colorScale['area_main']);
+            scene.getObjectByName("area_main").material.color.set(colorScale['area_main']);
         });
 
     let legend_text = area_lg_svg.append("g").attr("transform","translate(0,"+lg_size/2.4+")");

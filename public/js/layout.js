@@ -35,17 +35,13 @@ function layout(){
     let floor = document.getElementById("floor");
     let area_line = document.getElementById("area_line");
     let mini_floor = document.getElementById("mini_floor");
-    let sankey = document.getElementById("chart");
+
 
     floor.style.width = width * 0.6 + 'px';
     floor.style.height = height * 0.6 + 'px';
 
     area_line.style.width = width * 0.6 + 'px';
     area_line.style.height = height * 0.15 + 'px';
-
-    sankey.style.width = width * 0.36 + 'px';
-    sankey.style.height = height * 0.5 + 'px';
-
 
     let floor_view = $("#floor");
     let floor_width = floor_view.width();

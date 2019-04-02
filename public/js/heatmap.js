@@ -98,14 +98,14 @@ function heatmap_chart(start,end,speed){
         index++;
     },1000);
 
-
     function heatmap(date_extent) {
+
         //console.log(date_extent);
 
         d3.select("#heatmap_time").select("a").text(new Date(date_extent[1]).Format("HH:mm:ss"));
 
         $.ajax({
-            url: day_url + "date",    //请求的url地址
+            url: day_url + "_date",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 date_start: date_extent[0],

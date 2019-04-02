@@ -1,7 +1,7 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-test();
+//test();
 function test() {
 
     let date_extent =date_slice("2019-01-01 07:00:00","2019-01-01 18:00:00",30);
