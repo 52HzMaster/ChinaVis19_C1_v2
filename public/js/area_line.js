@@ -25,7 +25,7 @@ area_graph("area_in");
 
 function area_graph(condition){
     $.ajax({
-        url: day_url,    //请求的url地址
+        url: day_url+"_area",    //请求的url地址
         dataType: "json",   //返回格式为json
         data:{area:condition.toLocaleString()},
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性

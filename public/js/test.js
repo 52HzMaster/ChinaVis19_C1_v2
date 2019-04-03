@@ -1,12 +1,87 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-//test();
+test();
 function test() {
 
-    let date_extent =date_slice("2019-01-01 07:00:00","2019-01-01 18:00:00",30);
+    /*d3.csv("/data/day1_id.csv",(data)=>{
+        console.log(data);
+    });*/
 
-    console.log(date_extent);
+    $.ajax({
+     url: day_url + "_id",    //请求的url地址
+     dataType: "json",   //返回格式为json
+     data: {
+         id:"10003"
+     },
+     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+     type: "GET",   //请求方式
+     contentType: "application/json",
+     beforeSend: function () {//请求前的处理
+     },
+     success: function (data, textStatus) {
+         /*for (let i=0; i<data.length-1;i++){
+             data[i].stay = data[i+1].time - data[i].time;
+             data[i].out = new Date(new Date(data[i].date).getTime()+data[i].stay*1000);
+         }
+         data[data.length-1].stay = 0;
+         data[data.length-1].out = new Date(new Date(data[data.length-1].date).getTime()+data[data.length-1].stay*1000);*/
+     console.log(data);
+     console.log( remove_element(data));
+     remove_element(data);
+     function remove_element(arr) {
+         let data=[];
+         data.push(arr[0]);
+         for(let i =1;i<arr.length;i++) {
+             if(arr[i].area === data[data.length-1].area){
+                 data.pop();
+             }
+             data.push(arr[i]);
+         }
+         return data;
+     }
+
+     },
+     complete: function () {//请求完成的处理
+     },
+     error: function () {//请求出错处理
+     }
+     });
+
+  /*  $.ajax({
+        url: "/day1_data",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
+            let nest  = d3.nest().key((d)=>d.id);
+            let all_id = nest.entries(data);
+            let id = [];
+
+            all_id.forEach((d)=>{
+                id.push({id:d.key});
+            })
+
+            console.log(JSON.stringify(id));
+
+            //console.log(data);
+            //console.log(d3.extent(data,(d)=>new Date(d.date)));
+            /!*        data.forEach((d)=>{
+             d.date = new Date(d.date);
+             });*!/
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });*/
+
+    //let date_extent =date_slice("2019-01-01 07:00:00","2019-01-01 18:00:00",30);
+
+    //console.log(date_extent);
 
     /*$.ajax({
         url: day_url + "_date",    //请求的url地址

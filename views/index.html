@@ -14,7 +14,8 @@
 </head>
 <body>
 <div id="all_view">
-
+    <canvas id="area-main" style="display: none"></canvas>
+    <canvas id="area-disc" style="display: none"></canvas>
     <div id="btn">
         <button id="day1">day1</button>
         <button id="day2">day2</button>
@@ -27,7 +28,6 @@
     </div>
 
     <div id="area_line"></div>
-    <!--<div id="class_block"></div>-->
     <!--<div id="class_pie"></div>-->
 
 </div>
@@ -41,8 +41,7 @@
 <script src="/js/main.js"></script>
 <script src="/js/heatmap.js"></script>
 <script src="/js/floor.js"></script>
-
-
+<script src="/js/test.js"></script>
 <script>
 
         // let heat_stat = true;
@@ -50,7 +49,7 @@
 
         // let heatmap =d3.select("#heatmap");
 
-        heatmap_chart("2019-01-01 07:00:00","2019-01-01 18:00:00",3);
+        heatmap_chart("2019-01-03 07:00:00","2019-01-03 18:00:00",1);
 
         // heat_stat = !heat_stat;
         // if(heat_stat)
@@ -61,12 +60,15 @@
     });
     $("#day1").click(function () {
         day_url='/day1_data';
+        heatmap_chart("2019-01-01 07:00:00","2019-01-01 18:10:00",3);
     });
     $("#day2").click(function () {
         day_url='/day2_data';
+        heatmap_chart("2019-01-02 07:30:00","2019-01-02 20:10:00",3);
     });
     $("#day3").click(function () {
         day_url='/day3_data';
+        heatmap_chart("2019-01-03 07:30:00","2019-01-03 12:40:00",3);
     });
 </script>
 </html>

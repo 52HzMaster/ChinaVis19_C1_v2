@@ -25,9 +25,9 @@ let camera;
 
 function initCamera() {
 
-    camera = new THREE.PerspectiveCamera(30,width/height,0.1,1000);
+    camera = new THREE.PerspectiveCamera(50,width/height,0.1,1000);
     //camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 1, 100);
-    camera.position.set( 0, 60, 0 );
+    camera.position.set( 0, 30, 2 );
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     scene.add(camera);
 }
@@ -68,7 +68,7 @@ function initModel() {
     scene.add(helper_axes);
 
     //辅助工具2
-    let helper = new THREE.GridHelper(50, 50);
+    let helper = new THREE.GridHelper(50,100);
     helper.material.color = new THREE.Color("#62a6ff");
     scene.add(helper);
 
@@ -90,7 +90,7 @@ function initModel() {
     //  |/      |/
     //  v2------v3
 
-    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(60, 2, 32));
+    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
     floor1.name = "floor1";
     floor1.material.color.set("#FFFFFF");
     floor1.position.x = 0;
@@ -139,6 +139,57 @@ function initModel() {
     f1_areaMain.position.z = -1;
     scene.add(f1_areaMain);
 
+    let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 10));
+    f1_areaDisc.name = "area_disc";
+    f1_areaDisc.material.color.set(colorScale['area_disc']);
+    f1_areaDisc.material.transparent = true;
+    f1_areaDisc.material.needsUpdate = true;
+    f1_areaDisc.material.opacity = 0.5;
+    f1_areaDisc.position.x = 2;
+    f1_areaDisc.position.y = 1;
+    f1_areaDisc.position.z = -1;
+    scene.add(f1_areaDisc);
+
+    add_label("area-main",{x:9,y:3,z:0});
+
+    //add_label("area-B",{x:1,y:3,z:0});
+
+    function add_label(str,position) {
+
+        let canvas = document.getElementById(str);
+        let ctx = canvas.getContext("2d");
+        let x = 120;
+        let y = 32;
+        let radius = 100;
+        let startAngle = 0;
+        let endAngle = Math.PI * 2;
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0)";
+        ctx.beginPath();
+        ctx.arc(x, y, radius, startAngle, endAngle);
+        ctx.fill();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 42px optimer";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(str, x, y);
+
+        let numberTexture = new THREE.CanvasTexture(document.querySelector("#"+str));
+        let spriteMaterial = new THREE.SpriteMaterial({
+            map: numberTexture,
+            alphaTest: 0.5,
+            transparent: true,
+            depthTest: false,
+            depthWrite: false
+        });
+
+        sprite = new THREE.Sprite(spriteMaterial);
+        sprite.position.set(position.x, position.y, position.z);
+        sprite.scale.set(4, 4,4);
+        scene.add(sprite);
+    }
+
 }
 
 
@@ -159,17 +210,23 @@ function onMouseClick( event ) {
     let intersects = raycaster.intersectObjects( scene.children );
 
     //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
-
-    switch (intersects[0].object.name) {
-        case "area_main":
-            area_graph("area_A");
-            break;
-        default:
-            break;
+    if(intersects.length>0 && all_areas.indexOf(intersects[0].object.name) !== -1) {
+        area_graph(intersects[0].object.name);
     }
-}
-function onMouseMove( event ) {
 
+}
+
+function init_color() {
+    all_areas.forEach((d)=>{
+        if(scene.getObjectByName(d))
+            scene.getObjectByName(d).material.color.set(colorScale[d]);
+    });
+}
+
+function onHover( event ) {
+
+    event.preventDefault();
+    init_color();
     //通过鼠标点击的位置计算出raycaster所需要的点的位置，以屏幕中心为原点，值的范围为-1到1.
 
     mouse.x = ( event.offsetX / width ) * 2 - 1;
@@ -180,25 +237,22 @@ function onMouseMove( event ) {
     // 获取raycaster直线和所有模型相交的数组集合
     let intersects = raycaster.intersectObjects( scene.children );
 
-    //将所有的相交的模型的颜色设置为红色，如果只需要将第一个触发事件，那就数组的第一个模型改变颜色即可
-
-    switch (intersects[0].object.name) {
-        case "area_main":
-            scene.getObjectByName("area_main").material.color.set("#FFF");
-            break;
-        default:
-            //scene.getObjectByName("area_main").material.color.set(colorScale['area_main']);
-            break;
+    if(intersects.length>0 && all_areas.indexOf(intersects[0].object.name) !== -1) {
+        scene.getObjectByName(intersects[0].object.name).material.color.set("#FFF");
+        intersects = null;
+    }
+    else{
+        init_color();
     }
 }
-//document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
-document.getElementById('floor').addEventListener('mousemove',onMouseMove,false);
+document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
+document.getElementById('floor').addEventListener('mousemove',onHover,false);
 
 //初始化性能插件
 let stats;
 function initStats() {
     stats = new Stats();
-    document.body.appendChild(stats.dom);
+    document.getElementById("floor").appendChild(stats.dom);
 }
 
 //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
@@ -273,7 +327,7 @@ function area_legend() {
         .attr("id","area_legend")
         .style({
             "position":"absolute",
-            "top":0,
+            "top":"4%",
             "left":0,
             "z-index":10
         });
@@ -300,7 +354,7 @@ function area_legend() {
         .style("fill",(d)=>colorScale[d])
         .on("mouseover",function(d){
             d3.select(this).style("fill","#FFF");
-           // console.log(scene.getObjectByName("area_main"));
+            // console.log(scene.getObjectByName("area_main"));
             scene.getObjectByName("area_main").material.color.set("#FFF");
         })
         .on("mouseout",function(d){

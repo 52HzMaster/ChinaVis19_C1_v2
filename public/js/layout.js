@@ -36,7 +36,6 @@ function layout(){
     let area_line = document.getElementById("area_line");
     let mini_floor = document.getElementById("mini_floor");
 
-
     floor.style.width = width * 0.6 + 'px';
     floor.style.height = height * 0.6 + 'px';
 
@@ -49,6 +48,8 @@ function layout(){
 
     mini_floor.style.width = floor_width / 5 + 'px';
     mini_floor.style.height = floor_height /4 + 'px';
+
+
 
 }
 
