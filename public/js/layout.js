@@ -22,7 +22,7 @@ let all_areas = [
     "area_other"
 ];
 
-let day_url = '/day1_data';
+let day_url = '/day1_data_pro';
 
 layout();
 
@@ -35,12 +35,16 @@ function layout(){
     let floor = document.getElementById("floor");
     let area_line = document.getElementById("area_line");
     let mini_floor = document.getElementById("mini_floor");
+    let chart = document.getElementById("chart");
 
     floor.style.width = width * 0.6 + 'px';
     floor.style.height = height * 0.6 + 'px';
 
     area_line.style.width = width * 0.6 + 'px';
     area_line.style.height = height * 0.15 + 'px';
+
+    chart.style.width = width * 0.3 + 'px';
+    chart.style.height = height * 0.4 + 'px';
 
     let floor_view = $("#floor");
     let floor_width = floor_view.width();
