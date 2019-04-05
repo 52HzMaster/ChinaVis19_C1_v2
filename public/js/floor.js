@@ -9,31 +9,24 @@ let width = floor_wh.width();
 let height = floor_wh.height();
 
 function initRender() {
-
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(width, height);
-    renderer.setClearColor('#303030',1.0);
+    renderer.setClearColor('#303030',1);
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
     document.getElementById("floor").appendChild(renderer.domElement);
-
 }
 
 let camera;
 
-
 function initCamera() {
 
-    camera = new THREE.PerspectiveCamera(50,width/height,0.1,1000);
+    camera = new THREE.PerspectiveCamera(45,width/height,10,100);
     //camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 1, 100);
-    camera.position.set( 0, 30, 2 );
+    camera.position.set( 0, 30,0 );
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     scene.add(camera);
-}
-
-function view_to_plane(){
-    camera.position.set(0, 60, 0);
 }
 
 let scene;
@@ -50,7 +43,7 @@ function initLight() {
 
     scene.add(new THREE.AmbientLight(0x444444));
     light = new THREE.PointLight(0xffffff);
-    light.position.set(15, 30, 10);
+    light.position.set(0, 30, 0);
 
     //告诉平行光需要开启阴影投射
 
@@ -68,9 +61,9 @@ function initModel() {
     scene.add(helper_axes);
 
     //辅助工具2
-    let helper = new THREE.GridHelper(50,100);
-    helper.material.color = new THREE.Color("#62a6ff");
-    scene.add(helper);
+    // let helper = new THREE.GridHelper(50,100);
+    // helper.material.color = new THREE.Color("#62a6ff");
+    // scene.add(helper);
 
     //底部平面
     // let planeGeometry = new THREE.PlaneGeometry(50, 50);
@@ -81,6 +74,12 @@ function initModel() {
     // plane.position.y = 0;
     // scene.add(plane);
 
+    let plane_pic = new THREE.BoxGeometry( 30, 0, 16 );
+    let texture = new THREE.TextureLoader().load("/img/floor1.jpg");
+    let plane_pic_material = new THREE.MeshBasicMaterial( { map:texture,transparent:true,opacity:0.5 } );
+    let pic_box = new THREE.Mesh( plane_pic, plane_pic_material );
+    scene.add(pic_box);
+
     // 创建一个立方体
     //    v6----- v5
     //   /|      /|
@@ -90,105 +89,71 @@ function initModel() {
     //  |/      |/
     //  v2------v3
 
-    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
-    floor1.name = "floor1";
-    floor1.material.color.set("#FFFFFF");
-    floor1.position.x = 0;
-    floor1.position.y = 1;
-    floor1.position.z = 0;
+    /*
+        let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
+        floor1.name = "floor1";
+        floor1.material.color.set("#FFFFFF");
+        floor1.position.x = 0;
+        floor1.position.y = 1;
+        floor1.position.z = 0;
 
-    //scene.add(floor1);
+        //scene.add(floor1);
 
-    let f1_edges = new THREE.BoxHelper(floor1, "#FFFFFF");//设置边框，可以旋转
-    f1_edges.name = "f1_edges";
-    scene.add(f1_edges);
+        let f1_edges = new THREE.BoxHelper(floor1, "#FFFFFF");//设置边框，可以旋转
+        f1_edges.name = "f1_edges";
+        scene.add(f1_edges);
 
-    // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
-    // floor2.name = "floor2";
-    // floor2.position.x = 0;
-    // floor2.position.y = 7.5;
-    // floor2.position.z = 0;
+        */
 
-    //scene.add(floor2);
+        // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
+        // floor2.name = "floor2";
+        // floor2.position.x = 0;
+        // floor2.position.y = 7.5;
+        // floor2.position.z = 0;
 
-    // let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
-    // scene.add(f2_edges);
+        //scene.add(floor2);
 
-    // floor1_top floor2_bottom
-    // let floor2_bottom = new THREE.Mesh(new THREE.PlaneGeometry(30, 16));
-    // floor2_bottom.material.color.set("#444444");
-    // floor2_bottom.material.transparent = true;
-    // floor2_bottom.material.opacity = 0.3;
-    // floor2_bottom.rotation.x =  -0.5 * Math.PI;
-    // floor2_bottom.position.y = 5;
-    // floor2_bottom.position.z = 0;
-    //
-    // //告诉底部平面需要接收阴影
-    // floor2_bottom.receiveShadow = true;
-    // scene.add(floor2_bottom);
+        // let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
+        // scene.add(f2_edges);
 
-    //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 10));
-    f1_areaMain.name = "area_main";
-    f1_areaMain.material.color.set(colorScale['area_main']);
-    f1_areaMain.material.transparent = true;
-    f1_areaMain.material.needsUpdate = true;
-    f1_areaMain.material.opacity = 0.5;
-    f1_areaMain.position.x = 9;
-    f1_areaMain.position.y = 1;
-    f1_areaMain.position.z = -1;
-    scene.add(f1_areaMain);
+        // floor1_top floor2_bottom
+        // let floor2_bottom = new THREE.Mesh(new THREE.PlaneGeometry(30, 16));
+        // floor2_bottom.material.color.set("#444444");
+        // floor2_bottom.material.transparent = true;
+        // floor2_bottom.material.opacity = 0.3;
+        // floor2_bottom.rotation.x =  -0.5 * Math.PI;
+        // floor2_bottom.position.y = 5;
+        // floor2_bottom.position.z = 0;
+        //
+        // //告诉底部平面需要接收阴影
+        // floor2_bottom.receiveShadow = true;
+        // scene.add(floor2_bottom);
 
-    let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 10));
-    f1_areaDisc.name = "area_disc";
-    f1_areaDisc.material.color.set(colorScale['area_disc']);
-    f1_areaDisc.material.transparent = true;
-    f1_areaDisc.material.needsUpdate = true;
-    f1_areaDisc.material.opacity = 0.5;
-    f1_areaDisc.position.x = 2;
-    f1_areaDisc.position.y = 1;
-    f1_areaDisc.position.z = -1;
-    scene.add(f1_areaDisc);
+        //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
+        let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 10));
+        f1_areaMain.name = "area_main";
+        f1_areaMain.material.color.set(colorScale['area_main']);
+        f1_areaMain.material.transparent = true;
+        f1_areaMain.material.needsUpdate = true;
+        f1_areaMain.material.opacity = 0.5;
+        f1_areaMain.position.x = 9;
+        f1_areaMain.position.y = 1.01;
+        f1_areaMain.position.z = -1;
+        scene.add(f1_areaMain);
 
-    add_label("area-main",{x:9,y:3,z:0});
+    let f1_areaMain_edges = new THREE.BoxHelper(f1_areaMain, "#FFFFFF");//设置边框，可以旋转
+    scene.add(f1_areaMain_edges);
 
-    //add_label("area-B",{x:1,y:3,z:0});
-
-    function add_label(str,position) {
-
-        let canvas = document.getElementById(str);
-        let ctx = canvas.getContext("2d");
-        let x = 120;
-        let y = 32;
-        let radius = 100;
-        let startAngle = 0;
-        let endAngle = Math.PI * 2;
-
-        ctx.fillStyle = "rgba(0, 0, 0, 0)";
-        ctx.beginPath();
-        ctx.arc(x, y, radius, startAngle, endAngle);
-        ctx.fill();
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 42px optimer";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(str, x, y);
-
-        let numberTexture = new THREE.CanvasTexture(document.querySelector("#"+str));
-        let spriteMaterial = new THREE.SpriteMaterial({
-            map: numberTexture,
-            alphaTest: 0.5,
-            transparent: true,
-            depthTest: false,
-            depthWrite: false
-        });
-
-        sprite = new THREE.Sprite(spriteMaterial);
-        sprite.position.set(position.x, position.y, position.z);
-        sprite.scale.set(4, 4,4);
-        scene.add(sprite);
-    }
+        let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 10));
+        f1_areaDisc.name = "area_disc";
+        f1_areaDisc.material.color.set(colorScale['area_disc']);
+        f1_areaDisc.material.transparent = true;
+        f1_areaDisc.material.needsUpdate = true;
+        f1_areaDisc.material.opacity = 0.5;
+        f1_areaDisc.position.x = 2;
+        f1_areaDisc.position.y = 1.01;
+        f1_areaDisc.position.z = -1;
+        scene.add(f1_areaDisc);
 
 }
 
@@ -271,17 +236,22 @@ function initControls() {
     //是否可以缩放
     controls.enableZoom = true;
     //是否自动旋转
-    controls.autoRotate = false;
+    controls.maxPolarAngle = Math.PI * 0.35;
+    controls.minPolarAngle = 0.1;
+    //controls.enableRotate = false;
+    //controls.autoRotate = true;
+    //controls.autoRotateSpeed = 0.1;
     //设置相机距离原点的最远距离
     controls.minDistance = 10;
     //设置相机距离原点的最远距离
     controls.maxDistance = 300;
     //是否开启右键拖拽
-    controls.enablePan = true;
+    controls.enablePan = false;
 
 }
 
 function render() {
+
     renderer.render(scene, camera);
 }
 
@@ -293,16 +263,18 @@ function onWindowResize() {
     renderer.setSize(width, height);
 }
 
+
 function animate() {
 
     //更新控制器
     render();
     //更新性能插件
     stats.update();
-
     //更新相关位置
     controls.update();
     requestAnimationFrame(animate);
+    //设置间隔调用update函数,间隔次数为每秒30次
+    //setInterval(animate,1000/30);
 }
 
 function draw() {
@@ -317,7 +289,7 @@ function draw() {
     window.onresize = onWindowResize;
 }
 draw();
-area_legend();
+//area_legend();
 //area legend
 function area_legend() {
 
