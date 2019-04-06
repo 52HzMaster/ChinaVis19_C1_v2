@@ -205,13 +205,16 @@ function onHover( event ) {
     if(intersects.length>0 && all_areas.indexOf(intersects[0].object.name) !== -1) {
         scene.getObjectByName(intersects[0].object.name).material.color.set("#FFF");
         intersects = null;
+        document.body.style.cursor = 'pointer';
     }
     else{
+        document.body.style.cursor = '';
         init_color();
     }
 }
-document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
-document.getElementById('floor').addEventListener('mousemove',onHover,false);
+
+//document.getElementById("floor").addEventListener( 'click', onMouseClick, false );
+//document.getElementById('floor').addEventListener('mousemove',onHover,false);
 
 //初始化性能插件
 let stats;

@@ -76,8 +76,8 @@ function date_slice(start,end,stick) {
     let extent = [];
 
     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
-        let date_start = new Date(i).Format("yyyy-MM-dd HH:mm:ss");
-        let date_end = new Date(i + stick*60*1000).Format("yyyy-MM-dd HH:mm:ss");
+        let date_start = new Date(i).Format("yyyy-MM-dd H:mm:ss");
+        let date_end = new Date(i + stick*60*1000).Format("yyyy-MM-dd H:mm:ss");
         extent.push([date_start,date_end]);
     }
     return extent;
@@ -91,12 +91,13 @@ function heatmap_chart(start,end,speed){
     let index = 0;
     let heatmap_interval = setInterval(function () {
         if(index<date_extent.length-1){
+            //console.log(date_extent[index]);
             heatmap(date_extent[index]);
         }
         else
             clearInterval(heatmap_interval);
         index++;
-    },1000);
+    },2000);
 
     function heatmap(date_extent) {
 
@@ -171,7 +172,6 @@ function heatmap_chart(start,end,speed){
             max: max_f2,
             data: points_f2
         };
-        console.log(heat_data_f1,heat_data_f2);
         heatmapInstance.setData(heat_data_f1);
         heatmapInstance_f2.setData(heat_data_f2);
     }
