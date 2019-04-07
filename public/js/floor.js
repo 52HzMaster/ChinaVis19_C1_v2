@@ -130,28 +130,28 @@ function initModel() {
         // scene.add(floor2_bottom);
 
         //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-        let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 10));
+        let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, 10));
         f1_areaMain.name = "area_main";
         f1_areaMain.material.color.set(colorScale['area_main']);
         f1_areaMain.material.transparent = true;
         f1_areaMain.material.needsUpdate = true;
         f1_areaMain.material.opacity = 0.5;
         f1_areaMain.position.x = 9;
-        f1_areaMain.position.y = 1.01;
+        f1_areaMain.position.y = 0.26;
         f1_areaMain.position.z = -1;
         scene.add(f1_areaMain);
 
     let f1_areaMain_edges = new THREE.BoxHelper(f1_areaMain, "#FFFFFF");//设置边框，可以旋转
     scene.add(f1_areaMain_edges);
 
-        let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 10));
+        let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 0.5, 10));
         f1_areaDisc.name = "area_disc";
         f1_areaDisc.material.color.set(colorScale['area_disc']);
         f1_areaDisc.material.transparent = true;
         f1_areaDisc.material.needsUpdate = true;
         f1_areaDisc.material.opacity = 0.5;
         f1_areaDisc.position.x = 2;
-        f1_areaDisc.position.y = 1.01;
+        f1_areaDisc.position.y = 0.26;
         f1_areaDisc.position.z = -1;
         scene.add(f1_areaDisc);
 
