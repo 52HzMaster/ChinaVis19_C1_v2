@@ -1,6 +1,8 @@
 # ChinaVis19_C1_v2
 ChinaVis19_C1_v2
 
+![image](https://github.com/52HzMaster/ChinaVis19_C1_v2/blob/master/public/img/floor1.jpg?raw=true)
+
 ## Task
 * camera 3D 2.5D 2D 
 ## Bug
