@@ -75,7 +75,7 @@ function initModel() {
     // scene.add(plane);
 
     let plane_pic = new THREE.BoxGeometry( 30, 0, 16 );
-    let texture = new THREE.TextureLoader().load("/img/floor1.jpg");
+    let texture = new THREE.TextureLoader().load("img/floor1.jpg");
     let plane_pic_material = new THREE.MeshBasicMaterial( { map:texture,transparent:true,opacity:0.5 } );
     let pic_box = new THREE.Mesh( plane_pic, plane_pic_material );
     scene.add(pic_box);

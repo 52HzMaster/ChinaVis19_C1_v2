@@ -1,34 +1,6 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-let colorScale = {"area_A":"#306bff","area_B":"#34a8ff","area_C":"#44caff","area_D":"#5afaff",
-    "area_canteen":"#ffd172",
-    "area_leisure":"#c8ff32",
-    "area_sign":"#ffb48f","area_poster":"#fff277",
-    "area_wc1":"#ffd2a6","area_wc2":"#ffd2a6","area_wc3":"#ffd2a6",
-    "area_room1":"#8409ff","area_room2":"#a143ff","area_room3":"#c180ff","area_room4":"#ccb1ff","area_room5":"#8409ff","area_room6":"#a143ff",
-    "area_ladder1":"#ff7e50","area_ladder2":"#ff7e50", "area_ladder3":"#ff7e50","area_ladder4":"#ff7e50",
-    "area_serve":"#ff6c22","area_disc":"#ff5821","area_main":"#306bff",
-    "area_in":"#16ff3c","area_out":"#ff2c31",
-    "area_other":"#c8c8c7"
-};
-
-Date.prototype.Format = function (fmt) {
-    let o = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "H+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
-    };
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (let k in o)
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
-};
-
 function date_slice(start,end,stick) {
     let extent = [];
     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
@@ -42,15 +14,15 @@ get_data();
 
 function get_data(){
 
-    let areas=["area_ladder1","area_ladder2","area_ladder3","area_ladder4"];
+    let areas=["area_room1","area_room2","area_room3","area_room4","area_room5","area_room6"];
     let stack_data = [];
-    let date_extent = [new Date("2019-01-01 7:00:00"), new Date("2019-01-01 18:10:00")];
+    let date_extent = [new Date("2019-01-03 7:00:00"), new Date("2019-01-03 13:10:00")];
     let nest = d3.nest()
         .key(function(d) { return d.area; });
 
     areas.forEach((area)=>{
         $.ajax({
-            url: "/day1_data_pro_area",    //请求的url地址
+            url: "/day3_data_area",    //请求的url地址
             dataType: "json",   //返回格式为json
             data:{area:area.toLocaleString()},
             async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -99,9 +71,11 @@ function get_data(){
 
 function stack_graph(data) {
 
+    let chart = $("#chart");
+
     let margin = {top: 40, right: 20, bottom: 40, left: 60},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom,
+        width = chart.width() - margin.left - margin.right,
+        height = chart.height() - margin.top - margin.bottom,
         lineheight = height;
 
     let yScaleStacked = d3.scale.linear().range([height, 0]),
@@ -134,14 +108,14 @@ function stack_graph(data) {
         .scaleExtent([1, 16])
         .on("zoom", zoomed);
 
-    let svg = d3.select("body").append("svg")
+    let svg = d3.select("#chart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .call(zoom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    let tooltip = d3.select("body")
+    let tooltip = d3.select("chart")
         .append("div")
         .attr("class", "label")
         .style("position", "absolute")
@@ -150,7 +124,7 @@ function stack_graph(data) {
         .style("top", "30px")
         .style("left", "55px");
 
-    let vertical = d3.select("body")
+    let vertical = d3.select("chart")
         .append("div")
         .attr("class", "remove")
         .style("position", "absolute")
@@ -250,9 +224,9 @@ function stack_graph(data) {
         .attr("transform", "translate(0," + (height+10) + ")")
         .call(xAxis);
 
-    d3.selectAll("input").on("change", change);
+    d3.selectAll(".multi_stacked").on("click", change);
 
-    let area_type = 'multiples';
+    let area_type = "multiples";
 
     function change() {
         if (this.value === "multiples") {
