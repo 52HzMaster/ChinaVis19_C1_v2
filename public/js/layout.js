@@ -22,7 +22,7 @@ let all_areas = [
     "area_other"
 ];
 
-let day_url = '/day1_data_pro';
+let day_url = '/day1_data';
 
 layout();
 

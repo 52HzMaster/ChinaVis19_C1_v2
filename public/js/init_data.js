@@ -16,6 +16,7 @@ function init_data() {
         },
         success: function (data, textStatus) {
 
+            //console.log(data);
             let nest = d3.nest().key((d)=>{
                 return d.floor;
             });
