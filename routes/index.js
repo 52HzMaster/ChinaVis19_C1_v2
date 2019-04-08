@@ -64,9 +64,9 @@ router.get('/day1_data_pro_id', function(req, res, next) {
         //查询数据
         //,area:{$ne:"area_other"},
         //             $and:[{area:{$ne:"area_ladder1"}},{area:{$ne:"area_ladder2"}},{area:{$ne:"area_ladder3"}},{area:{$ne:"area_ladder4"}}]}
-        collection.find({id:parseInt(req.query.id)}, {
+        collection.find({id:parseInt(req.query.id),area:{$ne:"area_other"}}, {
             "_id":0,
-            "sid":0
+            //"sid":0
         }).toArray(function(err, result) {
             if(err)
             {
