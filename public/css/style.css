@@ -54,8 +54,8 @@ canvas {
 }
 
 .grid{
-/*    stroke: rgba(85, 85, 85, 0.95);
-    stroke-width:1px;*/
+    stroke: rgba(85, 85, 85, 0.95);
+    stroke-width:1px;
 }
 
 .axis path,
