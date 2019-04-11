@@ -41,8 +41,25 @@ function test() {
         .y(function(d) { return d.x* gridSize_h + gridSize_h/2; })
         .interpolate("basis");
 
+    /*    ==========================================  ==============
+     linear - 线性插值
+     linear-closed - 线性插值，封闭起点和终点形成多边形
+     step - 步进插值，曲线只能沿x轴和y轴交替伸展
+     step-before - 步进插值，曲线只能沿y轴和x轴交替伸展
+     step-after - 同step
+     basis - B样条插值
+     basis-open - B样条插值，起点终点不相交
+     basis-closed - B样条插值，连接起点终点形成多边形
+     bundle - 基本等效于basis，除了有额外的tension参数用于拉直样条
+     cardinal - Cardina样条插值
+     cardinal-open - Cardina样条插值，起点终点不相交
+     cardinal-closed - Cardina样条插值，连接起点终点形成多边形
+     monotone - 立方插值，保留y方向的单调性
+     ====================================================================*/
+
     draw_floor();
     draw_area_f1();
+    //draw_area_f2();
 
     function draw_floor() {
         let floor1_cards = floor_g.selectAll(".grid")
@@ -80,6 +97,34 @@ function test() {
                 .attr("height", gridSize_h)
                 .style({
                     "fill":colorScale[area],
+                    "opacity":1
+                })
+                .on("mouseover",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":0.6});
+                })
+                .on("mouseout",function (d) {
+                    d3.select("."+area).selectAll('.grid').style({"opacity":1});
+                })
+                .on("click",function (d) {
+                })
+                .append("title")
+                .text(area);
+        });
+    }
+    function draw_area_f2() {
+        floor2_area.forEach((area)=>{
+            floor_svg.append("g").attr("class",""+area)
+                .selectAll(".grid")
+                .data(floor2_areas[area])
+                .enter()
+                .append("rect")
+                .attr("class", "grid")
+                .attr("x", function(d) { return d.y * gridSize_w; } )
+                .attr("y", function(d) { return d.x * gridSize_h; })
+                .attr("width", gridSize_w)
+                .attr("height", gridSize_h)
+                .style({
+                    "fill":colorScale[area],
                     "opacity":0.6
                 })
                 .on("mouseover",function (d) {
@@ -89,6 +134,7 @@ function test() {
                     d3.select("."+area).selectAll('.grid').style({"opacity":0.6});
                 })
                 .on("click",function (d) {
+                    area_graph(area);
                 })
                 .append("title")
                 .text(area);
@@ -122,14 +168,14 @@ function test() {
     let arrowMarker = defs.append("marker")
         .attr("id","arrow")
         .attr("markerUnits","strokeWidth")
-        .attr("markerWidth",12)
-        .attr("markerHeight",12)
+        .attr("markerWidth",8)
+        .attr("markerHeight",8)
         .attr("viewBox","0 0 12 12")
         .attr("refX",6)
         .attr("refY",6)
         .attr("orient","auto");
 
-    //绘制直线箭头
+    //绘制箭头
     let arrow_path = "M2,2 L10,6 L2,10 L6,6 L2,2";
     arrowMarker.append("path")
         .attr("d",arrow_path)
@@ -138,67 +184,196 @@ function test() {
             "opacity":0.7
         });
 
-    //==================================
+    let colorRange = ['#d7191c', '#fdae61', '#ffffbf', '#a6d96a', '#1a9641'] //['#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494']
 
-    /*    ==========================================  ==============
-     linear - 线性插值
-     linear-closed - 线性插值，封闭起点和终点形成多边形
-     step - 步进插值，曲线只能沿x轴和y轴交替伸展
-     step-before - 步进插值，曲线只能沿y轴和x轴交替伸展
-     step-after - 同step
-     basis - B样条插值
-     basis-open - B样条插值，起点终点不相交
-     basis-closed - B样条插值，连接起点终点形成多边形
-     bundle - 基本等效于basis，除了有额外的tension参数用于拉直样条
-     cardinal - Cardina样条插值
-     cardinal-open - Cardina样条插值，起点终点不相交
-     cardinal-closed - Cardina样条插值，连接起点终点形成多边形
-     monotone - 立方插值，保留y方向的单调性
-     ====================================================================*/
+    let color = d3.scale.linear().range(colorRange).domain([1, 2, 3, 4, 5]);
 
-    let lineGraph = path_g.append("path")
-    //.attr("d", line(data))
-        .attr("stroke", "#4aff3c")
-        .attr("stroke-width", 2)
-        .attr("fill", "none")
-        .attr("marker-start","url(#arrow)")
-        .attr("marker-mid","url(#arrow)")
-        .attr("marker-end","url(#arrow)");
+    //定义颜色
+    let color1 = d3.scale.category20();
 
 
-    function animation(data){
-        let trj = [],index=0;
-        let interval = setInterval(function () {
-            trj.push(data[index]);
-            index++;
-            if(index>data.length-1)
-                clearInterval(interval);
-            path_g.selectAll('path').attr('d',line(trj))
+    let linearGradient = floor_svg.append("defs")
+        .append("linearGradient")
+        .attr("id", "linear-gradient")
+        .attr("gradientTransform", "rotate(90)");
 
-        },200);
+    linearGradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", color(1));
+
+    linearGradient.append("stop")
+        .attr("offset", "25%")
+        .attr("stop-color", color(2));
+
+    linearGradient.append("stop")
+        .attr("offset", "50%")
+        .attr("stop-color", color(3));
+
+    linearGradient.append("stop")
+        .attr("offset", "75%")
+        .attr("stop-color", color(4));
+
+    linearGradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", color(5));
+
+    function draw_traj(data){
+
+        data.forEach((d,i)=>{
+            if(d.path){
+                let path_g = floor_svg.append("g");
+                let lineGraph = path_g.append("path")
+                    .attr("d", line(d.path,i))
+                    .attr("date",d.date)
+                    .attr("stroke-width", 2)
+                    .attr("fill", "none")
+                    .attr("marker-start","url(#arrow)")
+                    .attr("marker-mid","url(#arrow)")
+                    .attr("marker-end","url(#arrow)")
+                    //.attr("stroke", "url(#linear-gradient)")
+                    .attr("stroke", color1(i%20).toString())
+                // .on("mouseover",function () {
+                //     console.log(d3.select(this).attr("date"));
+                // });
+            }
+        });
     }
 
-    $.ajax({
-        url: day_url+"_id",    //请求的url地址
-        dataType: "json",   //返回格式为json
-        data: {
-            id:10001,
-            floor:1
-        },
-        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-        type: "GET",   //请求方式
-        contentType: "application/json",
-        beforeSend: function () {//请求前的处理
-        },
-        success: function (data, textStatus) {
-            console.log(data);
-            animation(data);
-        },
-        complete: function () {//请求完成的处理
-        },
-        error: function () {//请求出错处理
-        }
-    });
+    /*    $.ajax({
+     url: "/day1_id",    //请求的url地址
+     dataType: "json",   //返回格式为json
+     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+     type: "GET",   //请求方式
+     contentType: "application/json",
+     beforeSend: function () {//请求前的处理
+     },
+     success: function (data, textStatus) {
+     //console.log(data);
+     data.forEach((d)=>{
+     //traj_chart(d.id);
+     all_traj_chart(d.id)
+     });
+     },
+     complete: function () {//请求完成的处理
+     },
+     error: function () {//请求出错处理
+     }
+     });*/
+
+    function traj_chart(id) {
+        $.ajax({
+            url: day_url+"_id",    //请求的url地址
+            dataType: "json",   //返回格式为json
+            data: {
+                id:id,
+                floor:1
+            },
+            async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            contentType: "application/json",
+            beforeSend: function () {//请求前的处理
+            },
+            success: function (data, textStatus) {
+
+                let date_10min = [];
+                let date_extent = d3.extent(data,(d)=>new Date(d.date));
+                date_extent[0].setMinutes(0);
+                date_extent[0].setSeconds(0);
+
+                date_extent[1].setHours(date_extent[1].getHours()+1);
+                date_extent[1].setMinutes(0);
+                date_extent[1].setSeconds(0);
+
+                for(let i = date_extent[0].getTime();i<=date_extent[1].getTime();i+=3600000){
+                    date_10min.push({date:new Date(i),path:[]});
+                }
+
+                data.forEach((d)=>{
+                    d.date = new Date(d.date);
+                    for(let i=0;i<date_10min.length-1;i++) {
+                        if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime())) {
+                            date_10min[i].path.push([d.x,d.y]);
+                            break;
+                        }
+                    }
+                });
+                //console.log(date_10min);
+                draw_traj(date_10min);
+            },
+            complete: function () {//请求完成的处理
+            },
+            error: function () {//请求出错处理
+            }
+        });
+    }
+
+    all_traj_chart(16632);
+
+    function all_traj_chart(id) {
+        $.ajax({
+            url: day_url+"_id",    //请求的url地址
+            dataType: "json",   //返回格式为json
+            data: {
+                id:id,
+                floor:1
+            },
+            async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            contentType: "application/json",
+            beforeSend: function () {//请求前的处理
+            },
+            success: function (data, textStatus) {
+                console.log(data);
+                data.sort(function (a,b) {
+                    return a.date-b.date;
+                });
+                draw_all_traj(data,id);
+            },
+            complete: function () {//请求完成的处理
+            },
+            error: function () {//请求出错处理
+            }
+        });
+    }
+    function draw_all_traj(data,id){
+
+        /*floor_svg.append("path")
+            .attr("d", line(data))
+            .attr("stroke-width", 2)
+            .attr("id",""+id)
+            .attr("fill", "none")
+            .attr("marker-start","url(#arrow)")
+            .attr("marker-mid","url(#arrow)")
+            .attr("marker-end","url(#arrow)")
+            .attr("stroke", "#FFFFFF")
+            .style({
+                "opacity":0.2
+            })
+            // .attr("stroke", color1(i%20).toString())
+            .on("mouseover",function () {
+                console.log(d3.select(this).attr("id"));
+            });*/
+
+        let traj =[], index=0;
+        let interval = setInterval(function () {
+
+            if(index>=data.length-1)
+                clearInterval(interval);
+
+            traj.push(data[index]);
+
+            floor_svg.append("path")
+                .attr("d", line(traj))
+                .attr("stroke-width", 2)
+                .attr("fill", "none")
+                .attr("marker-start","url(#arrow)")
+                .attr("marker-mid","url(#arrow)")
+                .attr("marker-end","url(#arrow)")
+                .attr("stroke", "url(#linear-gradient)");
+
+            index++;
+        },200);
+    }
 
     function remove_element(arr) {
 
