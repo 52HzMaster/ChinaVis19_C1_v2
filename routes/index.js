@@ -72,7 +72,9 @@ router.get('/day1_pro_id', function(req, res, next) {
             'id':0,
             'sid':0,
             'floor':0,
-            // "stay":0,
+            "stay":0,
+            "x":0,
+            "y":0
             //"area":0,
             // "date":0
         }).toArray(function(err, result) {
@@ -180,7 +182,7 @@ router.get('/day2_data_id', function(req, res, next) {
         //连接到表
         let collection = db.collection('day2_data');
         //查询数据
-        collection.find({id:req.query.id,area:{$ne:"area_other"}},{
+        collection.find({id:req.query.id},{
             "_id":0
         }).toArray(function(err, result) {
             if(err)

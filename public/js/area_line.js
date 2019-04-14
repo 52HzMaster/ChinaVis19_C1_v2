@@ -21,7 +21,7 @@ area_line.x_axis = d3.svg.axis()
     .tickFormat(d3.time.format("%H:%M"));
 //.ticks(20);
 
-area_graph("area_in");
+//area_graph("area_main");
 
 function area_graph(condition){
     $.ajax({
@@ -34,8 +34,14 @@ function area_graph(condition){
         beforeSend: function () {//请求前的处理
         },
         success: function (data, textStatus) {
+            console.log(data);
+            let main_id = [];
+            let nest_id = d3.nest().key((d)=>d.id);
 
-            if(data.length){
+            main_id = nest_id.entries(data);
+
+            console.log(main_id);
+/*            if(data.length){
                 let date_10min= [];
 
                 let date_extent = d3.extent(data,(d)=>{
@@ -64,7 +70,7 @@ function area_graph(condition){
                     }
                 });
                 area_chart(date_10min,condition);
-            }
+            }*/
         },
         complete: function () {//请求完成的处理
         },
