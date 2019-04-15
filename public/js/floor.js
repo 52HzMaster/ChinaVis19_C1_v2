@@ -217,11 +217,11 @@ function onHover( event ) {
 //document.getElementById('floor').addEventListener('mousemove',onHover,false);
 
 //初始化性能插件
-let stats;
+/*let stats;
 function initStats() {
     stats = new Stats();
     document.getElementById("floor").appendChild(stats.dom);
-}
+}*/
 
 //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
 

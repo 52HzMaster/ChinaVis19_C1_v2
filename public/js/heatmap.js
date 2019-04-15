@@ -1,9 +1,9 @@
 
 
 
-let floor = $("#mini_floor");
+let floor = $("#all_view");
 
-d3.select("#mini_floor").append("div")
+d3.select("#all_view").append("div")
     .attr("id","heatmap")
     .style({
         "width":floor.width()+'px',
@@ -13,7 +13,7 @@ d3.select("#mini_floor").append("div")
         //"display":"none"
     });
 
-d3.select("#mini_floor").append("div")
+d3.select("#all_view").append("div")
     .attr("id","heatmap_f2")
     .style({
         "width":floor.width()+'px',
@@ -82,10 +82,10 @@ function heatmap_chart(start,end,speed){
             clearInterval(heatmap_interval);
         index++;
     },2000);
-
+    //heatmap(date_extent[0]);
     function heatmap(date_extent) {
 
-        //console.log(date_extent);
+        console.log(date_extent);
 
         d3.select("#heatmap_time").select("a").text(new Date(date_extent[1]).Format("HH:mm:ss"));
 
@@ -121,6 +121,8 @@ function heatmap_chart(start,end,speed){
 
     function area_heatmap(data) {
 
+        console.log(data);
+
         let points_f1 = [];
         let points_f2 = [];
 
@@ -133,7 +135,7 @@ function heatmap_chart(start,end,speed){
             let x = d3.select("#sensor_"+d.key).attr("x");
             let y = d3.select("#sensor_"+d.key).attr("y");
 
-            if(floor === '1')
+            if(floor === 1)
                 max_f1 = (max_f1 > d.values.length)?max_f1:d.values.length;
             else
                 max_f2 = (max_f2 > d.values.length)?max_f2:d.values.length;

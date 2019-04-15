@@ -101,8 +101,12 @@ router.get('/day1_pro_date', function(req, res, next) {
         //连接到表
         let collection = db.collection('day1_pro');
         //查询数据
-        console.log(req.query.date_start,req.query.date_end);
-        collection.find({date:{$gte:req.query.date_start,$lte:req.query.date_end}},{
+        let start = new Date(req.query.date_start);
+        start.setHours(start.getHours()+8)
+        let end = new Date(req.query.date_end);
+        end.setHours(end.getHours()+8)
+        console.log(start,end);
+        collection.find({date:{$gte:start,$lte:end}},{
             "_id":0
         }).toArray(function(err, result) {
             if(err)

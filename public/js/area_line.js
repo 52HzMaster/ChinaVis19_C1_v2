@@ -62,13 +62,13 @@ function area_graph(condition){
 
                 data.forEach((d)=>{
                     for(let i=0;i<date_10min.length-1;i++) {
-                        if((d.date.getTime()>date_10min[i].date.getTime())&&(d.date.getTime()<date_10min[i+1].date.getTime())) {
+                        if((d.date.getTime()<=date_10min[i+1].date.getTime())) {
                             date_10min[i].value++;
                             break;
                         }
-
                     }
                 });
+
                 area_chart(date_10min,condition);
             }*/
         },
@@ -83,9 +83,9 @@ function area_chart(data,condition) {
 
     d3.select("#area_line").select('svg').html("");
 
-    data.forEach((d)=>{
-        d.value += d.value ;
-    });
+    // data.forEach((d)=>{
+    //     d.value += d.value ;
+    // });
 
     let date_extent = d3.extent(data,(d)=>{
         return d.date;

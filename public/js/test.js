@@ -337,25 +337,25 @@ function test() {
          console.log(d3.select(this).attr("id"));
          });*/
 
-        let traj =[], index=0;
-        let interval = setInterval(function () {
-
-            if(index>=data.length-1)
-                clearInterval(interval);
-
-            traj.push(data[index]);
-
-            floor_svg.append("path")
-                .attr("d", line(traj))
-                .attr("stroke-width", 2)
-                .attr("fill", "none")
-                .attr("marker-start","url(#arrow)")
-                .attr("marker-mid","url(#arrow)")
-                .attr("marker-end","url(#arrow)")
-                .attr("stroke", "#FFFFFF");
-
-            index++;
-        },100);
+        // let traj =[], index=0;
+        // let interval = setInterval(function () {
+        //
+        //     if(index>=data.length-1)
+        //         clearInterval(interval);
+        //
+        //     traj.push(data[index]);
+        //
+        //     floor_svg.append("path")
+        //         .attr("d", line(traj))
+        //         .attr("stroke-width", 2)
+        //         .attr("fill", "none")
+        //         .attr("marker-start","url(#arrow)")
+        //         .attr("marker-mid","url(#arrow)")
+        //         .attr("marker-end","url(#arrow)")
+        //         .attr("stroke", "#FFFFFF");
+        //
+        //     index++;
+        // },100);
 
     function remove_element(arr) {
 
@@ -372,82 +372,67 @@ function test() {
 
 }
 
+    function date_slice(start,end,stick) {
+        let extent = [];
+
+        for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
+            let date_start = new Date(i);
+            let date_end = new Date(i + stick*60*1000);
+            extent.push([date_start,date_end]);
+        }
+        return extent;
+    }
+
+    let date_extent = date_slice("2019-01-01 8:00:00","2019-01-01 13:00:00",10);
+
     let main = [];
     let main_num =[];
 
-    $.ajax({
-        url: day_url+"_date",    //请求的url地址
-        dataType: "json",   //返回格式为json
-        data: {
-            date_start: "2019-01-01 07:00:00",
-            date_end: "2019-01-01 12:40:00"
-        },
-        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-        type: "GET",   //请求方式
-        contentType: "application/json",
-        beforeSend: function () {//请求前的处理
-        },
-        success: function (data, textStatus) {
-            //console.log(data);
-            data.forEach((d,i)=>{
-                d.date = new Date(d.date);
-                if(d.area === 'area_main') {
-                    if( main.indexOf(d.id) === -1){
-                        main.push(d.id);
-                    }
-                }
-                else {
-                    if( main.indexOf(d.id) !== -1){
-                        main.splice(main.indexOf(d.id),1);
-                    }
-                }
-                main_num.push({date:d.date,value:main.length});
-            });
-
-            console.log(main_num);
-            area_chart(main_num,"area_main")
-        },
-        complete: function () {//请求完成的处理
-        },
-        error: function () {//请求出错处理
-        }
-    });
-
-    function main_counter(id) {
+    date_extent.forEach((date,index)=>{
         $.ajax({
-            url: "/day1_pro_id",    //请求的url地址
-            data:{id:id,floor:1},
+            url: day_url+"_date",    //请求的url地址
             dataType: "json",   //返回格式为json
-            async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+            data: {
+                date_start: date[0],
+                date_end: date[1]
+            },
+            async: false, //请求是否异步，默认为异步，这也是ajax重要特性
             type: "GET",   //请求方式
             contentType: "application/json",
             beforeSend: function () {//请求前的处理
             },
             success: function (data, textStatus) {
                 //console.log(data);
-                let test = [];
-                for(let i=0;i<data.length-1;i++){
-                    test.push({source:data[i].area,target:data[i+1].area,date:data[i+1].date});
-                }
-                test.forEach((d)=>{
-                    if(d.source !== 'area_main' && d.target === 'area_main'){
-                        //console.log(d);
-                        main_num++;
+                data.forEach((d,i)=>{
+                    d.date = new Date(d.date);
+                    d.date.setHours(d.date.getHours()-8);
+                    if(d.area === 'area_main') {
+                        if( main.indexOf(d.id) === -1){
+                            main.push(d.id);
+                        }
                     }
-                    if(d.source === 'area_main' && d.target !== 'area_main'){
-                        //console.log(d);
-                        main_num--;
+                    else {
+                        if( main.indexOf(d.id) !== -1){
+                            main.splice(main.indexOf(d.id),1);
+                        }
                     }
                 });
-                console.log(main_num);
+                main_num.push({date:date[1],value:main.length});
+                if(index === date_extent.length-1){
+                    console.log(main_num);
+                    main_num.sort(function (a,b) {
+                        return a.date.getTime() - b.date.getTime();
+                    });
+                    area_chart(main_num,"area_main");
+                }
+
             },
             complete: function () {//请求完成的处理
             },
             error: function () {//请求出错处理
             }
         });
-    }
-
+    });
 
 
 }
