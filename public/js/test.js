@@ -383,14 +383,14 @@ function test() {
         return extent;
     }
 
-    let date_extent = date_slice("2019-01-01 8:00:00","2019-01-01 13:00:00",10);
+    let date_extent = date_slice("2019-01-02 13:00:00","2019-01-02 18:00:00",10);
 
     let main = [];
     let main_num =[];
 
     date_extent.forEach((date,index)=>{
         $.ajax({
-            url: day_url+"_date",    //请求的url地址
+            url: "day2_pro_date",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 date_start: date[0],
@@ -406,7 +406,7 @@ function test() {
                 data.forEach((d,i)=>{
                     d.date = new Date(d.date);
                     d.date.setHours(d.date.getHours()-8);
-                    if(d.area === 'area_main') {
+                    if(d.area === 'area_D') {
                         if( main.indexOf(d.id) === -1){
                             main.push(d.id);
                         }
@@ -423,7 +423,7 @@ function test() {
                     main_num.sort(function (a,b) {
                         return a.date.getTime() - b.date.getTime();
                     });
-                    area_chart(main_num,"area_main");
+                    area_chart(main_num,"area_D");
                 }
 
             },

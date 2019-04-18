@@ -110,7 +110,7 @@ function area_chart(data,condition) {
     area_line.svg.call(zoom);
 
     let area = d3.svg.area()
-        .interpolate("basis")
+        .interpolate("basis-open")
         .x(function (d) {
             return area_line.x_scale(d.date);
         })
