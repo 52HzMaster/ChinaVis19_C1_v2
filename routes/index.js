@@ -72,8 +72,6 @@ router.get('/day1_pro_id', function(req, res, next) {
             'sid':0,
             'floor':0,
             "stay":0,
-            "x":0,
-            "y":0
             //"area":0,
             // "date":0
         }).toArray(function(err, result) {
@@ -182,7 +180,7 @@ router.get('/day2_pro_id', function(req, res, next) {
 
     let selectData = function(db, callback) {
         //连接到表
-        let collection = db.collection('day1_pro');
+        let collection = db.collection('day2_pro');
         console.log(req.query.id,req.query.floor);
         //查询数据
         //,area:{$ne:"area_other"},
@@ -194,8 +192,6 @@ router.get('/day2_pro_id', function(req, res, next) {
             'sid':0,
             'floor':0,
             "stay":0,
-            "x":0,
-            "y":0
             //"area":0,
             // "date":0
         }).toArray(function(err, result) {
@@ -316,8 +312,6 @@ router.get('/day3_pro_id', function(req, res, next) {
             'sid':0,
             'floor':0,
             "stay":0,
-            "x":0,
-            "y":0
             //"area":0,
             // "date":0
         }).toArray(function(err, result) {
@@ -402,6 +396,58 @@ router.get('/day1_id', function(req, res, next) {
     let selectData = function(db, callback) {
         //连接到表
         let collection = db.collection('day1_id');
+        //查询数据
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+router.get('/day2_id', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day2_id');
+        //查询数据
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+router.get('/day3_id', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day3_id');
         //查询数据
         collection.find({},{
             "_id":0

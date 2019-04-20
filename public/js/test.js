@@ -21,28 +21,45 @@ function test() {
             floor_data.push({x: i, y: j});
 
 
-    // let floor_svg = d3.select("#all_view")
-    //     .append("svg")
-    //     .attr("id", "floor_svg")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    //     .style({
-    //         "position": "absolute",
-    //         //'left':"100px"
-    //         "background": "#8f8f8f",
-    //         "opacity": 0.6
-    //     });
-    //
-    // let floor_g = floor_svg.append("g");
+    let floor_svg = d3.select("#all_view")
+        .append("svg")
+        .attr("id", "floor_svg")
+        .attr("width", width)
+        .attr("height", height)
+        .style({
+            "position": "absolute",
+            //'left':"100px"
+            "background": "#8f8f8f",
+            "opacity": 0.6
+        });
+
+    let legend_svg = d3.select("#all_view")
+        .append('svg')
+        .attr("id",'legend')
+        .attr("height",90)
+        .attr("width",width)
+        .style({
+            "position": "absolute",
+            'bottom':0,
+            "background": "#8f8f8f",
+            "opacity": 0.6
+        });
+
+    let floor_g = floor_svg.append("g");
+    let legend_g = legend_svg.append("g");
 
     let line = d3.svg.line()
         .x(function (d) {
-            return d.y * gridSize_w + gridSize_w / 2;
+            return d[1] * gridSize_w + gridSize_w / 2;
+            //return d.y * gridSize_w + gridSize_w / 2;
         })
         .y(function (d) {
-            return d.x * gridSize_h + gridSize_h / 2;
+            return d[0] * gridSize_h + gridSize_h / 2;
+            //return d.x * gridSize_h + gridSize_h / 2;
         })
-        .interpolate("basis-open");
+        .interpolate("basis");
+        //.interpolate("bundle")
+        //.tension(.7);
 
     /*    ==========================================  ==============
      linear - 线性插值
@@ -60,8 +77,8 @@ function test() {
      monotone - 立方插值，保留y方向的单调性
      ====================================================================*/
 
-    //draw_floor();
-    //draw_area_f1();
+    draw_floor();
+    draw_area_f1();
     //draw_area_f2();
 
     function draw_floor() {
@@ -105,7 +122,7 @@ function test() {
                 .attr("height", gridSize_h)
                 .style({
                     "fill": colorScale[area],
-                    "opacity": 1
+                    "opacity": 0.2
                 })
                 .on("mouseover", function (d) {
                     d3.select("." + area).selectAll('.grid').style({"opacity": 0.6});
@@ -139,7 +156,7 @@ function test() {
                 .attr("height", gridSize_h)
                 .style({
                     "fill": colorScale[area],
-                    "opacity": 0.6
+                    "opacity": 0.2
                 })
                 .on("mouseover", function (d) {
                     d3.select("." + area).selectAll('.grid').style({"opacity": 1});
@@ -177,74 +194,50 @@ function test() {
             });
     }
 
-    // //添加defs标签
-    // let defs = floor_svg.append("defs");
-    // //添加marker标签及其属性
-    // let arrowMarker = defs.append("marker")
-    //     .attr("id", "arrow")
-    //     .attr("markerUnits", "strokeWidth")
-    //     .attr("markerWidth", 8)
-    //     .attr("markerHeight", 8)
-    //     .attr("viewBox", "0 0 12 12")
-    //     .attr("refX", 6)
-    //     .attr("refY", 6)
-    //     .attr("orient", "auto");
-    //
-    // //绘制箭头
-    // let arrow_path = "M2,2 L10,6 L2,10 L6,6 L2,2";
-    // arrowMarker.append("path")
-    //     .attr("d", arrow_path)
-    //     .attr("fill", "#ff7e50")
-    //     .style({
-    //         "opacity": 0.7
-    //     });
+    //添加defs标签
+    let defs = floor_svg.append("defs");
+    //添加marker标签及其属性
+    let arrowMarker = defs.append("marker")
+        .attr("id", "arrow")
+        .attr("markerUnits", "strokeWidth")
+        .attr("markerWidth", 8)
+        .attr("markerHeight", 8)
+        .attr("viewBox", "0 0 12 12")
+        .attr("refX", 6)
+        .attr("refY", 6)
+        .attr("orient", "auto");
 
-    function draw_traj(data) {
+    //绘制箭头
+    let arrow_path = "M2,2 L10,6 L2,10 L6,6 L2,2";
+    arrowMarker.append("path")
+        .attr("d", arrow_path)
+        .attr("fill", "#ffe730");
 
-        data.forEach((d, i) => {
-            if (d.path) {
-                let path_g = floor_svg.append("g");
-                let lineGraph = path_g.append("path")
-                    .attr("d", line(d.path, i))
-                    .attr("date", d.date)
-                    .attr("stroke-width", 2)
-                    .attr("fill", "none")
-                    .attr("marker-start", "url(#arrow)")
-                    .attr("marker-mid", "url(#arrow)")
-                    .attr("marker-end", "url(#arrow)")
-                    //.attr("stroke", "url(#linear-gradient)")
-                    .attr("stroke", color1(i % 20).toString())
-                // .on("mouseover",function () {
-                //     console.log(d3.select(this).attr("date"));
-                // });
-            }
-        });
-    }
-
-    // $.ajax({
-    //     url: "/day1_id",    //请求的url地址
-    //     dataType: "json",   //返回格式为json
-    //     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-    //     type: "GET",   //请求方式
-    //     contentType: "application/json",
-    //     beforeSend: function () {//请求前的处理
-    //     },
-    //     success: function (data, textStatus) {
-    //         //console.log(data);
-    //         data.forEach((d) => {
-    //             //traj_chart(d.id);
-    //             all_traj_chart(d.id)
-    //         });
-    //     },
-    //     complete: function () {//请求完成的处理
-    //     },
-    //     error: function () {//请求出错处理
-    //     }
-    // });
+   /* $.ajax({
+        url: "/day3_id",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
+            //console.log(data);
+            data.forEach((d) => {
+               // if(!(d.id === 16632 || d.id === 16323))
+                    traj_chart(d.id);
+                //all_traj_chart(d.id)
+            });
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });*/
 
     function traj_chart(id) {
         $.ajax({
-            url: day_url + "_id",    //请求的url地址
+            url: "day3_pro_id",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 id: id,
@@ -256,9 +249,34 @@ function test() {
             beforeSend: function () {//请求前的处理
             },
             success: function (data, textStatus) {
+/*                console.log(data);
+                let arr1 =[],arr2 =[];
+                arr1.push(data[0]);
+                for(let i =1;i<data.length;i++){
+                    if(dis([arr1[arr1.length-1].x,arr1[arr1.length-1].y],[data[i].x,data[i].y])>2){
+                        arr2.push(data[i]);
+                    }
+                    else{
+                        arr1.push(data[i]);
+                    }
+                }
 
-                let date_10min = [];
-                let date_extent = d3.extent(data, (d) => new Date(d.date));
+                console.log(arr1,arr2);
+
+                function dis(p1,p2) {
+                    let x = Math.abs(p1[0]-p2[0]);
+                    let y = Math.abs(p1[1]-p2[1]);
+                    return Math.sqrt(x*x + y*y);
+                }
+
+                draw_all_traj(arr1, 16632);*/
+                if(!data) return;
+                let date_data = [];
+                let date_extent = d3.extent(data, (d) => {
+                    d.date = new Date(d.date);
+                    d.date.setHours(d.date.getHours()-8);
+                    return d.date;
+                });
                 date_extent[0].setMinutes(0);
                 date_extent[0].setSeconds(0);
 
@@ -266,21 +284,19 @@ function test() {
                 date_extent[1].setMinutes(0);
                 date_extent[1].setSeconds(0);
 
-                for (let i = date_extent[0].getTime(); i <= date_extent[1].getTime(); i += 3600000) {
-                    date_10min.push({date: new Date(i), path: []});
+                for (let i = date_extent[0].getTime(); i <= date_extent[1].getTime(); i += 1800000) {
+                    date_data.push({date: new Date(i), path: []});
                 }
 
                 data.forEach((d) => {
-                    d.date = new Date(d.date);
-                    for (let i = 0; i < date_10min.length - 1; i++) {
-                        if ((d.date.getTime() > date_10min[i].date.getTime()) && (d.date.getTime() < date_10min[i + 1].date.getTime())) {
-                            date_10min[i].path.push([d.x, d.y]);
+                    for (let i = 0; i < date_data.length; i++) {
+                        if ((d.date.getTime() >= date_data[i].date.getTime()) && (d.date.getTime() <= date_data[i + 1].date.getTime())) {
+                            date_data[i].path.push([d.x, d.y]);
                             break;
                         }
                     }
                 });
-                //console.log(date_10min);
-                draw_traj(date_10min);
+                draw_traj(date_data,id);
             },
             complete: function () {//请求完成的处理
             },
@@ -289,7 +305,54 @@ function test() {
         });
     }
 
-    //all_traj_chart(16632);
+    let date_data =[]
+
+    for (let i = new Date("2019-01-03 08:00:00").getTime(); i <= new Date("2019-01-03 13:00:00").getTime(); i += 1800000) {
+        date_data.push(new Date(i));
+    }
+
+    let linear = d3.scale.linear()
+        .domain(d3.extent(date_data,(d)=>d))
+        .range([0,date_data.length]);
+
+    let color = d3.scale.category10();
+
+    let flag = true;
+
+    legend_g.selectAll(".legend_rect")
+        .data(date_data)
+        .enter()
+        .append("rect")
+        .attr("x",(d,i)=>400+i*100)
+        .attr("y",(d,i)=>45)
+        .attr("width",100)
+        .attr("height",5)
+        .on("click",function (d) {
+
+            flag =!flag;
+            if(flag){
+                d3.selectAll(".traj_"+formatTime(d)).style({opacity:0.1});
+                d3.selectAll(".traj_"+formatTime(d)).attr("stroke-width",1);
+            }
+            else{
+                d3.selectAll(".traj_"+formatTime(d)).style({opacity:1});
+                d3.selectAll(".traj_"+formatTime(d)).attr("stroke-width",2);
+            }
+
+        })
+        .style({
+            "fill":(d)=>color(linear(d)).toString()
+        });
+
+    let formatTime = d3.time.format("%H-%M");
+
+    legend_g.selectAll(".label")
+        .data(date_data)
+        .enter()
+        .append("text")
+        .attr("x",(d,i)=>400+i*100)
+        .attr("y",(d,i)=>45)
+        .text((d)=>formatTime(d));
 
     function all_traj_chart(id) {
         $.ajax({
@@ -318,24 +381,49 @@ function test() {
         });
     }
 
+    function draw_traj(data,id) {
+
+        data.forEach((d, i) => {
+            if (d.path) {
+                //console.log(linear(d.date));
+                let path_g = floor_svg.append("g");
+                let lineGraph = path_g.append("path")
+                    .attr("d", line(d.path))
+                    .attr("id", id+"_"+i)
+                    .attr("class","traj_"+formatTime(d.date))
+                    .attr("stroke-width", 1)
+                    .attr("opacity",0.1)
+                    .attr("fill", "none")
+                    //.attr("marker-start", "url(#arrow)")
+                    //.attr("marker-mid", "url(#arrow)")
+                    //.attr("marker-end", "url(#arrow)")
+                    //.attr("stroke", "url(#linear-gradient)")
+                    .attr("stroke", color(linear(d.date)).toString())
+                    .on("mouseover",function () {
+                    console.log(d3.select(this).attr("id"));
+                });
+            }
+        });
+    }
+
     function draw_all_traj(data, id) {
 
-        /*floor_svg.append("path")
+        floor_svg.append("path")
          .attr("d", line(data))
          .attr("stroke-width", 2)
          .attr("id",""+id)
          .attr("fill", "none")
          .attr("marker-start","url(#arrow)")
-         .attr("marker-mid","url(#arrow)")
+         //.attr("marker-mid","url(#arrow)")
          .attr("marker-end","url(#arrow)")
          .attr("stroke", "#FFFFFF")
          .style({
-         "opacity":0.2
+         "opacity":0.4
          })
          // .attr("stroke", color1(i%20).toString())
          .on("mouseover",function () {
          console.log(d3.select(this).attr("id"));
-         });*/
+         });
 
         // let traj =[], index=0;
         // let interval = setInterval(function () {
@@ -372,67 +460,67 @@ function test() {
 
 }
 
-    function date_slice(start,end,stick) {
-        let extent = [];
-
-        for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
-            let date_start = new Date(i);
-            let date_end = new Date(i + stick*60*1000);
-            extent.push([date_start,date_end]);
-        }
-        return extent;
-    }
-
-    let date_extent = date_slice("2019-01-02 13:00:00","2019-01-02 18:00:00",10);
-
-    let main = [];
-    let main_num =[];
-
-    date_extent.forEach((date,index)=>{
-        $.ajax({
-            url: "day2_pro_date",    //请求的url地址
-            dataType: "json",   //返回格式为json
-            data: {
-                date_start: date[0],
-                date_end: date[1]
-            },
-            async: false, //请求是否异步，默认为异步，这也是ajax重要特性
-            type: "GET",   //请求方式
-            contentType: "application/json",
-            beforeSend: function () {//请求前的处理
-            },
-            success: function (data, textStatus) {
-                //console.log(data);
-                data.forEach((d,i)=>{
-                    d.date = new Date(d.date);
-                    d.date.setHours(d.date.getHours()-8);
-                    if(d.area === 'area_D') {
-                        if( main.indexOf(d.id) === -1){
-                            main.push(d.id);
-                        }
-                    }
-                    else {
-                        if( main.indexOf(d.id) !== -1){
-                            main.splice(main.indexOf(d.id),1);
-                        }
-                    }
-                });
-                main_num.push({date:date[1],value:main.length});
-                if(index === date_extent.length-1){
-                    console.log(main_num);
-                    main_num.sort(function (a,b) {
-                        return a.date.getTime() - b.date.getTime();
-                    });
-                    area_chart(main_num,"area_D");
-                }
-
-            },
-            complete: function () {//请求完成的处理
-            },
-            error: function () {//请求出错处理
-            }
-        });
-    });
+    // function date_slice(start,end,stick) {
+    //     let extent = [];
+    //
+    //     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
+    //         let date_start = new Date(i);
+    //         let date_end = new Date(i + stick*60*1000);
+    //         extent.push([date_start,date_end]);
+    //     }
+    //     return extent;
+    // }
+    //
+    // let date_extent = date_slice("2019-01-02 13:00:00","2019-01-02 18:00:00",10);
+    //
+    // let main = [];
+    // let main_num =[];
+    //
+    // date_extent.forEach((date,index)=>{
+    //     $.ajax({
+    //         url: "day2_pro_date",    //请求的url地址
+    //         dataType: "json",   //返回格式为json
+    //         data: {
+    //             date_start: date[0],
+    //             date_end: date[1]
+    //         },
+    //         async: false, //请求是否异步，默认为异步，这也是ajax重要特性
+    //         type: "GET",   //请求方式
+    //         contentType: "application/json",
+    //         beforeSend: function () {//请求前的处理
+    //         },
+    //         success: function (data, textStatus) {
+    //             //console.log(data);
+    //             data.forEach((d,i)=>{
+    //                 d.date = new Date(d.date);
+    //                 d.date.setHours(d.date.getHours()-8);
+    //                 if(d.area === 'area_D') {
+    //                     if( main.indexOf(d.id) === -1){
+    //                         main.push(d.id);
+    //                     }
+    //                 }
+    //                 else {
+    //                     if( main.indexOf(d.id) !== -1){
+    //                         main.splice(main.indexOf(d.id),1);
+    //                     }
+    //                 }
+    //             });
+    //             main_num.push({date:date[1],value:main.length});
+    //             if(index === date_extent.length-1){
+    //                 console.log(main_num);
+    //                 main_num.sort(function (a,b) {
+    //                     return a.date.getTime() - b.date.getTime();
+    //                 });
+    //                 area_chart(main_num,"area_D");
+    //             }
+    //
+    //         },
+    //         complete: function () {//请求完成的处理
+    //         },
+    //         error: function () {//请求出错处理
+    //         }
+    //     });
+    // });
 
 
 }
