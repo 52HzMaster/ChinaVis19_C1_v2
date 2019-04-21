@@ -6,12 +6,35 @@
     <!--JavaScript Lib-->
     <script src="lib/jquery-3.1.1.min.js"></script>
     <script src="lib/d3.min.js"></script>
-    <script src="lib/heatmap.min.js"></script>
-    <script src="lib/three.min.js"></script>
-    <script src="lib//OrbitControls.js"></script>
-    <script src="lib/stats.min.js"></script>
+    <!--<script src="lib/heatmap.min.js"></script>-->
+    <!--<script src="lib/three.min.js"></script>-->
+    <!--<script src="lib//OrbitControls.js"></script>-->
+    <!--<script src="lib/stats.min.js"></script>-->
     <script src="lib/sankey.js"></script>
-    <style></style>
+    <style>
+
+        .node rect {
+            cursor: move;
+            fill-opacity: .9;
+            shape-rendering: crispEdges;
+        }
+
+        .node text {
+            pointer-events: none;
+            text-shadow: 0 1px 0 #fff;
+        }
+
+        .link {
+            fill: none;
+            stroke: #000;
+            stroke-opacity: .2;
+        }
+
+        .link:hover {
+            stroke-opacity: .5;
+        }
+
+    </style>
 
 </head>
 <body>
@@ -38,12 +61,13 @@
 <link rel="stylesheet" href="css/style.css">
 <script src="js/layout.js"></script>
 <!--<script src="js/init_data.js"></script>-->
-<script src="js/area_line.js"></script>
+<!--<script src="js/area_line.js"></script>-->
 <!--<script src="js/class_block.js"></script>-->
 <!--<script src="js/main.js"></script>-->
 <!--<script src="js/heatmap.js"></script>-->
 <!--<script src="js/floor.js"></script>-->
-<script src="js/test.js"></script>
+<!--<script src="js/test.js"></script>-->
+<script src="js/sankey.js"></script>
 <!--<script src="js/stream_chart.js"></script>-->
 
 <script>

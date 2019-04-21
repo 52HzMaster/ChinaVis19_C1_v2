@@ -444,20 +444,6 @@ function test() {
         //
         //     index++;
         // },100);
-
-    function remove_element(arr) {
-
-        let data = [];
-        data.push(arr[0]);
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i].area === data[data.length - 1].area) {
-            }
-            else
-                data.push(arr[i]);
-        }
-        return data;
-    }
-
 }
 
     // function date_slice(start,end,stick) {
