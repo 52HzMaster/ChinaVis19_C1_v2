@@ -10,8 +10,14 @@ router.get('/day1_pro', function(req, res, next) {
         //连接到表
         let collection = db.collection('day1_pro');
         //查询数据
-        collection.find({}, {
-            "_id": 0
+        collection.find({area:{$ne:"area_other"},
+            $and:[{area:{$ne:"area_ladder1"}},{area:{$ne:"area_ladder2"}},{area:{$ne:"area_ladder3"}},{area:{$ne:"area_ladder4"}}]}, {
+            "_id": 0,
+            'sid':0,
+            'floor':0,
+            "stay":0,
+            "x":0,
+            "y":0
         }).toArray(function (err, result) {
             if (err) {
                 console.log('Error:' + err);
@@ -133,7 +139,7 @@ router.get('/day2_pro', function(req, res, next) {
         let collection = db.collection('day2_pro');
         //查询数据
         collection.find({}, {
-            "_id": 0
+            "_id": 0,
         }).toArray(function (err, result) {
             if (err) {
                 console.log('Error:' + err);

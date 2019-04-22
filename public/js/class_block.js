@@ -44,29 +44,6 @@ function all_id_block(all_id) {
             }
         });
     });
-
-    all_id_data.forEach(function (data,i) {
-        all_id_data[i] = format(data);
-    });
-
-    //class_block(all_id_data);
-    stack_bar();
-}
-
-function format(data) {
-    let new_data =[data[0]];
-    data.forEach(function (d) {
-        if(d.area === new_data[new_data.length-1].area){
-            new_data[new_data.length-1].stay += d.stay;
-        }
-        else
-            new_data.push(d);
-    });
-    return new_data;
-}
-
-function stack_bar() {
-
 }
 
 function class_block(data) {

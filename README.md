@@ -4,8 +4,6 @@ ChinaVis19_C1_v2
 ![image](public/img/floor1.jpg?raw=true)
 floor1
 
-![image](public/img/floor2.jpg?raw=true)
-floor2
 
 ## idea
 - behavior similarity

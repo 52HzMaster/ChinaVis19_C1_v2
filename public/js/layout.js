@@ -48,6 +48,17 @@ function area_compute(x1,y1,x2,y2) {
     return data;
 }
 
+function date_slice(start,end,stick) {
+    let extent = [];
+
+    for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
+        let date_start = new Date(i);
+        let date_end = new Date(i + stick*60*1000);
+        extent.push([date_start,date_end]);
+    }
+    return extent;
+}
+
 let floor1_area = ["area_A","area_B","area_C","area_D",
     "area_sign","area_poster",
     "area_ladder1","area_ladder2",
