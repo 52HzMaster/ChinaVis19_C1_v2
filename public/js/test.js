@@ -1,7 +1,7 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-test();
+//test();
 function test() {
 
     let floor = $("#all_view");
@@ -509,4 +509,58 @@ function test() {
     // });
 
 
+}
+
+test1();
+function test1() {
+    let chart = $("#chart");
+
+    let margin = {top: 1, right: 1, bottom: 6, left: 1},
+        width = chart.width() - margin.left - margin.right,
+        height = chart.height() - margin.top - margin.bottom;
+
+    let svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+    //26
+    let areas = [
+        "area_A","area_B","area_C","area_D",
+        "area_sign","area_poster",
+        "area_ladder1","area_ladder2","area_ladder3","area_ladder4",
+        "area_wc1","area_wc2","area_wc3",
+        "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
+        "area_serve", "area_disc","area_main",
+        "area_canteen","area_leisure",
+        "area_in", "area_out"
+    ];
+
+    let drag = d3.behavior.drag()
+        .on("drag", dragmove);
+
+    function dragmove() {
+        d3.select(this)
+            //.attr("x", d3.event.x - 30 )
+            .attr("y", d3.event.y - 50);
+    }
+
+    svg.append("rect")
+        .attr("x",300)
+        .attr("y",500)
+        .attr("width",60)
+        .attr("height",100)
+        .attr("fill","#41ff40")
+        .call(drag);
+
+    svg.append("rect")
+        .attr("x",600)
+        .attr("y",500)
+        .attr("width",60)
+        .attr("height",100)
+        .attr("fill","#ffae12")
+        .call(drag);
+
+    svg.append("path")
+        .attr("d","M 360 500 L 600 500 L 600 600 L 360 600")
+        .attr("fill","#FFFFFF");
 }

@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-
 let MongoClient = require('mongodb').MongoClient;
 let DB_CONN_STR = 'mongodb://localhost:27017/chinavis19';
 
@@ -11,7 +10,8 @@ router.get('/day1_pro', function(req, res, next) {
         let collection = db.collection('day1_pro');
         //查询数据
         collection.find({area:{$ne:"area_other"},
-            $and:[{area:{$ne:"area_ladder1"}},{area:{$ne:"area_ladder2"}},{area:{$ne:"area_ladder3"}},{area:{$ne:"area_ladder4"}}]}, {
+            $and:[{area:{$ne:"area_ladder1"}},{area:{$ne:"area_ladder2"}},{area:{$ne:"area_ladder3"}},{area:{$ne:"area_ladder4"}}
+            ]}, {
             "_id": 0,
             'sid':0,
             'floor':0,
@@ -29,6 +29,12 @@ router.get('/day1_pro', function(req, res, next) {
 
     MongoClient.connect(DB_CONN_STR, function(err, db) {
         selectData(db, function(result) {
+
+            // result.sort(function (a,b) {
+            //     return new Date(a.date).getTime() - new Date(b.date).getTime();
+            // });
+            //let nest = d3.nest().key((d)=>d.id);
+            //console.log(result);
             res.json(result);
             db.close();
         });

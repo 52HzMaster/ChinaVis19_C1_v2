@@ -74,17 +74,9 @@ canvas {
 
 #chart{
     position: absolute;
-    top:2%;
-    right: 1%;
 }
 
 /*=========================================sankey*/
-
-#chart{
-    position: absolute;
-    top:2%;
-    right: 1%;
-}
 
 
 .node rect {

@@ -1,52 +1,7 @@
 /**
  * Created by Liang Liu on 2019/4/21.
  */
-// let test_id = [
-//     10001,
-//     10003,
-//     10012,
-//     10014,
-//     10015,
-//     10018,
-//     10019,
-//     10021,
-//     10022,
-//     10023
-// ];
-// let data = [];
-// test_id.forEach((d)=>{
-//     $.ajax({
-//         url: "/day1_pro_id",    //请求的url地址
-//         data:{
-//             id:d
-//         },
-//         dataType: "json",   //返回格式为json
-//         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-//         type: "GET",   //请求方式
-//         contentType: "application/json",
-//         beforeSend: function () {//请求前的处理
-//         },
-//         success: function (data, textStatus) {
-//             let traj = remove_element(data);
-//             let node_nest = d3.nest().key((d)=>d.area).entries(traj);
-//             let nodes = [];
-//             node_nest.forEach((d)=>{
-//                 nodes.push({"name":d.key});
-//             });
-//             let links = [];
-//             for(let i=0;i<traj.length-1;i++){
-//                 data.push({"source":traj[i].area,"target":traj[i+1].area,"value":1})
-//             }
-//             //console.log(nodes);
-//             console.log(links);
-//         },
-//         complete: function () {//请求完成的处理
-//         },
-//         error: function () {//请求出错处理
-//         }
-//     });
-// })
-//
+
 $.ajax({
     url: "/day1_pro",    //请求的url地址
     dataType: "json",   //返回格式为json
@@ -57,41 +12,53 @@ $.ajax({
     },
     success: function (data, textStatus) {
         //console.log(data);
-        let id_nest = d3.nest().key((d)=>d.id).entries(data);
-        id_nest.forEach((d)=>{
-            d.values = d.values.sort(function (a,b) {
+        let nodes =[];
+        let links =[];
+
+        let temp = [];
+        let temp_nodes = [];
+        let id_data = d3.nest().key((d)=>d.id).entries(data);
+        id_data.forEach((d)=>{
+            d.values.sort((a,b)=>{
                 return new Date(a.date).getTime() - new Date(b.date).getTime();
             });
+
             d.values = remove_element(d.values);
+
+            for(let i=0;i<d.values.length-1;i++){
+               temp.push({"id":d.key,"source":d.values[i].area,"target":d.values[i+1].area});
+            }
         });
-        console.log(id_nest);
-        /*
-                let nodes =[];
-                    d.values = remove_element(d.values);
-                    d.values.forEach((d)=>{
-                        if(test.indexOf(d.area) === -1){
-                            test.push(d.area);
-                        }
 
-                    });
+        let source = d3.nest().key((d)=>d.source).entries(temp);
+        let target = d3.nest().key((d)=>d.target);
 
-                    console.log(test);
+        source.forEach((d)=>{
+            d.values = target.entries(d.values);
+        });
 
-                  /!*  let links = [];
-                    for(let i=0;i<d.values.length-1;i++){
-                        links.push({"source":nodes.indexOf(d.values[i].area),"target":nodes.indexOf(d.values[i+1].area),"value":1})
-                    }
-                    d.values = links;*!/
-                });*/
-        //console.log( id_nest);
-        // let node_nest = d3.nest().key((d)=>d.area).entries(traj);
+        source.forEach((d)=>{
+            nodes.push({"name":d.key});
+            temp_nodes.push(d.key);
+        });
 
-        // let links = [];
-        // for(let i=0;i<traj.length-1;i++){
-        //     data.push({"source":traj[i].area,"target":traj[i+1].area,"value":1})
-        // }
-        // //console.log(nodes);
-        // console.log(links);
+        source.forEach((d)=>{
+            d.values.forEach((s)=>{
+                links.push({"source":temp_nodes.indexOf(d.key),"target":temp_nodes.indexOf(s.key),value:s.values.length});
+            });
+        });
+
+        console.log(nodes);
+        console.log(links);
+
+        let temp_links = [];
+
+        links.forEach((d,i)=>{
+            if(i !== 23)
+            temp_links.push(d);
+        });
+
+        sankey_chart({"nodes":nodes,"links":links.slice(0,22)});
 
     },
     complete: function () {//请求完成的处理
@@ -100,63 +67,64 @@ $.ajax({
     }
 });
 
-let nodes = [{"name":"area_in"},{"name":"area_sign"},{"name":"area_out"}];
+let nodes = [{"name":"area_in"},{"name":"area_sign"},{"name":"area_D0"},{"name":"area_room2"}];
 
-let links = [{"source": 0, "target": 1, "value": 7},
-    {"source": 1, "target": 2, "value": 7}];
+let links = [{"source": 0, "target": 1, "value": 3262},
+            {"source": 0, "target": 2, "value": 272},
+            {"source": 0, "target": 3, "value": 30}];
 
 let energy = {"nodes":[
-        {"name":"Agricultural 'waste'"},
-        {"name":"Bio-conversion"},
-        {"name":"Liquid"},
-        {"name":"Losses"},
-        {"name":"Solid"},
-        {"name":"Gas"},
-        {"name":"Biofuel imports"},
-        {"name":"Biomass imports"},
-        {"name":"Coal imports"},
-        {"name":"Coal"},
-        {"name":"Coal reserves"},
-        {"name":"District heating"},
-        {"name":"Industry"},
-        {"name":"Heating and cooling - commercial"},
-        {"name":"Heating and cooling - homes"},
-        {"name":"Electricity grid"},
-        {"name":"Over generation / exports"},
-        {"name":"H2 conversion"},
-        {"name":"Road transport"},
-        {"name":"Agriculture"},
-        {"name":"Rail transport"},
-        {"name":"Lighting & appliances - commercial"},
-        {"name":"Lighting & appliances - homes"},
-        {"name":"Gas imports"},
-        {"name":"Ngas"},
-        {"name":"Gas reserves"},
-        {"name":"Thermal generation"},
-        {"name":"Geothermal"},
-        {"name":"H2"},
-        {"name":"Hydro"},
-        {"name":"International shipping"},
-        {"name":"Domestic aviation"},
-        {"name":"International aviation"},
-        {"name":"National navigation"},
-        {"name":"Marine algae"},
-        {"name":"Nuclear"},
-        {"name":"Oil imports"},
-        {"name":"Oil"},
-        {"name":"Oil reserves"},
-        {"name":"Other waste"},
-        {"name":"Pumped heat"},
-        {"name":"Solar PV"},
-        {"name":"Solar Thermal"},
-        {"name":"Solar"},
-        {"name":"Tidal"},
-        {"name":"UK land based bioenergy"},
-        {"name":"Wave"},
-        {"name":"Wind"}
-    ],
+    {"name":"Agricultural 'waste'"},
+    {"name":"Bio-conversion"},
+    {"name":"Liquid"},
+    {"name":"Losses"},
+    {"name":"Solid"},
+    {"name":"Gas"},
+    {"name":"Biofuel imports"},
+    {"name":"Biomass imports"},
+    {"name":"Coal imports"},
+    {"name":"Coal"},
+    {"name":"Coal reserves"},
+    {"name":"District heating"},
+    {"name":"Industry"},
+    {"name":"Heating and cooling - commercial"},
+    {"name":"Heating and cooling - homes"},
+    {"name":"Electricity grid"},
+    {"name":"Over generation / exports"},
+    {"name":"H2 conversion"},
+    {"name":"Road transport"},
+    {"name":"Agriculture"},
+    {"name":"Rail transport"},
+    {"name":"Lighting & appliances - commercial"},
+    {"name":"Lighting & appliances - homes"},
+    {"name":"Gas imports"},
+    {"name":"Ngas"},
+    {"name":"Gas reserves"},
+    {"name":"Thermal generation"},
+    {"name":"Geothermal"},
+    {"name":"H2"},
+    {"name":"Hydro"},
+    {"name":"International shipping"},
+    {"name":"Domestic aviation"},
+    {"name":"International aviation"},
+    {"name":"National navigation"},
+    {"name":"Marine algae"},
+    {"name":"Nuclear"},
+    {"name":"Oil imports"},
+    {"name":"Oil"},
+    {"name":"Oil reserves"},
+    {"name":"Other waste"},
+    {"name":"Pumped heat"},
+    {"name":"Solar PV"},
+    {"name":"Solar Thermal"},
+    {"name":"Solar"},
+    {"name":"Tidal"},
+    {"name":"UK land based bioenergy"},
+    {"name":"Wave"},
+    {"name":"Wind"}
+],
     "links":[
-        {"source":0,"target":1,"value":124.729},
+        {"source":0,"target":1,"value":127.729},
         {"source":1,"target":2,"value":0.597},
         {"source":1,"target":3,"value":26.862},
         {"source":1,"target":4,"value":280.322},
@@ -224,9 +192,11 @@ let energy = {"nodes":[
         {"source":45,"target":1,"value":182.01},
         {"source":46,"target":15,"value":19.013},
         {"source":47,"target":15,"value":289.366}
-    ]}
+    ]};
 
-sankey_chart({"nodes":nodes,"links":links});
+console.log(energy);
+//sankey_chart(energy);
+//sankey_chart({"nodes":nodes,"links":links});
 // load the data
 function sankey_chart(data) {
 
@@ -308,27 +278,10 @@ function sankey_chart(data) {
 function remove_element(arr) {
 
     let data = [];
-    let area = [];
-    area.push(arr[0].area);
     data.push(arr[0]);
     for (let i = 1; i < arr.length; i++) {
-        if (arr[i].area === data[data.length - 1].area) {
-        }
-        else
+        if (arr[i].area !== data[data.length - 1].area)
             data.push(arr[i]);
-        if(area.indexOf(arr[i].area) === -1)
-            area.push(arr[i].area);
     }
-
-    area.forEach((d)=>{
-        let index =0;
-        data.forEach((s)=>{
-            if(d === s.area) {
-                s.area = s.area + index;
-                index++;
-            }
-        });
-    });
-    //console.log(data);
     return data;
 }

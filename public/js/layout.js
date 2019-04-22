@@ -119,8 +119,8 @@ function layout(){
     area_line.style.width = width * 0.6 + 'px';
     area_line.style.height = height * 0.15 + 'px';
 
-    chart.style.width = width * 0.9 + 'px';
-    chart.style.height = height * 0.7 + 'px';
+    chart.style.width = width  + 'px';
+    chart.style.height = height  + 'px';
 
     let floor_view = $("#floor");
     let floor_width = floor_view.width();
