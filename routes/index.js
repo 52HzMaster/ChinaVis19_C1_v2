@@ -87,7 +87,7 @@ router.get('/day1_pro_id', function(req, res, next) {
             "x":0,
             "y":0,
             //"area":0,
-            "date":0
+            //"date":0
         }).toArray(function(err, result) {
             if(err)
             {

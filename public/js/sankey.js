@@ -2,7 +2,7 @@
  * Created by Liang Liu on 2019/4/21.
  */
 
-/*$.ajax({
+$.ajax({
     url: "/day1_pro",    //请求的url地址
     dataType: "json",   //返回格式为json
     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -25,14 +25,14 @@
 
             d.values = remove_element(d.values);
 
-            // for(let i=0;i<d.values.length-1;i++){
-            //    temp.push({"id":d.key,"source":d.values[i].area,"target":d.values[i+1].area});
-            // }
+            for(let i=0;i<d.values.length-1;i++){
+               temp.push({"id":d.key,"source":d.values[i].area,"target":d.values[i+1].area});
+            }
         });
 
         console.log(d3.max(id_data,(d)=>d.values.length));
 
-        /!*let source = d3.nest().key((d)=>d.source).entries(temp);
+        let source = d3.nest().key((d)=>d.source).entries(temp);
         let target = d3.nest().key((d)=>d.target);
 
         source.forEach((d)=>{
@@ -58,18 +58,18 @@
         links.forEach((d,i)=>{
             if(d.source < d.target)
                 temp_links.push(d);
-        });*!/
+        });
 
-        //sankey_chart({"nodes":nodes,"links":temp_links});
+        sankey_chart({"nodes":nodes,"links":links.slice(0,3)});
 
     },
     complete: function () {//请求完成的处理
     },
     error: function () {//请求出错处理
     }
-});*/
+});
 
-function date_slice(start,end,stick) {
+/*function date_slice(start,end,stick) {
     let extent = [];
 
     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
@@ -144,9 +144,9 @@ date_extent.forEach((date,index)=>{
         error: function () {//请求出错处理
         }
     });
-});
+});*/
 
-/*
+
 let nodes = [{"name":"area_in"},{"name":"area_sign"},{"name":"area_D0"},{"name":"area_room2"}];
 
 let links = [{"source": 0, "target": 1, "value": 3262},
@@ -272,7 +272,7 @@ let energy = {"nodes":[
         {"source":45,"target":1,"value":182.01},
         {"source":46,"target":15,"value":19.013},
         {"source":47,"target":15,"value":289.366}
-    ]};*/
+    ]};
 
 //sankey_chart(energy);
 //sankey_chart({"nodes":nodes,"links":links});
@@ -354,14 +354,12 @@ function sankey_chart(data) {
     }
 }
 
-function remove_element(arr) {
-
+function unrepeat(arr) {
     let data = [];
     data.push(arr[0]);
     for (let i = 1; i < arr.length; i++) {
         if (arr[i].area !== data[data.length - 1].area)
             data.push(arr[i]);
     }
-    console.log(data);
     return data;
 }

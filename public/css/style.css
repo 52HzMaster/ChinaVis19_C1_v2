@@ -103,3 +103,39 @@ canvas {
 .link:hover {
     stroke-opacity: .5;
 }
+
+/*//////////////////////////////////////////*/
+
+svg {
+    font: 10px sans-serif;
+}
+
+.background path {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: .5;
+    stroke-opacity: .4;
+    shape-rendering: crispEdges;
+}
+
+.foreground path {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: .5;
+    stroke-opacity: .7;
+}
+
+.brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+.axis line, .axis path {
+    fill: none;
+    stroke: #ffffff;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+}
