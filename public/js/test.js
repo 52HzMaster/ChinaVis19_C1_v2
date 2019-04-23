@@ -511,7 +511,7 @@ function test() {
 
 }
 
-test1();
+//test1();
 function test1() {
     let chart = $("#chart");
 
