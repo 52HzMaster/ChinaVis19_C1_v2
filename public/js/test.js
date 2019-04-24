@@ -1,7 +1,7 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-//test();
+test();
 function test() {
 
     let floor = $("#all_view");
@@ -78,8 +78,8 @@ function test() {
      ====================================================================*/
 
     draw_floor();
-    draw_area_f1();
-    //draw_area_f2();
+    //draw_area_f1();
+    draw_area_f2();
 
     function draw_floor() {
         let floor1_cards = floor_g.selectAll(".grid")
@@ -213,8 +213,8 @@ function test() {
         .attr("d", arrow_path)
         .attr("fill", "#ffe730");
 
-   /* $.ajax({
-        url: "/day3_id",    //请求的url地址
+    $.ajax({
+        url: "/day1_id",    //请求的url地址
         dataType: "json",   //返回格式为json
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
         type: "GET",   //请求方式
@@ -233,15 +233,15 @@ function test() {
         },
         error: function () {//请求出错处理
         }
-    });*/
+    });
 
     function traj_chart(id) {
         $.ajax({
-            url: "day3_pro_id",    //请求的url地址
+            url: "day1_pro_id",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 id: id,
-                floor: 1
+                floor: 2
             },
             async: true, //请求是否异步，默认为异步，这也是ajax重要特性
             type: "GET",   //请求方式
@@ -249,27 +249,6 @@ function test() {
             beforeSend: function () {//请求前的处理
             },
             success: function (data, textStatus) {
-/*                console.log(data);
-                let arr1 =[],arr2 =[];
-                arr1.push(data[0]);
-                for(let i =1;i<data.length;i++){
-                    if(dis([arr1[arr1.length-1].x,arr1[arr1.length-1].y],[data[i].x,data[i].y])>2){
-                        arr2.push(data[i]);
-                    }
-                    else{
-                        arr1.push(data[i]);
-                    }
-                }
-
-                console.log(arr1,arr2);
-
-                function dis(p1,p2) {
-                    let x = Math.abs(p1[0]-p2[0]);
-                    let y = Math.abs(p1[1]-p2[1]);
-                    return Math.sqrt(x*x + y*y);
-                }
-
-                draw_all_traj(arr1, 16632);*/
                 if(!data) return;
                 let date_data = [];
                 let date_extent = d3.extent(data, (d) => {
@@ -307,7 +286,7 @@ function test() {
 
     let date_data =[]
 
-    for (let i = new Date("2019-01-03 08:00:00").getTime(); i <= new Date("2019-01-03 13:00:00").getTime(); i += 1800000) {
+    for (let i = new Date("2019-01-01 07:00:00").getTime(); i <= new Date("2019-01-01 18:00:00").getTime(); i += 1800000) {
         date_data.push(new Date(i));
     }
 
