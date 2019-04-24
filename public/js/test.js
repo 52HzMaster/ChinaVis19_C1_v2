@@ -58,8 +58,8 @@ function test() {
             return d.x * gridSize_h + gridSize_h / 2;
         })
         .interpolate("linear");
-        //.interpolate("bundle")
-        //.tension(.7);
+    //.interpolate("bundle")
+    //.tension(.7);
 
     /*    ==========================================  ==============
      linear - 线性插值
@@ -224,8 +224,8 @@ function test() {
         success: function (data, textStatus) {
             //console.log(data);
             data.forEach((d) => {
-               // if(!(d.id === 16632 || d.id === 16323))
-                   // traj_chart(d.id);
+                // if(!(d.id === 16632 || d.id === 16323))
+                // traj_chart(d.id);
                 all_traj_chart(d.id)
             });
         },
@@ -351,7 +351,7 @@ function test() {
                 /* data.sort(function (a, b) {
                  return a.date - b.date;
                  });*/
-                 draw_all_traj(data, id);
+                draw_all_traj(data, id);
             },
             complete: function () {//请求完成的处理
             },
@@ -379,8 +379,8 @@ function test() {
                     //.attr("stroke", "url(#linear-gradient)")
                     .attr("stroke", color(linear(d.date)).toString())
                     .on("mouseover",function () {
-                    console.log(d3.select(this).attr("id"));
-                });
+                        console.log(d3.select(this).attr("id"));
+                    });
             }
         });
     }
@@ -388,21 +388,26 @@ function test() {
     function draw_all_traj(data, id) {
 
         floor_svg.append("path")
-         .attr("d", line(data))
-         .attr("stroke-width", .5)
-         .attr("id",""+id)
-         .attr("fill", "none")
-         .attr("marker-start","url(#arrow)")
-         //.attr("marker-mid","url(#arrow)")
-         .attr("marker-end","url(#arrow)")
-         .attr("stroke", "#FFFFFF")
-         .style({
-         "opacity":0.3
-         })
-         // .attr("stroke", color1(i%20).toString())
-         .on("mouseover",function () {
-         console.log(d3.select(this).attr("id"));
-         });
+            .attr("d", line(data))
+            .attr("stroke-width", .5)
+            .attr("id",""+id)
+            .attr("fill", "none")
+            .attr("marker-start","url(#arrow)")
+            //.attr("marker-mid","url(#arrow)")
+            .attr("marker-end","url(#arrow)")
+            .attr("stroke", "#FFFFFF")
+            .style({
+                "opacity":0.3
+            })
+            // .attr("stroke", color1(i%20).toString())
+            .on("mouseover",function () {
+                //console.log(d3.select(this).attr("id"));
+                d3.select(this).attr("stroke","#ffe730").attr("stroke-width",1).style("opacity",1);
+            })
+            .on("mouseout",function () {
+                //console.log(d3.select(this).attr("id"));
+                d3.select(this).attr("stroke","#FFFFFF").attr("stroke-width",.5).style("opacity",0.3);
+            });
 
         // let traj =[], index=0;
         // let interval = setInterval(function () {
@@ -423,7 +428,7 @@ function test() {
         //
         //     index++;
         // },100);
-}
+    }
 
     // function date_slice(start,end,stick) {
     //     let extent = [];
@@ -519,7 +524,7 @@ function test1() {
 
     function dragmove() {
         d3.select(this)
-            //.attr("x", d3.event.x - 30 )
+        //.attr("x", d3.event.x - 30 )
             .attr("y", d3.event.y - 50);
     }
 
