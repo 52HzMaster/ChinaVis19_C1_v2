@@ -2,178 +2,192 @@
  * Created by Liang Liu on 2019/4/23.
  */
 
-// let all_id = [];
-// $.ajax({
-//     url: "/day1_id",    //请求的url地址
-//     dataType: "json",   //返回格式为json
-//     async: false, //请求是否异步，默认为异步，这也是ajax重要特性
-//     type: "GET",   //请求方式
-//     contentType: "application/json",
-//     beforeSend: function () {//请求前的处理
-//     },
-//     success: function (data, textStatus) {
-//        all_id = data;
-//     },
-//     complete: function () {//请求完成的处理
-//     },
-//     error: function () {//请求出错处理
-//     }
-// });
-//
-// $.ajax({
-//     url: "/day1_pro_id",    //请求的url地址
-//     dataType: "json",   //返回格式为json
-//     data:{
-//         id:10001
-//     },
-//     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-//     type: "GET",   //请求方式
-//     contentType: "application/json",
-//     beforeSend: function () {//请求前的处理
-//     },
-//     success: function (data, textStatus) {
-//         console.log(unrepeat(data));
-//     },
-//     complete: function () {//请求完成的处理
-//     },
-//     error: function () {//请求出错处理
-//     }
-// });
-
-let chart = $("#chart");
-
-let areas = [
-    "area_A","area_B","area_C","area_D",
-    "area_sign","area_poster",
-    "area_wc1","area_wc2","area_wc3",
-    "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
-    "area_serve", "area_disc","area_main",
-    "area_canteen","area_leisure",
-    "area_in", "area_out",
-];
-
-function date_slice(start,end,stick) {
-
-    let extent = [];
-
-    for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
-        let date_start = new Date(i);
-        extent.push(date_start.getHours()+":"+date_start.getMinutes());
+let all_id = [];
+$.ajax({
+    url: "/day1_id",    //请求的url地址
+    dataType: "json",   //返回格式为json
+    async: false, //请求是否异步，默认为异步，这也是ajax重要特性
+    type: "GET",   //请求方式
+    contentType: "application/json",
+    beforeSend: function () {//请求前的处理
+    },
+    success: function (data, textStatus) {
+        all_id = data;
+    },
+    complete: function () {//请求完成的处理
+    },
+    error: function () {//请求出错处理
     }
-    return extent;
-}
+});
 
-let time_extent = date_slice("2019-1-1 7:00:00","2019-1-1 18:00:00",30);
+$.ajax({
+    url: "/day1_pro_id",    //请求的url地址
+    dataType: "json",   //返回格式为json
+    data:{
+        id:10001
+    },
+    async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+    type: "GET",   //请求方式
+    contentType: "application/json",
+    beforeSend: function () {//请求前的处理
+    },
+    success: function (data, textStatus) {
+        console.log(data);
+    },
+    complete: function () {//请求完成的处理
+    },
+    error: function () {//请求出错处理
+    }
+});
 
-let data = [];
+function parallel_coor() {
 
-for(let i=0;i<100;i++){
-    let temp ={};
+
+    let chart = $("#chart");
+
+    let areas = [
+        "area_A","area_B","area_C","area_D",
+        "area_sign","area_poster",
+        "area_wc1","area_wc2","area_wc3",
+        "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
+        "area_serve", "area_disc","area_main",
+        "area_canteen","area_leisure",
+        "area_in", "area_out",
+    ];
+
+    function date_slice(start,end,stick) {
+
+        let extent = [];
+
+        for(let i = new Date(start).getTime();i<=new Date(end).getTime();i += stick*60*1000) {
+            let date_start = new Date(i);
+            s = date_start.getMinutes();
+            extent.push(date_start.getHours()+":"+s);
+        }
+        return extent;
+    }
+
+    let time_extent = date_slice("2019-1-1 7:00:00","2019-1-1 18:00:00",10);
+
+    let data = [];
+
+    for(let i=0;i<100;i++){
+        let temp ={};
+        time_extent.forEach((d,i)=>{
+            temp[d] = areas[Math.round(Math.random()*22)];
+        });
+        data.push(temp);
+    }
+
+    let margin = {top: 50, right: 50, bottom: 50, left: 50},
+        width = chart.width()  - margin.left - margin.right,
+        height = chart.height() - margin.top - margin.bottom;
+
+    let svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+    let x_scale = d3.scale.ordinal()
+        .domain(time_extent)
+        .rangePoints([0, width], .5);
+
+    let y_scale ={};
+
     time_extent.forEach((d)=>{
-        temp[d] = areas[Math.floor(Math.random()*20)];
+        y_scale[d] = d3.scale.ordinal()
+            .domain(areas)
+            .rangePoints([0, height], .5);
     });
-    data.push(temp);
-}
 
-let margin = {top: 50, right: 50, bottom: 50, left: 50},
-    width = chart.width()  - margin.left - margin.right,
-    height = chart.height() - margin.top - margin.bottom;
+    let x_axis = d3.svg.axis()
+        .scale(x_scale)
+        .orient("bottom");
 
-let svg = d3.select("#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    let y_axis = d3.svg.axis()
+        .orient("left");
 
-let x_scale = d3.scale.ordinal()
-    .domain(time_extent)
-    .rangePoints([0, width], .5);
+    let line = d3.svg.line()//.interpolate("basis");
 
-let y_scale = d3.scale.ordinal()
-        .domain(areas)
-        .rangePoints([0, height], .5);
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform","translate("+margin.left+","+(height + margin.bottom) +")")
+        .call(x_axis);
 
-let x_axis = d3.svg.axis()
-    .scale(x_scale)
-    .orient("bottom");
+    let g = svg.selectAll(".time_extent")
+        .data(time_extent)
+        .enter()
+        .append("g")
+        .attr("class", "time_extent")
+        .attr("transform", function(d) { return "translate(" + (x_scale(d) + margin.left)+ ")"; });
 
-let y_axis = d3.svg.axis()
-    .orient("right");
-
-let line = d3.svg.line()//.interpolate("basis");
-
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform","translate("+margin.left+","+height +")")
-    .call(x_axis);
-
-let g = svg.selectAll(".time_extent")
-    .data(time_extent)
-    .enter()
-    .append("g")
-    .attr("class", "time_extent")
-    .attr("transform", function(d) { return "translate(" + (x_scale(d) + margin.left)+ ")"; });
-
-g.append("g")
-    .attr("class", "axis")
-    .each(function(d,i) {
-        if(i === 0)
-            d3.select(this).call(y_axis.scale(y_scale));
-        else
-            d3.select(this).call(y_axis.tickFormat("").scale(y_scale));
-    });
+    g.append("g")
+        .attr("class", "axis")
+        .each(function(d,i) {
+            if(i === 0)
+                d3.select(this).call(y_axis.scale(y_scale[d]));
+            else
+                d3.select(this).call(y_axis.tickFormat("").scale(y_scale[d]));
+        });
 
 // Add grey background lines for context.
-background = svg.append("g")
-    .attr("class", "background")
-    .selectAll("path")
-    .data(data)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("transform", function(d) { return "translate(" + margin.left + ")"; });
+    background = svg.append("g")
+        .attr("class", "background")
+        .selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("transform", function(d) { return "translate(" + margin.left + ")"; });
 
 // Add blue foreground lines for focus.
-foreground = svg.append("g")
-    .attr("class", "foreground")
-    .selectAll("path")
-    .data(data)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("transform", function(d) { return "translate(" + margin.left + ")"; });;
+    foreground = svg.append("g")
+        .attr("class", "foreground")
+        .selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("transform", function(d) { return "translate(" + margin.left + ")"; });;
 
 // Returns the path for a given data point.
-function path(d) {
-    return line(time_extent.map(function(p) { return [x_scale(p), y_scale(d[p])]; }));
-}
+    function path(d) {
+        let coor =[];
+        time_extent.forEach((p)=>{
+            if(d[p] !== undefined)
+                coor.push([x_scale(p), y_scale[p](d[p])]);
+        });
+        return line(coor);
+    }
 
 // Add and store a brush for each axis.
-g.append("g")
-    .attr("class", "brush")
-    .each(function(d) { d3.select(this).call(y_scale.brush = d3.svg.brush().y(y_scale).on("brush", brush)); })
-    .selectAll("rect")
-    .attr("x", -8)
-    .attr("width", 16);
+    g.append("g")
+        .attr("class", "brush")
+        .each(function(d) { d3.select(this).call(y_scale[d].brush = d3.svg.brush().y(y_scale[d]).on("brush", brush)); })
+        .selectAll("rect")
+        .attr("x", -8)
+        .attr("width", 16);
 
 // Handles a brush event, toggling the display of foreground lines.
-function brush() {
-    let actives = time_extent.filter(function(p) { return !y_scale.brush.empty(); }),
-        extents = actives.map(function(p) { return y_scale.brush.extent(); });
-    foreground.style("display", function(d) {
-        return actives.every(function(p, i) {
-            console.log(extents);
-            return extents[i][0] <= y_scale(d[p]) && y_scale(d[p]) <=  extents[i][1];
-        }) ? null : "none";
-    });
-}
-
-function unrepeat(arr) {
-    let data = [];
-    data.push(arr[0]);
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i].area !== data[data.length - 1].area)
-            data.push(arr[i]);
+    function brush() {
+        let actives = time_extent.filter(function(p) {  return !y_scale[p].brush.empty(); }),
+            extents = actives.map(function(p) { return y_scale[p].brush.extent(); });
+        foreground.style("display", function(d) {
+            return actives.every(function(p, i) {
+                return extents[i][0] <= y_scale[p](d[p]) && y_scale[p](d[p]) <=  extents[i][1];
+            }) ? null : "none";
+        });
     }
-    return data;
+
+    function unrepeat(arr) {
+        let data = [];
+        data.push(arr[0]);
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i].area !== data[data.length - 1].area)
+                data.push(arr[i]);
+        }
+        return data;
+    }
+
 }
 /*
  let time_extent = [7,8,9,10,11,12,13,14,15,16,17,18];

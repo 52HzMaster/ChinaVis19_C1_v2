@@ -50,14 +50,14 @@ function test() {
 
     let line = d3.svg.line()
         .x(function (d) {
-            return d[1] * gridSize_w + gridSize_w / 2;
-            //return d.y * gridSize_w + gridSize_w / 2;
+            //return d[1] * gridSize_w + gridSize_w / 2;
+            return d.y * gridSize_w + gridSize_w / 2;
         })
         .y(function (d) {
-            return d[0] * gridSize_h + gridSize_h / 2;
-            //return d.x * gridSize_h + gridSize_h / 2;
+            //return d[0] * gridSize_h + gridSize_h / 2;
+            return d.x * gridSize_h + gridSize_h / 2;
         })
-        .interpolate("basis");
+        .interpolate("linear");
         //.interpolate("bundle")
         //.tension(.7);
 
@@ -78,8 +78,8 @@ function test() {
      ====================================================================*/
 
     draw_floor();
-    //draw_area_f1();
-    draw_area_f2();
+    draw_area_f1();
+    //draw_area_f2();
 
     function draw_floor() {
         let floor1_cards = floor_g.selectAll(".grid")
@@ -225,8 +225,8 @@ function test() {
             //console.log(data);
             data.forEach((d) => {
                // if(!(d.id === 16632 || d.id === 16323))
-                    traj_chart(d.id);
-                //all_traj_chart(d.id)
+                   // traj_chart(d.id);
+                all_traj_chart(d.id)
             });
         },
         complete: function () {//请求完成的处理
@@ -241,7 +241,7 @@ function test() {
             dataType: "json",   //返回格式为json
             data: {
                 id: id,
-                floor: 2
+                floor: 1
             },
             async: true, //请求是否异步，默认为异步，这也是ajax重要特性
             type: "GET",   //请求方式
@@ -302,10 +302,10 @@ function test() {
         .data(date_data)
         .enter()
         .append("rect")
-        .attr("x",(d,i)=>400+i*100)
+        .attr("x",(d,i)=>100+i*50)
         .attr("y",(d,i)=>45)
-        .attr("width",100)
-        .attr("height",5)
+        .attr("width",50)
+        .attr("height",20)
         .on("click",function (d) {
 
             flag =!flag;
@@ -329,13 +329,13 @@ function test() {
         .data(date_data)
         .enter()
         .append("text")
-        .attr("x",(d,i)=>400+i*100)
+        .attr("x",(d,i)=>100+i*50)
         .attr("y",(d,i)=>45)
         .text((d)=>formatTime(d));
 
     function all_traj_chart(id) {
         $.ajax({
-            url: "/day1_pro_id",    //请求的url地址
+            url: "/day1_pro_gt30",    //请求的url地址
             dataType: "json",   //返回格式为json
             data: {
                 id: id,
@@ -373,9 +373,9 @@ function test() {
                     .attr("stroke-width", 1)
                     .attr("opacity",0.1)
                     .attr("fill", "none")
-                    //.attr("marker-start", "url(#arrow)")
+                    .attr("marker-start", "url(#arrow)")
                     //.attr("marker-mid", "url(#arrow)")
-                    //.attr("marker-end", "url(#arrow)")
+                    .attr("marker-end", "url(#arrow)")
                     //.attr("stroke", "url(#linear-gradient)")
                     .attr("stroke", color(linear(d.date)).toString())
                     .on("mouseover",function () {
@@ -389,7 +389,7 @@ function test() {
 
         floor_svg.append("path")
          .attr("d", line(data))
-         .attr("stroke-width", 2)
+         .attr("stroke-width", .5)
          .attr("id",""+id)
          .attr("fill", "none")
          .attr("marker-start","url(#arrow)")
@@ -397,7 +397,7 @@ function test() {
          .attr("marker-end","url(#arrow)")
          .attr("stroke", "#FFFFFF")
          .style({
-         "opacity":0.4
+         "opacity":0.3
          })
          // .attr("stroke", color1(i%20).toString())
          .on("mouseover",function () {

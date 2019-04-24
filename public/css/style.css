@@ -112,15 +112,15 @@ svg {
 
 .background path {
     fill: none;
-    stroke: #ccc;
-    stroke-width: .5;
-    stroke-opacity: .4;
+    stroke: #7a7a7a;
+    stroke-width: .1;
+    stroke-opacity: .2;
     shape-rendering: crispEdges;
 }
 
 .foreground path {
     fill: none;
-    stroke: steelblue;
+    stroke: #ff1f00;
     stroke-width: .5;
     stroke-opacity: .7;
 }
