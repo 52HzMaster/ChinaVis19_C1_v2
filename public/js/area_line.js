@@ -21,6 +21,9 @@ area_line.x_axis = d3.svg.axis()
     .tickFormat(d3.time.format("%H:%M"));
 //.ticks(20);
 
+area_line.y_axis = d3.svg.axis()
+    .orient("left");
+
 //area_graph("area_main");
 
 function area_graph(condition){
@@ -98,6 +101,7 @@ function area_chart(data,condition) {
         })]);
 
     area_line.x_axis.scale(area_line.x_scale);
+    area_line.y_axis.scale(area_line.y_scale);
 
     let zoom = d3.behavior.zoom()
         .x(area_line.x_scale)
@@ -159,5 +163,10 @@ function area_chart(data,condition) {
     axis_g.append("g")
         .attr("class", "x axis")
         .call(area_line.x_axis);
+
+    area_line.svg.append("g")
+        .attr("transform","translate("+(100) +",20)")
+        .attr("class", "x axis")
+        .call(area_line.y_axis);
 
 }

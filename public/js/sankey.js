@@ -13,14 +13,22 @@ $.ajax({
     success: function (data, textStatus) {
         //console.log(data);
 
-        let nodes =[];
-        let links =[];
-
-        let temp_nodes = [];
+        // let nodes =[];
+        // let links =[];
+        //
+        // let temp_nodes = [];
 
         let id_data = d3.nest().key((d)=>d.id).entries(data);
-
         id_data.forEach((d)=>{
+            d.values.sort((a,b)=>{
+                return new Date(a.date).getTime() - new Date(b.date).getTime();
+            });
+            d.values = unrepeat(d.values);
+        });
+
+        console.log(id_data);
+
+        /*id_data.forEach((d)=>{
             d.values.sort((a,b)=>{
                 return new Date(a.date).getTime() - new Date(b.date).getTime();
             });
@@ -56,15 +64,10 @@ $.ajax({
             let target = d3.nest().key((d)=>d.target);
 
             source.forEach((d)=>{
-                if(i>0)
-                    d.key += i-1;
                 d.values = target.entries(d.values);
-                d.values.forEach((s)=>{
-                    s.key += i;
-                });
             });
 
-            //console.log(source);
+            console.log(source);
 
             source.forEach((d)=>{
                 if(temp_nodes.indexOf(d.key) === -1){
@@ -88,7 +91,7 @@ $.ajax({
         });
 
         console.log(nodes);
-        console.log(links);
+        console.log(links);*/
         //sankey_chart({"nodes":nodes,"links":links});
 
     },

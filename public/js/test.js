@@ -5,7 +5,7 @@ test();
 function test() {
 
     let floor = $("#all_view");
-
+/*
     let gridSize_w = (floor.width() - 100) / 30;
     let gridSize_h = (floor.height() - 100) / 16;
 
@@ -61,7 +61,7 @@ function test() {
     //.interpolate("bundle")
     //.tension(.7);
 
-    /*    ==========================================  ==============
+    /!*    ==========================================  ==============
      linear - 线性插值
      linear-closed - 线性插值，封闭起点和终点形成多边形
      step - 步进插值，曲线只能沿x轴和y轴交替伸展
@@ -75,10 +75,10 @@ function test() {
      cardinal-open - Cardina样条插值，起点终点不相交
      cardinal-closed - Cardina样条插值，连接起点终点形成多边形
      monotone - 立方插值，保留y方向的单调性
-     ====================================================================*/
+     ====================================================================*!/
 
-    draw_floor();
-    draw_area_f1();
+    //draw_floor();
+    //draw_area_f1();
     //draw_area_f2();
 
     function draw_floor() {
@@ -213,7 +213,7 @@ function test() {
         .attr("d", arrow_path)
         .attr("fill", "#ffe730");
 
-    $.ajax({
+    /!*$.ajax({
         url: "/day1_id",    //请求的url地址
         dataType: "json",   //返回格式为json
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -233,7 +233,7 @@ function test() {
         },
         error: function () {//请求出错处理
         }
-    });
+    });*!/
 
     function traj_chart(id) {
         $.ajax({
@@ -348,9 +348,9 @@ function test() {
             },
             success: function (data, textStatus) {
                 console.log(data);
-                /* data.sort(function (a, b) {
+                /!* data.sort(function (a, b) {
                  return a.date - b.date;
-                 });*/
+                 });*!/
                 draw_all_traj(data, id);
             },
             complete: function () {//请求完成的处理
@@ -428,69 +428,69 @@ function test() {
         //
         //     index++;
         // },100);
+    }*/
+
+    function date_slice(start,end,stick) {
+        let extent = [];
+
+        for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
+            let date_start = new Date(i);
+            let date_end = new Date(i + stick*60*1000);
+            extent.push([date_start,date_end]);
+        }
+        return extent;
     }
 
-    // function date_slice(start,end,stick) {
-    //     let extent = [];
-    //
-    //     for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
-    //         let date_start = new Date(i);
-    //         let date_end = new Date(i + stick*60*1000);
-    //         extent.push([date_start,date_end]);
-    //     }
-    //     return extent;
-    // }
-    //
-    // let date_extent = date_slice("2019-01-02 13:00:00","2019-01-02 18:00:00",10);
-    //
-    // let main = [];
-    // let main_num =[];
-    //
-    // date_extent.forEach((date,index)=>{
-    //     $.ajax({
-    //         url: "day2_pro_date",    //请求的url地址
-    //         dataType: "json",   //返回格式为json
-    //         data: {
-    //             date_start: date[0],
-    //             date_end: date[1]
-    //         },
-    //         async: false, //请求是否异步，默认为异步，这也是ajax重要特性
-    //         type: "GET",   //请求方式
-    //         contentType: "application/json",
-    //         beforeSend: function () {//请求前的处理
-    //         },
-    //         success: function (data, textStatus) {
-    //             //console.log(data);
-    //             data.forEach((d,i)=>{
-    //                 d.date = new Date(d.date);
-    //                 d.date.setHours(d.date.getHours()-8);
-    //                 if(d.area === 'area_D') {
-    //                     if( main.indexOf(d.id) === -1){
-    //                         main.push(d.id);
-    //                     }
-    //                 }
-    //                 else {
-    //                     if( main.indexOf(d.id) !== -1){
-    //                         main.splice(main.indexOf(d.id),1);
-    //                     }
-    //                 }
-    //             });
-    //             main_num.push({date:date[1],value:main.length});
-    //             if(index === date_extent.length-1){
-    //                 console.log(main_num);
-    //                 main_num.sort(function (a,b) {
-    //                     return a.date.getTime() - b.date.getTime();
-    //                 });
-    //                 area_chart(main_num,"area_D");
-    //             }
-    //
-    //         },
-    //         complete: function () {//请求完成的处理
-    //         },
-    //         error: function () {//请求出错处理
-    //         }
-    //     });
-    // });
+    let date_extent = date_slice("2019-01-02 7:00:00","2019-01-01 18:00:00",1);
+
+    let main = [];
+    let main_num =[];
+
+    date_extent.forEach((date,index)=>{
+        $.ajax({
+            url: "day1_pro_date",    //请求的url地址
+            dataType: "json",   //返回格式为json
+            data: {
+                date_start: date[0],
+                date_end: date[1]
+            },
+            async: false, //请求是否异步，默认为异步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            contentType: "application/json",
+            beforeSend: function () {//请求前的处理
+            },
+            success: function (data, textStatus) {
+                //console.log(data);
+                data.forEach((d,i)=>{
+                    d.date = new Date(d.date);
+                    d.date.setHours(d.date.getHours()-8);
+                    if(d.area === 'area_canteen') {
+                        if( main.indexOf(d.id) === -1){
+                            main.push(d.id);
+                        }
+                    }
+                    else {
+                        if( main.indexOf(d.id) !== -1){
+                            main.splice(main.indexOf(d.id),1);
+                        }
+                    }
+                });
+                main_num.push({date:date[1],value:main.length});
+                if(index === date_extent.length-1){
+                    console.log(main_num);
+                    main_num.sort(function (a,b) {
+                        return a.date.getTime() - b.date.getTime();
+                    });
+                    area_chart(main_num,"area_canteen");
+                }
+
+            },
+            complete: function () {//请求完成的处理
+            },
+            error: function () {//请求出错处理
+            }
+        });
+    });
 
 
 }
