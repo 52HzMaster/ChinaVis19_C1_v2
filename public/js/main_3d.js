@@ -4,18 +4,18 @@
 
 let renderer;
 
-let floor_wh = $("#floor");
+let floor_wh = $("#main");
 let width = floor_wh.width();
 let height = floor_wh.height();
 
 function initRender() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(width, height);
-    renderer.setClearColor('#303030',1);
+    renderer.setClearColor('#302b63',1);
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
-    document.getElementById("floor").appendChild(renderer.domElement);
+    document.getElementById("main").appendChild(renderer.domElement);
 }
 
 let camera;
@@ -220,7 +220,7 @@ function onHover( event ) {
 let stats;
 function initStats() {
     stats = new Stats();
-    document.getElementById("floor").appendChild(stats.dom);
+    document.getElementById("main").appendChild(stats.dom);
 }
 
 //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
@@ -272,7 +272,7 @@ function animate() {
     //更新控制器
     render();
     //更新性能插件
-    stats.update();
+    //stats.update();
     //更新相关位置
     controls.update();
     requestAnimationFrame(animate);
@@ -287,7 +287,7 @@ function draw() {
     initLight();
     initModel();
     initControls();
-    initStats();
+    //initStats();
     animate();
     window.onresize = onWindowResize;
 }

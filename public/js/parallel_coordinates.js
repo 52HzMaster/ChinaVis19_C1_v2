@@ -2,7 +2,7 @@
  * Created by Liang Liu on 2019/4/23.
  */
 
-$.ajax({
+/*$.ajax({
     url: "/day1_stay",    //请求的url地址
     dataType: "json",   //返回格式为json
     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -17,29 +17,31 @@ $.ajax({
     },
     error: function () {//请求出错处理
     }
-})
+})*/
+
+d3.csv("data/day1_stay.csv",(data)=>para_coor(data));
 
 function para_coor(data) {
 
     let _charts = {};
 
-    let chart = $("#chart");
+    let chart = $("#time_line");
 
     _charts.areas = [
         "area_A","area_B","area_C","area_D",
         "area_sign","area_poster",
-        "area_wc1","area_wc2","area_wc3",
+        //"area_wc1","area_wc2","area_wc3",
         "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
         "area_serve", "area_disc","area_main",
         "area_canteen","area_leisure",
         "area_other"
     ];
 
-    _charts.margin = {top: 50, right: 50, bottom: 50, left: 50};
+    _charts.margin = {top: 20, right: 30, bottom: 10, left: 30};
     _charts.width = chart.width()  - _charts.margin.left - _charts.margin.right;
     _charts.height = chart.height() - _charts.margin.top - _charts.margin.bottom;
 
-    _charts.svg = d3.select("#chart").append("svg")
+    _charts.svg = d3.select("#time_line").append("svg")
         .attr("width", _charts.width + _charts.margin.left + _charts.margin.right)
         .attr("height", _charts.height + _charts.margin.top + _charts.margin.bottom);
 
@@ -50,7 +52,7 @@ function para_coor(data) {
     _charts.y_scale ={};
 
     _charts.areas.forEach((d)=>{
-        _charts.y_scale[d] = d3.scale.linear()
+        _charts.y_scale[d] = d3.scale.sqrt()
             .domain([35000,0])
             .range([0, _charts.height*0.8]);
     });
@@ -118,34 +120,30 @@ function para_coor(data) {
 // Add and store a brush for each axis.
     _charts.g.append("g")
         .attr("class", "brush")
-        .each(function(d) { d3.select(this).call(_charts.y_scale[d].brush = d3.svg.brush().y(_charts.y_scale[d]).on("brush", brush)); })
+        .each(function(d) { d3.select(this).call(_charts.y_scale[d].brush = d3.svg.brush().y(_charts.y_scale[d]).on("brushend", brush)); })
         .attr("transform", function(d) { return "translate(0," + _charts.height * 0.2 + ")"; })
         .selectAll("rect")
         .attr("x", -8)
         .attr("width", 16);
 
     function brush(){
+        let brush_data = [];
         let actives = _charts.areas.filter(function(p) {  return !_charts.y_scale[p].brush.empty(); }),
             extents = actives.map(function(p) { return _charts.y_scale[p].brush.extent(); });
         _charts.foreground.style("display", function(d) {
 
             return actives.every(function(p, i) {
                 if(extents[i][0] <= d[p] && d[p] <=  extents[i][1])
-                    console.log(d);
+                    brush_data.push(d.id);
                 return extents[i][0] <= d[p] && d[p] <=  extents[i][1];
             }) ? null : "none";
+        });
+        console.log(brush_data);
+        d3.selectAll(".traj_path").remove();
+        brush_data.forEach((d)=>{
+            all_traj_chart(d);
         });
     }
 
 // Handles a brush event, toggling the display of foreground lines.
-
-    function unrepeat(arr) {
-        let data = [];
-        data.push(arr[0]);
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i].area !== data[data.length - 1].area)
-                data.push(arr[i]);
-        }
-        return data;
-    }
 }

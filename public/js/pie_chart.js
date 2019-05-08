@@ -2,7 +2,7 @@
  * Created by Liang Liu on 2019/3/26.
  */
 //pie chart
-//pie_chart(add_data(test));
+//pie_chart(add_data(main_traj));
 function pie_chart(data) {
 
     let pie_chart = $("#pie");

@@ -1,28 +1,19 @@
 /**
  * Created by Liang Liu on 2019/4/1.
  */
-function date_slice(start,end,stick) {
-    let extent = [];
-    for(let i = new Date(start).getTime();i<new Date(end).getTime();i += stick*60*1000) {
-        let date_start = new Date(i).Format("yyyy-MM-dd H:mm:ss");
-        let date_end = new Date(i + stick*60*1000).Format("yyyy-MM-dd H:mm:ss");
-        extent.push([date_start,date_end]);
-    }
-    return extent;
-}
 get_data();
 
 function get_data(){
 
-    let areas=["area_room1","area_room2","area_room3","area_room4","area_room5","area_room6"];
+    let areas=["area_A","area_B","area_C","area_D"];
     let stack_data = [];
-    let date_extent = [new Date("2019-01-03 7:00:00"), new Date("2019-01-03 13:10:00")];
+    let date_extent = [new Date("2019-01-01 7:00:00"), new Date("2019-01-01 18:00:00")];
     let nest = d3.nest()
         .key(function(d) { return d.area; });
 
     areas.forEach((area)=>{
         $.ajax({
-            url: "/day3_data_area",    //请求的url地址
+            url: "/day1_pro_area",    //请求的url地址
             dataType: "json",   //返回格式为json
             data:{area:area.toLocaleString()},
             async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -32,6 +23,7 @@ function get_data(){
             },
             success: function (data, textStatus) {
 
+                console.log(data);
                 let date_10min= [];
 
                 for(let i = date_extent[0].getTime();i<date_extent[1].getTime();i+=600000){
@@ -62,6 +54,7 @@ function get_data(){
         let nested = nest.entries(stack_data);
 
         if(nested.length === areas.length) {
+            console.log(stack_data);
             stack_graph(stack_data);
             clearInterval(check_null);
         }
@@ -71,7 +64,7 @@ function get_data(){
 
 function stack_graph(data) {
 
-    let chart = $("#chart");
+    let chart = $("#radar");
 
     let margin = {top: 40, right: 20, bottom: 40, left: 60},
         width = chart.width() - margin.left - margin.right,
@@ -108,14 +101,14 @@ function stack_graph(data) {
         .scaleExtent([1, 16])
         .on("zoom", zoomed);
 
-    let svg = d3.select("#chart").append("svg")
+    let svg = d3.select("#radar").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .call(zoom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    let tooltip = d3.select("chart")
+    let tooltip = d3.select("#radar")
         .append("div")
         .attr("class", "label")
         .style("position", "absolute")
@@ -124,7 +117,7 @@ function stack_graph(data) {
         .style("top", "30px")
         .style("left", "55px");
 
-    let vertical = d3.select("chart")
+    let vertical = d3.select("#radar")
         .append("div")
         .attr("class", "remove")
         .style("position", "absolute")
@@ -137,7 +130,7 @@ function stack_graph(data) {
         .style("pointer-events","none")
         .style("background", "#fff");
 
-    d3.select("body")
+    d3.select("#radar")
         .on("mousemove", function(){
             let mousex = d3.mouse(this);
             mousex = mousex[0] + 1;
