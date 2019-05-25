@@ -2,11 +2,11 @@
  * Created by Liang Liu on 2019/3/26.
  */
 let area_line = {};
-let area = $("#area_line");
+let area = $("#spiral_line");
 area_line.width = area.width();
 area_line.height = area.height();
 
-area_line.svg = d3.select("#area_line").append("svg")
+area_line.svg = d3.select("#spiral_line").append("svg")
     .attr("width",area_line.width)
     .attr("height",area_line.height);
 
@@ -24,7 +24,7 @@ area_line.x_axis = d3.svg.axis()
 area_line.y_axis = d3.svg.axis()
     .orient("left");
 
-//area_graph("area_main");
+area_graph("area_main");
 
 function area_graph(condition){
     $.ajax({
@@ -44,7 +44,7 @@ function area_graph(condition){
             main_id = nest_id.entries(data);
 
             console.log(main_id);
-/*            if(data.length){
+            if(data.length){
                 let date_10min= [];
 
                 let date_extent = d3.extent(data,(d)=>{
@@ -73,7 +73,7 @@ function area_graph(condition){
                 });
 
                 area_chart(date_10min,condition);
-            }*/
+            }
         },
         complete: function () {//请求完成的处理
         },
@@ -84,7 +84,7 @@ function area_graph(condition){
 
 function area_chart(data,condition) {
 
-    d3.select("#area_line").select('svg').html("");
+    d3.select("#spiral_line").select('svg').html("");
 
     // data.forEach((d)=>{
     //     d.value += d.value ;
@@ -105,7 +105,7 @@ function area_chart(data,condition) {
 
     let zoom = d3.behavior.zoom()
         .x(area_line.x_scale)
-        .scaleExtent([1, 16])
+        .scaleExtent([5, 16])
         .on("zoom", function () {
             area_line.svg.select(".x.axis").call(area_line.x_axis);
             g.selectAll('#area').attr("d", area);
@@ -165,7 +165,7 @@ function area_chart(data,condition) {
         .call(area_line.x_axis);
 
     area_line.svg.append("g")
-        .attr("transform","translate("+(100) +",20)")
+        .attr("transform","translate(0,20)")
         .attr("class", "x axis")
         .call(area_line.y_axis);
 

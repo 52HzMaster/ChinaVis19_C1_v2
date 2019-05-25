@@ -105,32 +105,32 @@ function initModel() {
 
         */
 
-        // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
-        // floor2.name = "floor2";
-        // floor2.position.x = 0;
-        // floor2.position.y = 7.5;
-        // floor2.position.z = 0;
+    // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
+    // floor2.name = "floor2";
+    // floor2.position.x = 0;
+    // floor2.position.y = 7.5;
+    // floor2.position.z = 0;
 
-        //scene.add(floor2);
+    //scene.add(floor2);
 
-        // let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
-        // scene.add(f2_edges);
+    // let f2_edges = new THREE.BoxHelper(floor2, "#FFFFFF");//设置边框，可以旋转
+    // scene.add(f2_edges);
 
-        // floor1_top floor2_bottom
-        // let floor2_bottom = new THREE.Mesh(new THREE.PlaneGeometry(30, 16));
-        // floor2_bottom.material.color.set("#444444");
-        // floor2_bottom.material.transparent = true;
-        // floor2_bottom.material.opacity = 0.3;
-        // floor2_bottom.rotation.x =  -0.5 * Math.PI;
-        // floor2_bottom.position.y = 5;
-        // floor2_bottom.position.z = 0;
-        //
-        // //告诉底部平面需要接收阴影
-        // floor2_bottom.receiveShadow = true;
-        // scene.add(floor2_bottom);
+    // floor1_top floor2_bottom
+    // let floor2_bottom = new THREE.Mesh(new THREE.PlaneGeometry(30, 16));
+    // floor2_bottom.material.color.set("#444444");
+    // floor2_bottom.material.transparent = true;
+    // floor2_bottom.material.opacity = 0.3;
+    // floor2_bottom.rotation.x =  -0.5 * Math.PI;
+    // floor2_bottom.position.y = 5;
+    // floor2_bottom.position.z = 0;
+    //
+    // //告诉底部平面需要接收阴影
+    // floor2_bottom.receiveShadow = true;
+    // scene.add(floor2_bottom);
 
-        //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-        let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, 10));
+    //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
+    /*    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, 10));
         f1_areaMain.name = "area_main";
         f1_areaMain.material.color.set(colorScale['area_main']);
         f1_areaMain.material.transparent = true;
@@ -139,10 +139,10 @@ function initModel() {
         f1_areaMain.position.x = 9;
         f1_areaMain.position.y = 0.26;
         f1_areaMain.position.z = -1;
-        scene.add(f1_areaMain);
+        scene.add(f1_areaMain);*/
 
-    let f1_areaMain_edges = new THREE.BoxHelper(f1_areaMain, "#FFFFFF");//设置边框，可以旋转
-    scene.add(f1_areaMain_edges);
+    /*    let f1_areaMain_edges = new THREE.BoxHelper(f1_areaMain, "#FFFFFF");//设置边框，可以旋转
+        scene.add(f1_areaMain_edges);
 
         let f1_areaDisc = new THREE.Mesh(new THREE.BoxGeometry(4, 0.5, 10));
         f1_areaDisc.name = "area_disc";
@@ -153,8 +153,128 @@ function initModel() {
         f1_areaDisc.position.x = 2;
         f1_areaDisc.position.y = 0.26;
         f1_areaDisc.position.z = -1;
-        scene.add(f1_areaDisc);
+        scene.add(f1_areaDisc);*/
 
+    let trackMaterial = [
+        new THREE.LineBasicMaterial({color : "#7eff39",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#ffb54f",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#ff7064",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#4b59ff",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#fff2f7",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#ff53de",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#59f7ff",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#ff176d",transparent: true,opacity: 0.2}),
+    ];
+
+    let date_extent = [new Date(2019,0,1,5),new Date(2019,0,1,21)];
+
+    let y_scale = d3.time.scale()
+        .domain(date_extent)
+        .range([0,20]);
+
+     $.ajax({
+         url: "/day1_test",    //请求的url地址
+         dataType: "json",   //返回格式为json
+         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+         type: "GET",   //请求方式
+         contentType: "application/json",
+         beforeSend: function () {//请求前的处理
+         },
+         success: function (data, textStatus) {
+             //console.log(data);
+             data.forEach((group,type)=>{
+             //let type = 0
+                 let type_group = new THREE.Group();
+                 type_group.name = 'group'+type;
+                 group.values.forEach((s)=>{
+                     $.ajax({
+                         url: "/day1_traj",    //请求的url地址
+                         dataType: "json",   //返回格式为json
+                         data:{id:s.id},
+                         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+                         type: "GET",   //请求方式
+                         contentType: "application/json",
+                         beforeSend: function () {//请求前的处理
+                         },
+                         success: function (data, textStatus) {
+                             let traj_data = JSON.parse(data[0].traj.replace(/'/g,'"'));
+                             traj_data.forEach((d)=>d.date = new Date(d.date));
+                             //console.log(traj_data);
+                             let point_3d = [];
+                             traj_data.forEach((d)=>{
+                                 point_3d.push(new THREE.Vector3( d.coor[1]-14.5, y_scale(d.date), d.coor[0]-7.5 ))
+                             });
+                             let geometry = new THREE.Geometry();
+                             geometry.vertices = new THREE.CatmullRomCurve3(point_3d).getPoints( 1000 );
+                             type_group.add(new THREE.Line(geometry, trackMaterial[type]));
+                         },
+                         complete: function () {//请求完成的处理
+                         },
+                         error: function () {//请求出错处理
+                         }
+                     });
+                 });
+                 scene.add(type_group);
+             });
+
+         },
+         complete: function () {//请求完成的处理
+         },
+         error: function () {//请求出错处理
+         }
+     });
+
+   /* $.ajax({
+        url: "/day1_group",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
+            //console.log(data);
+            //data.forEach((group,type)=>{
+            let type = 7
+                let type_group = new THREE.Group();
+                type_group.name = 'group'+type;
+                data[7].values.forEach((s)=>{
+                    $.ajax({
+                        url: "/day1_traj",    //请求的url地址
+                        dataType: "json",   //返回格式为json
+                        data:{id:s.id},
+                        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+                        type: "GET",   //请求方式
+                        contentType: "application/json",
+                        beforeSend: function () {//请求前的处理
+                        },
+                        success: function (data, textStatus) {
+                            let traj_data = JSON.parse(data[0].traj.replace(/'/g,'"'));
+                            traj_data.forEach((d)=>d.date = new Date(d.date));
+                            //console.log(traj_data);
+                            let point_3d = [];
+                            traj_data.forEach((d)=>{
+                                point_3d.push(new THREE.Vector3( d.coor[1]-14.5, y_scale(d.date), d.coor[0]-7.5 ))
+                            });
+                            let geometry = new THREE.Geometry();
+                            geometry.vertices = new THREE.CatmullRomCurve3(point_3d).getPoints( 1000 );
+                            type_group.add(new THREE.Line(geometry, trackMaterial[type]));
+                        },
+                        complete: function () {//请求完成的处理
+                        },
+                        error: function () {//请求出错处理
+                        }
+                    });
+                });
+                scene.add(type_group);
+            //});
+
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });*/
 }
 
 
@@ -239,8 +359,8 @@ function initControls() {
     //是否可以缩放
     controls.enableZoom = true;
     //是否自动旋转
-    controls.maxPolarAngle = Math.PI * 0.35;
-    controls.minPolarAngle = 0.1;
+    controls.maxPolarAngle = Math.PI;
+    controls.minPolarAngle = 0;
     //controls.enableRotate = false;
     //controls.autoRotate = true;
     //controls.autoRotateSpeed = 0.1;
@@ -294,11 +414,42 @@ function draw() {
 draw();
 //area_legend();
 //area legend
+
+let color_type = ["#7eff39","#ffb54f","#ff7064","#4b59ff","#fff2f7","#ff53de","#59f7ff","#ff176d"];
+
+let type_legend = d3.select("#main").append("div")
+    .style({
+        "position":"absolute",
+        "bottom":"4%",
+        "left":"4%",
+        "z-index":10
+    })
+    .append("svg")
+    .attr("width",300)
+    .attr("height",height)
+    .selectAll(".legend")
+    .data([0,1,2,3,4,5,6,7])
+    .enter()
+    .append("rect")
+    .attr("x",(d,i)=>i*30)
+    .attr("y",40)
+    .attr("width",20)
+    .attr("height",10)
+    .attr("fill",(d,i)=>color_type[i])
+    .style({
+        "cursor":"pointer"
+    })
+    .on("click",function (d,i) {
+        scene.getObjectByName('group'+i).visible = !scene.getObjectByName('group'+i).visible ;
+    })
+    .append("title")
+    .text((d,i)=>"type"+i);
+
 function area_legend() {
 
     let lg_size = height / 30;
 
-    let area_legend = d3.select("#floor").append("div")
+    let area_legend = d3.select("#mian").append("div")
         .attr("id","area_legend")
         .style({
             "position":"absolute",
