@@ -61,9 +61,9 @@ function initModel() {
     scene.add(helper_axes);
 
     //辅助工具2
-    // let helper = new THREE.GridHelper(50,100);
-    // helper.material.color = new THREE.Color("#62a6ff");
-    // scene.add(helper);
+    let helper = new THREE.GridHelper(50,100);
+    helper.material.color = new THREE.Color("#62a6ff");
+    scene.add(helper);
 
     //底部平面
     // let planeGeometry = new THREE.PlaneGeometry(50, 50);
@@ -74,11 +74,11 @@ function initModel() {
     // plane.position.y = 0;
     // scene.add(plane);
 
-    let plane_pic = new THREE.BoxGeometry( 30, 0, 16 );
-    let texture = new THREE.TextureLoader().load("img/floor1.jpg");
-    let plane_pic_material = new THREE.MeshBasicMaterial( { map:texture,transparent:true,opacity:0.5 } );
-    let pic_box = new THREE.Mesh( plane_pic, plane_pic_material );
-    scene.add(pic_box);
+    /*    let plane_pic = new THREE.BoxGeometry( 30, 0, 16 );
+        let texture = new THREE.TextureLoader().load("img/floor1.jpg");
+        let plane_pic_material = new THREE.MeshBasicMaterial( { map:texture,transparent:true,opacity:0.5 } );
+        let pic_box = new THREE.Mesh( plane_pic, plane_pic_material );
+        scene.add(pic_box);*/
 
     // 创建一个立方体
     //    v6----- v5
@@ -89,21 +89,20 @@ function initModel() {
     //  |/      |/
     //  v2------v3
 
-    /*
-        let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
-        floor1.name = "floor1";
-        floor1.material.color.set("#FFFFFF");
-        floor1.position.x = 0;
-        floor1.position.y = 1;
-        floor1.position.z = 0;
 
-        //scene.add(floor1);
+    let floor1 = new THREE.Mesh(new THREE.BoxGeometry(30, 0, 16));
+    floor1.name = "floor1";
+    floor1.material.color.set("#FFFFFF");
+    floor1.position.x = 0;
+    floor1.position.y = 0.01;
+    floor1.position.z = 0;
 
-        let f1_edges = new THREE.BoxHelper(floor1, "#FFFFFF");//设置边框，可以旋转
-        f1_edges.name = "f1_edges";
-        scene.add(f1_edges);
+    //scene.add(floor1);
 
-        */
+    let f1_edges = new THREE.BoxHelper(floor1, "#FFFFFF");//设置边框，可以旋转
+    f1_edges.name = "f1_edges";
+    scene.add(f1_edges);
+
 
     // let floor2 = new THREE.Mesh(new THREE.BoxGeometry(30, 2, 16));
     // floor2.name = "floor2";
@@ -156,7 +155,7 @@ function initModel() {
         scene.add(f1_areaDisc);*/
 
     let trackMaterial = [
-        new THREE.LineBasicMaterial({color : "#7eff39",transparent: true,opacity: 0.2}),
+        new THREE.LineBasicMaterial({color : "#7eff39",transparent: true,opacity: 0.8}),
         new THREE.LineBasicMaterial({color : "#ffb54f",transparent: true,opacity: 0.2}),
         new THREE.LineBasicMaterial({color : "#ff7064",transparent: true,opacity: 0.2}),
         new THREE.LineBasicMaterial({color : "#4b59ff",transparent: true,opacity: 0.2}),
@@ -166,65 +165,25 @@ function initModel() {
         new THREE.LineBasicMaterial({color : "#ff176d",transparent: true,opacity: 0.2}),
     ];
 
-    let date_extent = [new Date(2019,0,1,5),new Date(2019,0,1,21)];
+        let date_extent = [new Date(2019,0,1,7),new Date(2019,0,1,18)];
 
-    let y_scale = d3.time.scale()
-        .domain(date_extent)
-        .range([0,20]);
+        let y_scale = d3.time.scale()
+            .domain(date_extent)
+            .range([0,20]);
 
-     $.ajax({
-         url: "/day1_test",    //请求的url地址
-         dataType: "json",   //返回格式为json
-         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-         type: "GET",   //请求方式
-         contentType: "application/json",
-         beforeSend: function () {//请求前的处理
-         },
-         success: function (data, textStatus) {
-             //console.log(data);
-             data.forEach((group,type)=>{
-             //let type = 0
-                 let type_group = new THREE.Group();
-                 type_group.name = 'group'+type;
-                 group.values.forEach((s)=>{
-                     $.ajax({
-                         url: "/day1_traj",    //请求的url地址
-                         dataType: "json",   //返回格式为json
-                         data:{id:s.id},
-                         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-                         type: "GET",   //请求方式
-                         contentType: "application/json",
-                         beforeSend: function () {//请求前的处理
-                         },
-                         success: function (data, textStatus) {
-                             let traj_data = JSON.parse(data[0].traj.replace(/'/g,'"'));
-                             traj_data.forEach((d)=>d.date = new Date(d.date));
-                             //console.log(traj_data);
-                             let point_3d = [];
-                             traj_data.forEach((d)=>{
-                                 point_3d.push(new THREE.Vector3( d.coor[1]-14.5, y_scale(d.date), d.coor[0]-7.5 ))
-                             });
-                             let geometry = new THREE.Geometry();
-                             geometry.vertices = new THREE.CatmullRomCurve3(point_3d).getPoints( 1000 );
-                             type_group.add(new THREE.Line(geometry, trackMaterial[type]));
-                         },
-                         complete: function () {//请求完成的处理
-                         },
-                         error: function () {//请求出错处理
-                         }
-                     });
-                 });
-                 scene.add(type_group);
-             });
+/*        let test = "[{'date': '2019-1-1 14:03:00', 'coor': [15, 2], 'floor': 1}, {'date': '2019-1-1 14:03:08', 'coor': [14, 2], 'floor': 1}, {'date': '2019-1-1 14:03:16', 'coor': [13, 3], 'floor': 1}, {'date': '2019-1-1 14:07:19', 'coor': [14, 3], 'floor': 1}, {'date': '2019-1-1 14:07:26', 'coor': [14, 4], 'floor': 1}, {'date': '2019-1-1 14:07:33', 'coor': [13, 5], 'floor': 1}, {'date': '2019-1-1 14:07:45', 'coor': [12, 6], 'floor': 1}, {'date': '2019-1-1 14:07:55', 'coor': [11, 6], 'floor': 1}, {'date': '2019-1-1 14:08:03', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 14:08:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 14:08:22', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 14:08:48', 'coor': [8, 5], 'floor': 1}, {'date': '2019-1-1 15:54:49', 'coor': [8, 6], 'floor': 1}, {'date': '2019-1-1 15:55:05', 'coor': [8, 7], 'floor': 1}, {'date': '2019-1-1 15:55:18', 'coor': [7, 8], 'floor': 1}, {'date': '2019-1-1 15:55:32', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:09:49', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:10:04', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:10:20', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:10:32', 'coor': [4, 10], 'floor': 1}, {'date': '2019-1-1 16:15:19', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:15:31', 'coor': [3, 8], 'floor': 1}, {'date': '2019-1-1 16:25:39', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:25:47', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:25:57', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:26:05', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:26:21', 'coor': [8, 8], 'floor': 1}, {'date': '2019-1-1 16:26:29', 'coor': [9, 8], 'floor': 1}, {'date': '2019-1-1 16:26:37', 'coor': [10, 9], 'floor': 1}, {'date': '2019-1-1 16:26:49', 'coor': [11, 9], 'floor': 1}, {'date': '2019-1-1 16:26:59', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:27:07', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:27:15', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:27:23', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:27:32', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:27:48', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:27:56', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:28:04', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:28:12', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:28:20', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:28:28', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:28:45', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:28:56', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:29:10', 'coor': [14, 2], 'floor': 2}, {'date': '2019-1-1 16:29:22', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:29:35', 'coor': [15, 1], 'floor': 2}, {'date': '2019-1-1 16:30:29', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:30:40', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:30:54', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:31:11', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:31:53', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:32:27', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:32:51', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:33:15', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:33:38', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:34:10', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:34:19', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:34:35', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:35:10', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 16:35:20', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:35:40', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:35:53', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 16:36:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 16:36:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 16:36:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 16:36:43', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 16:37:07', 'coor': [9, 3], 'floor': 1}, {'date': '2019-1-1 17:21:59', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 17:22:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 17:22:38', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 17:22:53', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 17:23:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 17:23:10', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 17:23:18', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 17:23:26', 'coor': [12, 10], 'floor': 1}, {'date': '2019-1-1 17:23:41', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 17:23:51', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 17:23:59', 'coor': [14, 12], 'floor': 1}, {'date': '2019-1-1 17:24:07', 'coor': [14, 13], 'floor': 1}, {'date': '2019-1-1 17:24:17', 'coor': [14, 14], 'floor': 1}, {'date': '2019-1-1 17:24:27', 'coor': [14, 15], 'floor': 1}, {'date': '2019-1-1 17:24:40', 'coor': [14, 16], 'floor': 1}, {'date': '2019-1-1 17:24:47', 'coor': [14, 17], 'floor': 1}, {'date': '2019-1-1 17:24:55', 'coor': [15, 17], 'floor': 1}]"
 
-         },
-         complete: function () {//请求完成的处理
-         },
-         error: function () {//请求出错处理
-         }
-     });
-
-   /* $.ajax({
+        let traj_data = JSON.parse(test.replace(/'/g,'"'));
+        traj_data.forEach((d)=>d.date = new Date(d.date));
+        //console.log(traj_data);
+        let point_3d = [];
+        traj_data.forEach((d)=>{
+            point_3d.push(new THREE.Vector3( d.coor[1]-14.5, y_scale(d.date), d.coor[0]-7.5 ))
+        });
+        let geometry = new THREE.Geometry();
+        geometry.vertices = new THREE.CatmullRomCurve3(point_3d).getPoints( 1000 );
+        scene.add(new THREE.Line(geometry, trackMaterial[0]));*/
+        $.ajax({
         url: "/day1_group",    //请求的url地址
         dataType: "json",   //返回格式为json
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -234,11 +193,11 @@ function initModel() {
         },
         success: function (data, textStatus) {
             //console.log(data);
-            //data.forEach((group,type)=>{
-            let type = 7
+            data.forEach((group,type)=>{
+            //let type = 7;
                 let type_group = new THREE.Group();
                 type_group.name = 'group'+type;
-                data[7].values.forEach((s)=>{
+                group.values.forEach((s)=>{
                     $.ajax({
                         url: "/day1_traj",    //请求的url地址
                         dataType: "json",   //返回格式为json
@@ -267,14 +226,84 @@ function initModel() {
                     });
                 });
                 scene.add(type_group);
-            //});
+            });
 
         },
         complete: function () {//请求完成的处理
         },
         error: function () {//请求出错处理
         }
-    });*/
+    });
+
+   /* let shape = new THREE.Shape();
+    let points = [
+        new THREE.Vector2(0,4),
+        new THREE.Vector2(2,0),
+
+    ];
+    shape.splineThru(points);//顶点带入样条插值计算函数
+    let splinePoints = shape.getPoints(20);//插值计算细分数20
+    let geometry = new THREE.LatheGeometry(splinePoints,300);
+
+    let cols = [{
+        stop: 0,
+        color: new THREE.Color("#FF5252")
+    }, {
+        stop: .25,
+        color: new THREE.Color("#FB8C00")
+    }, {
+        stop: .5,
+        color: new THREE.Color("#FFBF3A")
+    }, {
+        stop: .75,
+        color: new THREE.Color("#9CD523")
+    }, {
+        stop: 1,
+        color: new THREE.Color("#23D561")
+    }];
+
+    setGradient(geometry, cols, 'y', true);
+
+    function setGradient(geometry, colors, axis, reverse) {
+
+        geometry.computeBoundingBox();
+
+        let bbox = geometry.boundingBox;
+        let size = new THREE.Vector3().subVectors(bbox.max, bbox.min);
+
+        let vertexIndices = ['a', 'b', 'c'];
+        let face, vertex, normalized = new THREE.Vector3(),
+            normalizedAxis = 0;
+
+        for (let c = 0; c < colors.length - 1; c++) {
+
+            let colorDiff = colors[c + 1].stop - colors[c].stop;
+
+            for (let i = 0; i < geometry.faces.length; i++) {
+                face = geometry.faces[i];
+                for (let v = 0; v < 3; v++) {
+                    vertex = geometry.vertices[face[vertexIndices[v]]];
+                    normalizedAxis = normalized.subVectors(vertex, bbox.min).divide(size)[axis];
+                    if (reverse) {
+                        normalizedAxis = 1 - normalizedAxis;
+                    }
+                    if (normalizedAxis >= colors[c].stop && normalizedAxis <= colors[c + 1].stop) {
+                        let localNormalizedAxis = (normalizedAxis - colors[c].stop) / colorDiff;
+                        face.vertexColors[v] = colors[c].color.clone().lerp(colors[c + 1].color, localNormalizedAxis);
+                    }
+                }
+            }
+        }
+    }
+
+    let mat = new THREE.MeshBasicMaterial({
+        vertexColors: THREE.VertexColors,
+        transparent:true,
+        opacity:0.4,
+        wireframe: true
+    });
+    let mesh=new THREE.Mesh(geometry,mat);//旋转网格模型对象
+    scene.add(mesh);//旋转网格模型添加到场景中*/
 }
 
 
@@ -355,7 +384,7 @@ function initControls() {
     // 使动画循环使用时阻尼或自转 意思是否有惯性
     controls.enableDamping = true;
     //动态阻尼系数 就是鼠标拖拽旋转灵敏度
-    //controls.dampingFactor = 0.25;
+    controls.dampingFactor = 0.25;
     //是否可以缩放
     controls.enableZoom = true;
     //是否自动旋转
@@ -369,7 +398,7 @@ function initControls() {
     //设置相机距离原点的最远距离
     controls.maxDistance = 300;
     //是否开启右键拖拽
-    controls.enablePan = false;
+    controls.enablePan = true;
 
 }
 
