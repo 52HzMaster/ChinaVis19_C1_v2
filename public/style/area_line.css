@@ -1,0 +1,25 @@
+#area_line{
+    position: absolute;
+    box-shadow:20px 20px 50px #302b63 inset;
+    top: 76%;
+    left: 21%;
+    z-index: 20;
+}
+
+.brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+.axis line, .axis path {
+    fill: none;
+    stroke: #ffffff;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    cursor: move;
+    fill: #FFFFFF;
+    font-size: 8px;
+}

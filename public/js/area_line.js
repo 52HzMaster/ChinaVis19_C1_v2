@@ -2,11 +2,11 @@
  * Created by Liang Liu on 2019/3/26.
  */
 let area_line = {};
-let area = $("#spiral_line");
+let area = $("#area_line");
 area_line.width = area.width();
 area_line.height = area.height();
 
-area_line.svg = d3.select("#spiral_line").append("svg")
+area_line.svg = d3.select("#area_line").append("svg")
     .attr("width",area_line.width)
     .attr("height",area_line.height);
 
@@ -24,56 +24,45 @@ area_line.x_axis = d3.svg.axis()
 area_line.y_axis = d3.svg.axis()
     .orient("left");
 
-area_graph("area_main");
+area_graph("area_A");
+
+area_line.conference = {
+    area_A:[],
+    area_B:[],
+    area_C:[],
+    area_D:[],
+    area_main:[]
+};
 
 function area_graph(condition){
     $.ajax({
-        url: day_url+"_area",    //请求的url地址
+        url: day_url+"_date",    //请求的url地址
         dataType: "json",   //返回格式为json
-        data:{area:condition.toLocaleString()},
+        data:{
+            date_start:new Date(2019,0,1,8,0),
+            date_end:new Date(2019,0,1,8,1)
+        },
         async: true, //请求是否异步，默认为异步，这也是ajax重要特性
         type: "GET",   //请求方式
         contentType: "application/json",
         beforeSend: function () {//请求前的处理
         },
         success: function (data, textStatus) {
-            console.log(data);
-            let main_id = [];
-            let nest_id = d3.nest().key((d)=>d.id);
-
-            main_id = nest_id.entries(data);
-
-            console.log(main_id);
-            if(data.length){
-                let date_10min= [];
-
-                let date_extent = d3.extent(data,(d)=>{
-                    d.date = new Date(d.date);
-                    return d.date;
-                });
-
-                date_extent[0].setMinutes(0);
-                date_extent[0].setSeconds(0);
-
-                date_extent[1].setHours(date_extent[1].getHours()+1);
-                date_extent[1].setMinutes(0);
-                date_extent[1].setSeconds(0);
-
-                for(let i = date_extent[0].getTime();i<date_extent[1].getTime();i+=600000){
-                    date_10min.push({date:new Date(i),value:0});
+            data.forEach((d)=>{
+                switch (d.area){
+                    case "area_A":
+                        break;
+                    case "area_B":
+                        break;
+                    case "area_C":
+                        break;
+                    case "area_D":
+                        break;
+                    case "area_main":
+                        break;
                 }
-
-                data.forEach((d)=>{
-                    for(let i=0;i<date_10min.length-1;i++) {
-                        if((d.date.getTime()<=date_10min[i+1].date.getTime())) {
-                            date_10min[i].value++;
-                            break;
-                        }
-                    }
-                });
-
-                area_chart(date_10min,condition);
-            }
+            });
+            console.log(data);
         },
         complete: function () {//请求完成的处理
         },
@@ -84,7 +73,7 @@ function area_graph(condition){
 
 function area_chart(data,condition) {
 
-    d3.select("#spiral_line").select('svg').html("");
+    d3.select("#area_line").select('svg').html("");
 
     // data.forEach((d)=>{
     //     d.value += d.value ;

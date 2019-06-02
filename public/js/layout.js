@@ -105,9 +105,9 @@ function Layout() {
     main.style.width = width*0.99  + 'px';
     main.style.height = height*0.89  + 'px';
 
-    var para = document.getElementById('para_coor');
-    para.style.width = width*0.5  + 'px';
-    para.style.height = height*0.2  + 'px';
+    var area_line = document.getElementById("area_line");
+    area_line.style.width = width*0.5  + 'px';
+    area_line.style.height = height*0.2  + 'px';
 
     d3.select("#header").append("div")
         .attr("class","header_left")
