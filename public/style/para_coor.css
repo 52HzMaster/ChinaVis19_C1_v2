@@ -1,8 +1,9 @@
-#time_line{
+#para_coor{
     position: absolute;
     box-shadow:20px 20px 50px #302b63 inset;
     top: 76%;
     left: 21%;
+    z-index: 20;
 }
 
 .background path {
@@ -34,4 +35,6 @@
 
 .axis text {
     cursor: move;
+    fill: #FFFFFF;
+    font-size: 8px;
 }

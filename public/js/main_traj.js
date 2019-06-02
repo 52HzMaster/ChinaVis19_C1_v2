@@ -3,9 +3,9 @@
  */
 
 
-let floor = $("#main");
-let gridSize_w = (floor.width() ) / 30;
-let gridSize_h = (floor.height() ) / 16;
+let main = $("#main");
+let gridSize_w = (main.width() ) / 30;
+let gridSize_h = (main.height() ) / 16;
 
 let card_x = 30;
 let card_y = 16;
@@ -64,6 +64,7 @@ let line = d3.svg.line()
  ====================================================================*/
 
 draw_floor();
+draw_sensor_f1();
 draw_area_f1();
 //draw_area_f2();
 
@@ -87,7 +88,26 @@ function draw_floor() {
             "fill": "#999999"
         })
 }
-
+function draw_sensor_f1() {
+    let sensor_f1 = floor_svg.append("g").selectAll(".grid")
+        .data(sensor_data[0].values)
+        .enter()
+        .append("rect")
+        .attr("class", "grid")
+        .attr("id",(d)=> "sensor_"+d.sid)
+        .attr("x", function(d) { return d.y * gridSize_w; } )
+        .attr("y", function(d) {return d.x * gridSize_h; })
+        //.attr("rx",2)
+        //.attr("ry",2)
+        .attr("width", gridSize_w)
+        .attr("height", gridSize_h)
+        .style({
+            "fill":"none"
+        })
+        .on("click",(d)=>{
+            console.log(d.x,d.y);
+        });
+}
 function draw_area_f1() {
     floor1_area.forEach((area) => {
         floor_svg.append("g").attr("class", "" + area)
@@ -247,7 +267,6 @@ function traj_chart(id) {
         }
     });
 }
-
 function all_traj_chart(id) {
     $.ajax({
         url: "/day1_pro_traj",    //请求的url地址
@@ -274,7 +293,6 @@ function all_traj_chart(id) {
         }
     });
 }
-
 function draw_traj(data,id) {
 
     data.forEach((d, i) => {
@@ -299,7 +317,6 @@ function draw_traj(data,id) {
         }
     });
 }
-
 function draw_all_traj(data, id) {
 
     floor_svg.append("path")
@@ -327,57 +344,94 @@ function draw_all_traj(data, id) {
 
 }
 
+d3.select("#main").append("div")
+    .attr("id","heatmap")
+    .style({
+        "width":main.width()+'px',
+        "height":main.height()+'px',
+        "pointer-events":"none",
+        "z-index":20
+        //"display":"none"
+    });
 
-//test1();
-function test1() {
-    let chart = $("#chart");
+let heatmapInstance = h337.create({
+    container: document.querySelector('#heatmap'),
+    gradient:{0.1: "#20C2E1", 0.3: "#23D561", 0.5: "#F1E229", 1.0: "#ff1815"},
+    radius:65,
+    blur:1
+});
 
-    let margin = {top: 1, right: 1, bottom: 6, left: 1},
-        width = chart.width() - margin.left - margin.right,
-        height = chart.height() - margin.top - margin.bottom;
+let extent = [];
+for(let i = new Date(2019,0,1,7,0,0).getTime();i<=new Date(2019,0,1,18,0,0).getTime();i += 30000) {
+    let date_start = new Date(i);
+    let date_end = new Date(i + 30000);
+    extent.push([date_start,date_end]);
+}
 
-    let svg = d3.select("#chart").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
-
-    //26
-    let areas = [
-        "area_A","area_B","area_C","area_D",
-        "area_sign","area_poster",
-        "area_ladder1","area_ladder2","area_ladder3","area_ladder4",
-        "area_wc1","area_wc2","area_wc3",
-        "area_room1","area_room2","area_room3","area_room4","area_room5","area_room6",
-        "area_serve", "area_disc","area_main",
-        "area_canteen","area_leisure",
-        "area_in", "area_out"
-    ];
-
-    let drag = d3.behavior.drag()
-        .on("drag", dragmove);
-
-    function dragmove() {
-        d3.select(this)
-        //.attr("x", d3.event.x - 30 )
-            .attr("y", d3.event.y - 50);
+let index = 0;
+let heatmap_interval = setInterval(function () {
+    if(index<=extent.length-1){
+        heatmap(extent[index]);
     }
+    else
+        clearInterval(heatmap_interval);
+    index++;
+},200);
 
-    svg.append("rect")
-        .attr("x",300)
-        .attr("y",500)
-        .attr("width",60)
-        .attr("height",100)
-        .attr("fill","#41ff40")
-        .call(drag);
+let  sensor_f1 = {};
+sensor_data[0].values.forEach((d)=>{
+    sensor_f1[d.sid]=0;
+});
 
-    svg.append("rect")
-        .attr("x",600)
-        .attr("y",500)
-        .attr("width",60)
-        .attr("height",100)
-        .attr("fill","#ffae12")
-        .call(drag);
+function heatmap(date_extent){
+    $.ajax({
+        url: "day1_pro_date",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        data: {
+            date_start: date_extent[0],
+            date_end: date_extent[1]
+        },
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
 
-    svg.append("path")
-        .attr("d","M 360 500 L 600 500 L 600 600 L 360 600")
-        .attr("fill","#FFFFFF");
+            /*        data.forEach((d)=>{
+                        d.date = new Date(d.date);
+                    });*/
+            let nest_sensor = d3.nest().key((d) => d.sid);
+
+            let test = nest_sensor.entries(data);
+            console.log(test);
+            let points = [];
+            let max = 0;
+            test.forEach((d)=>{
+
+                let floor = d.key.slice(0,1);
+                if(floor === '1'){
+                    max = Math.max(max,d.values.length);
+                    let point = {
+                        y:parseInt(d.key.slice(1,3))*gridSize_h,
+                        x:parseInt(d.key.slice(3,5))*gridSize_w,
+                        value: d.values.length
+                    };
+                    points.push(point);
+                }
+            });
+
+            let heat_data = {
+                max:max,
+                data: points
+            };
+
+            heatmapInstance.setData(heat_data);
+
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });
 }

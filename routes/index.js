@@ -225,13 +225,9 @@ router.get('/day1_pro_date', function(req, res, next) {
         let end = new Date(req.query.date_end);
         end.setHours(end.getHours()+8)
         console.log(start,end);
-        collection.find({date:{$gte:start,$lte:end},area:{$ne:"area_other"}, $and:[{area:{$ne:"area_ladder1"}},{area:{$ne:"area_ladder2"}},{area:{$ne:"area_ladder3"}},{area:{$ne:"area_ladder4"}}]},{
+        collection.find({date:{$gte:start,$lte:end}},{
             "_id":0,
-            'sid':0,
-            'floor':0,
             "stay":0,
-            "x":0,
-            "y":0
         }).toArray(function(err, result) {
             if(err)
             {

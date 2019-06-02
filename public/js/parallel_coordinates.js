@@ -2,7 +2,7 @@
  * Created by Liang Liu on 2019/4/23.
  */
 
-/*$.ajax({
+$.ajax({
     url: "/day1_stay",    //请求的url地址
     dataType: "json",   //返回格式为json
     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -17,9 +17,9 @@
     },
     error: function () {//请求出错处理
     }
-})*/
+})
 
-d3.csv("data/cluster_data/day1_group.csv",(data)=>{
+/*d3.csv("data/cluster_data/day1_group.csv",(data)=>{
     //console.log(data);
     let group = d3.nest().key((d)=>d.group).entries(data);
     //console.log(group);
@@ -49,14 +49,14 @@ d3.csv("data/cluster_data/day1_group.csv",(data)=>{
         });
 
     });
-});
+});*/
     /*d3.csv("data/day1_stay.csv",(data)=>para_coor(data));*/
 
     function para_coor(data) {
 
         let _charts = {};
 
-        let chart = $("#time_line");
+        let chart = $("#para_coor");
 
         _charts.areas = [
             "area_A","area_B","area_C","area_D",
@@ -72,7 +72,7 @@ d3.csv("data/cluster_data/day1_group.csv",(data)=>{
         _charts.width = chart.width()  - _charts.margin.left - _charts.margin.right;
         _charts.height = chart.height() - _charts.margin.top - _charts.margin.bottom;
 
-        _charts.svg = d3.select("#time_line").append("svg")
+        _charts.svg = d3.select("#para_coor").append("svg")
             .attr("width", _charts.width + _charts.margin.left + _charts.margin.right)
             .attr("height", _charts.height + _charts.margin.top + _charts.margin.bottom);
 
