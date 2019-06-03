@@ -55,10 +55,10 @@ option = {
     },
     series : [
         {
-            name: '访问来源',
+            name: '会场人员分类',
             type: 'pie',
-            radius : '55%',
-            center: ['50%', '60%'],
+            radius : '57%',
+            center: ['50%', '50%'],
             data:day2data,
             itemStyle: {
                 emphasis: {

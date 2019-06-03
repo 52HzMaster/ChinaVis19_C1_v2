@@ -26,13 +26,10 @@ area_line.y_axis = d3.svg.axis()
 
 area_graph("area_A");
 
-area_line.conference = {
-    area_A:[],
-    area_B:[],
-    area_C:[],
-    area_D:[],
-    area_main:[]
-};
+
+   let area_A = [];
+   let other = [];
+
 
 function area_graph(condition){
     $.ajax({
@@ -49,18 +46,7 @@ function area_graph(condition){
         },
         success: function (data, textStatus) {
             data.forEach((d)=>{
-                switch (d.area){
-                    case "area_A":
-                        break;
-                    case "area_B":
-                        break;
-                    case "area_C":
-                        break;
-                    case "area_D":
-                        break;
-                    case "area_main":
-                        break;
-                }
+
             });
             console.log(data);
         },

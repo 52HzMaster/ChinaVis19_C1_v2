@@ -13,7 +13,7 @@ var heatmapInstance;
 function initRender() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(width, height);
-    renderer.setClearColor('#fff9ec',1);
+    renderer.setClearColor('#fffff1',1);
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
@@ -58,7 +58,7 @@ function initLight() {
 function initModel() {
 
     //辅助工具1
-    let helper_axes = new THREE.AxisHelper(50);
+    let helper_axes = new THREE.AxisHelper(40);
     helper_axes.position.set(0, 0, 0);
     scene.add(helper_axes);
 
@@ -77,7 +77,7 @@ function initModel() {
     // scene.add(plane);
 
     let plane = new THREE.BoxGeometry( 30, 0, 16 );
-    let plane_material = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load("img/floor1.jpg"),transparent:true,opacity:0.5 } );
+    let plane_material = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load("img/floor1.jpg"),transparent:true,opacity:0.8 } );
     let pic = new THREE.Mesh( plane, plane_material );
     scene.add(pic);
 

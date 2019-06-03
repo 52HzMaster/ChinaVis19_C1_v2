@@ -1,0 +1,34 @@
+.dg.main.a {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    width: 100%;
+    height: auto;
+    margin-right: 0 !important;
+}
+
+.close-button.close-bottom {
+    width: 100% !important;
+    display:none;
+}
+
+.save-row {
+    width: 100% !important;
+}
+
+.dg .c select {
+    margin-top: 3px;
+    width: auto !important;
+    color: #303030;
+}
+
+.gears {
+    width: 8% !important;
+    height: 60% !important;
+}
+
+.dg .c input[type=text]{
+    height: 21px;
+    margin-top: 3px;
+}

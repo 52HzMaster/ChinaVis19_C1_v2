@@ -97,51 +97,25 @@ function Layout() {
     var width = all_view.width();
     var height = all_view.height();
 
-    var header = document.getElementById('header');
-    header.style.width = width * 0.99  + 'px';
-    header.style.height = height * 0.08 + 'px';
+    var control = document.getElementById('control');
+    control.style.width = width*0.2  + 'px';
+    control.style.height = height*0.3  + 'px';
 
     var main = document.getElementById('main');
-    main.style.width = width*0.99  + 'px';
-    main.style.height = height*0.89  + 'px';
+    main.style.width = width*0.5  + 'px';
+    main.style.height = height*0.6  + 'px';
 
     var para_coor = document.getElementById("para_coor");
-    para_coor.style.width = width*0.5  + 'px';
-    para_coor.style.height = height*0.2  + 'px';
+    para_coor.style.width = width*0.7  + 'px';
+    para_coor.style.height = height*0.3  + 'px';
 
     var bar = document.getElementById("bar");
-    bar.style.width = width*0.25  + 'px';
-    bar.style.height = height*0.25  + 'px';
+    bar.style.width = width*0.3  + 'px';
+    bar.style.height = height*0.4  + 'px';
 
     var plot = document.getElementById("plot");
-    plot.style.width = width*0.5  + 'px';
+    plot.style.width = width*0.3  + 'px';
     plot.style.height = height*0.3  + 'px';
-
-    d3.select("#header").append("div")
-        .attr("class","header_left")
-        .append("svg")
-        .attr("width",width * 0.4 -10)
-        .attr("height",38)
-        .append("image")
-        .attr("x",0)
-        .attr("y",0)
-        .attr("width",width * 0.4 -10)
-        .attr("height",38)
-        .attr("xlink:href","img/1.png");
-
-    d3.select("#header").append("div")
-        .attr("class","header_right")
-        .append("svg")
-        .attr("width",width * 0.4 -10)
-        .attr("height",38)
-        .append("image")
-        .attr("x",0)
-        .attr("y",0)
-        .attr("width",width * 0.4 -10)
-        .attr("height",38)
-        .attr("xlink:href","img/2.png");
-
-    d3.select(".header_title").style("font-size",width/60+"px");
 
 }
 

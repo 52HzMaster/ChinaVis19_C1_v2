@@ -95,7 +95,7 @@ $.ajax({
         _charts.y_axis = d3.svg.axis()
             .orient("left");
 
-        _charts.line = d3.svg.line()//.interpolate("basis");
+        _charts.line = d3.svg.line().interpolate("monotone");
 
         _charts.svg.append("g")
             .attr("class", "x axis")
