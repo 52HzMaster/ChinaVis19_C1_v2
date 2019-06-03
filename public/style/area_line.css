@@ -4,6 +4,7 @@
     top: 76%;
     left: 21%;
     z-index: 20;
+    display: none;
 }
 
 .brush .extent {
