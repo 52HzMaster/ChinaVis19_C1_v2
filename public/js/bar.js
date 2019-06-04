@@ -57,7 +57,7 @@ option = {
         {
             name: '会场人员分类',
             type: 'pie',
-            radius : '57%',
+            radius : ['50%',"70%"],
             center: ['50%', '50%'],
             data:day2data,
             itemStyle: {
