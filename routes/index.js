@@ -330,11 +330,11 @@ router.get('/day1_stay', function(req, res, next) {
 });
 
 //query day1_group
-router.get('/day1_group', function(req, res, next) {
+router.get('/day1_sensor', function(req, res, next) {
 
     let selectData = function(db, callback) {
         //连接到表
-        let collection = db.collection('day1_group');
+        let collection = db.collection('day1_sensor');
         collection.find({},{
             "_id":0
         }).toArray(function(err, result) {
@@ -349,8 +349,10 @@ router.get('/day1_group', function(req, res, next) {
 
     MongoClient.connect(DB_CONN_STR, function(err, db) {
         selectData(db, function(result) {
-            let group = d3.nest().key((d)=>d.group).entries(result);
-            res.json(group);
+            result.forEach((d)=>{
+                d.data =  JSON.parse(d.data);
+            });
+            res.json(result);
             db.close();
         });
     });
@@ -366,6 +368,40 @@ router.get('/day1_traj', function(req, res, next) {
         let collection = db.collection('day1_traj');
         collection.find({id:parseInt(req.query.id)},{
             "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//
+router.get('/day1_pro_date', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day1_pro');
+        //查询数据
+        let start = new Date(req.query.date_start);
+        start.setHours(start.getHours()+8)
+        let end = new Date(req.query.date_end);
+        end.setHours(end.getHours()+8)
+        console.log(start,end);
+        collection.find({date:{$gte:start,$lte:end}},{
+            "_id":0,
+            "stay":0,
         }).toArray(function(err, result) {
             if(err)
             {
