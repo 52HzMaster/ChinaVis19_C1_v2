@@ -736,4 +736,8 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'ChinaVis19_C1' });
 });
 
+router.get('/test', function(req, res, next) {
+    res.render('test', { title: 'ChinaVis19_C1' });
+});
+
 module.exports = router;
