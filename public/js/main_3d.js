@@ -8,7 +8,7 @@ let floor_wh = $("#main");
 let width = floor_wh.width();
 let height = floor_wh.height();
 
-var heatmapInstance;
+let heatmapInstance;
 
 function initRender() {
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -26,7 +26,7 @@ function initCamera() {
 
     camera = new THREE.PerspectiveCamera(45,width/height,10,100);
     //camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 1, 100);
-    camera.position.set( 0, 40,10 );
+    camera.position.set( 0, 30,0 );
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     scene.add(camera);
 }
@@ -63,7 +63,7 @@ function initModel() {
     scene.add(helper_axes);
 
     //辅助工具2
-    // let helper = new THREE.GridHelper(50,100);
+    // let helper = new THREE.GridHelper(15,30);
     // helper.material.color = new THREE.Color("#62a6ff");
     // scene.add(helper);
 
@@ -81,11 +81,12 @@ function initModel() {
     let pic = new THREE.Mesh( plane, plane_material );
     scene.add(pic);
 
-    /*    let plane2 = new THREE.BoxGeometry( 30, 0, 16 );
-     let plane2_material = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load("img/floor2.jpg"),transparent:true,opacity:0.8 } );
-     let pic2 = new THREE.Mesh( plane2, plane2_material );
-     pic2.position.y = 10;
-     scene.add(pic2);*/
+    let plane2 = new THREE.BoxGeometry( 30, 0, 16 );
+    let plane2_material = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load("img/floor2.jpg"),transparent:true,opacity:0.8 } );
+    let pic2 = new THREE.Mesh( plane2, plane2_material );
+    pic2.position.y = 0.01;
+    pic2.position.z = -30;
+    scene.add(pic2);
 
     // 创建一个立方体
     //    v6----- v5
@@ -140,16 +141,16 @@ function initModel() {
     // scene.add(floor2_bottom);
 
     //立方体 （x轴宽度，y轴高度，z轴深度，沿宽面分段数，沿高度面分段数，沿深度面分段数）
-    // let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 1, 10));
-    // f1_areaMain.name = "area_main";
-    // f1_areaMain.material.color.set(colorScale['area_main']);
-    // f1_areaMain.material.transparent = true;
-    // f1_areaMain.material.needsUpdate = true;
-    // f1_areaMain.material.opacity = 0.7;
-    // f1_areaMain.position.x = 9;
-    // f1_areaMain.position.y = 0.51;
-    // f1_areaMain.position.z = -1;
-    // scene.add(f1_areaMain);
+    let f1_areaMain = new THREE.Mesh(new THREE.BoxGeometry(10, 1, 10));
+    f1_areaMain.name = "area_main";
+    f1_areaMain.material.color.set(colorScale['area_main']);
+    f1_areaMain.material.transparent = true;
+    f1_areaMain.material.needsUpdate = true;
+    f1_areaMain.material.opacity = 0.7;
+    f1_areaMain.position.x = 9;
+    f1_areaMain.position.y = 0.51;
+    f1_areaMain.position.z = -1;
+    scene.add(f1_areaMain);
     //
     // let f1_areaA = new THREE.Mesh(new THREE.BoxGeometry(5, 1, 2));
     // f1_areaA.name = "area_A";
@@ -360,6 +361,40 @@ function initModel() {
      f2_room6.position.z = -1;
      scene.add(f2_room6);*/
 
+    let canvas_text = document.getElementById("number");
+    let ctx = canvas_text.getContext("2d");
+    let x = 64;
+    let y = 64;
+    let radius = 20;
+    let startAngle = 0;
+    let endAngle = Math.PI * 2;
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0)";
+    ctx.beginPath();
+    ctx.arc(x, y, radius, startAngle, endAngle);
+    ctx.fill();
+
+    ctx.fillStyle = "#1e1e1e";
+    ctx.font = "bold 24px Roboto Condensed";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "right";
+    ctx.fillText("主会场", x, y);
+
+    let numberTexture = new THREE.CanvasTexture(document.querySelector("#number"));
+    let spriteMaterial = new THREE.SpriteMaterial({
+        map: numberTexture,
+        alphaTest: 0.5,
+        transparent: true,
+        opacity:0.7,
+        depthTest: false,
+        depthWrite: false
+    });
+
+    let sprite = new THREE.Sprite(spriteMaterial);
+    sprite.position.set(8, 1, 0);
+    sprite.scale.set(2, 2, 2);
+    scene.add(sprite);
+
     let trackMaterial = [
         new THREE.LineBasicMaterial({color : "#7eff39",transparent: true,opacity: 0.8}),
         new THREE.LineBasicMaterial({color : "#ffb54f",transparent: true,opacity: 0.2}),
@@ -373,69 +408,14 @@ function initModel() {
 
     let date_extent = [new Date(2019,0,1,7),new Date(2019,0,1,18)];
 
-
-
-    let threshold=d3.scale.threshold()    .domain([3,10,20,30,40])
-        .range(["#23D561","#9CD523","#FFBF3A","#F1E229","#FB8C00","#FF5252"]);
-
-    let y_scale = d3.scale.linear()
-        .domain([0,100])
-        .range([0,10]);
-
     let opacity_scale = d3.scale.linear()
         .domain([0,100])
         .range([0.3,0.8]);
 
-
-    $.ajax({
-        url: "/day1_sensor",    //请求的url地址
-        dataType: "json",   //返回格式为json
-        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-        type: "GET",   //请求方式
-        contentType: "application/json",
-        beforeSend: function () {//请求前的处理
-        },
-        success: function (data, textStatus) {
-
-            let data_f1 = data.slice(0,338);
-            let data_f2 = data.slice(338,470);
-            let index = 420;
-            let interval = setInterval(function () {
-                if(index>1100)
-                    clearInterval(interval);
-                index++;
-                if(scene.getObjectByName("sensor_group1"))
-                    scene.remove(scene.getObjectByName("sensor_group1"));
-                let sensor_group1 = new THREE.Group();
-                sensor_group1.name = 'sensor_group1';
-                scene.add(sensor_group1);
-                data_f2.forEach((d)=>{
-                    if(d.data[index]){
-                        let sensor = new THREE.Mesh(new THREE.BoxGeometry(1,y_scale(d.data[index]), 1));
-                        sensor.name = "sensor_"+d.sid;
-                        sensor.material.color.set(threshold(d.data[index]));
-                        sensor.material.transparent = true;
-                        sensor.material.needsUpdate = true;
-                        sensor.material.opacity = 0.5;
-                        sensor.position.x = d.y-14.5;
-                        sensor.position.y = y_scale(d.data[index])/2+0.011;
-                        sensor.position.z = d.x-7.5;
-                        sensor_group1.add(sensor);
-                    }
-                });
-            },500);
-        },
-        complete: function () {//请求完成的处理
-        },
-        error: function () {//请求出错处理
-        }
-    });
     /*
+     let test = "[{'date': '2019-1-1 14:03:00', 'coor': [15, 2], 'floor': 1}, {'date': '2019-1-1 14:03:08', 'coor': [14, 2], 'floor': 1}, {'date': '2019-1-1 14:03:16', 'coor': [13, 3], 'floor': 1}, {'date': '2019-1-1 14:07:19', 'coor': [14, 3], 'floor': 1}, {'date': '2019-1-1 14:07:26', 'coor': [14, 4], 'floor': 1}, {'date': '2019-1-1 14:07:33', 'coor': [13, 5], 'floor': 1}, {'date': '2019-1-1 14:07:45', 'coor': [12, 6], 'floor': 1}, {'date': '2019-1-1 14:07:55', 'coor': [11, 6], 'floor': 1}, {'date': '2019-1-1 14:08:03', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 14:08:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 14:08:22', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 14:08:48', 'coor': [8, 5], 'floor': 1}, {'date': '2019-1-1 15:54:49', 'coor': [8, 6], 'floor': 1}, {'date': '2019-1-1 15:55:05', 'coor': [8, 7], 'floor': 1}, {'date': '2019-1-1 15:55:18', 'coor': [7, 8], 'floor': 1}, {'date': '2019-1-1 15:55:32', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:09:49', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:10:04', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:10:20', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:10:32', 'coor': [4, 10], 'floor': 1}, {'date': '2019-1-1 16:15:19', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:15:31', 'coor': [3, 8], 'floor': 1}, {'date': '2019-1-1 16:25:39', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:25:47', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:25:57', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:26:05', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:26:21', 'coor': [8, 8], 'floor': 1}, {'date': '2019-1-1 16:26:29', 'coor': [9, 8], 'floor': 1}, {'date': '2019-1-1 16:26:37', 'coor': [10, 9], 'floor': 1}, {'date': '2019-1-1 16:26:49', 'coor': [11, 9], 'floor': 1}, {'date': '2019-1-1 16:26:59', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:27:07', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:27:15', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:27:23', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:27:32', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:27:48', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:27:56', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:28:04', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:28:12', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:28:20', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:28:28', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:28:45', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:28:56', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:29:10', 'coor': [14, 2], 'floor': 2}, {'date': '2019-1-1 16:29:22', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:29:35', 'coor': [15, 1], 'floor': 2}, {'date': '2019-1-1 16:30:29', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:30:40', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:30:54', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:31:11', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:31:53', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:32:27', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:32:51', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:33:15', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:33:38', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:34:10', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:34:19', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:34:35', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:35:10', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 16:35:20', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:35:40', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:35:53', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 16:36:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 16:36:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 16:36:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 16:36:43', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 16:37:07', 'coor': [9, 3], 'floor': 1}, {'date': '2019-1-1 17:21:59', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 17:22:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 17:22:38', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 17:22:53', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 17:23:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 17:23:10', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 17:23:18', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 17:23:26', 'coor': [12, 10], 'floor': 1}, {'date': '2019-1-1 17:23:41', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 17:23:51', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 17:23:59', 'coor': [14, 12], 'floor': 1}, {'date': '2019-1-1 17:24:07', 'coor': [14, 13], 'floor': 1}, {'date': '2019-1-1 17:24:17', 'coor': [14, 14], 'floor': 1}, {'date': '2019-1-1 17:24:27', 'coor': [14, 15], 'floor': 1}, {'date': '2019-1-1 17:24:40', 'coor': [14, 16], 'floor': 1}, {'date': '2019-1-1 17:24:47', 'coor': [14, 17], 'floor': 1}, {'date': '2019-1-1 17:24:55', 'coor': [15, 17], 'floor': 1}]"
 
-
-    let test = "[{'date': '2019-1-1 14:03:00', 'coor': [15, 2], 'floor': 1}, {'date': '2019-1-1 14:03:08', 'coor': [14, 2], 'floor': 1}, {'date': '2019-1-1 14:03:16', 'coor': [13, 3], 'floor': 1}, {'date': '2019-1-1 14:07:19', 'coor': [14, 3], 'floor': 1}, {'date': '2019-1-1 14:07:26', 'coor': [14, 4], 'floor': 1}, {'date': '2019-1-1 14:07:33', 'coor': [13, 5], 'floor': 1}, {'date': '2019-1-1 14:07:45', 'coor': [12, 6], 'floor': 1}, {'date': '2019-1-1 14:07:55', 'coor': [11, 6], 'floor': 1}, {'date': '2019-1-1 14:08:03', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 14:08:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 14:08:22', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 14:08:48', 'coor': [8, 5], 'floor': 1}, {'date': '2019-1-1 15:54:49', 'coor': [8, 6], 'floor': 1}, {'date': '2019-1-1 15:55:05', 'coor': [8, 7], 'floor': 1}, {'date': '2019-1-1 15:55:18', 'coor': [7, 8], 'floor': 1}, {'date': '2019-1-1 15:55:32', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:09:49', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:10:04', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:10:20', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:10:32', 'coor': [4, 10], 'floor': 1}, {'date': '2019-1-1 16:15:19', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:15:31', 'coor': [3, 8], 'floor': 1}, {'date': '2019-1-1 16:25:39', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:25:47', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:25:57', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:26:05', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:26:21', 'coor': [8, 8], 'floor': 1}, {'date': '2019-1-1 16:26:29', 'coor': [9, 8], 'floor': 1}, {'date': '2019-1-1 16:26:37', 'coor': [10, 9], 'floor': 1}, {'date': '2019-1-1 16:26:49', 'coor': [11, 9], 'floor': 1}, {'date': '2019-1-1 16:26:59', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:27:07', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:27:15', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:27:23', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:27:32', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:27:48', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:27:56', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:28:04', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:28:12', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:28:20', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:28:28', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:28:45', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:28:56', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:29:10', 'coor': [14, 2], 'floor': 2}, {'date': '2019-1-1 16:29:22', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:29:35', 'coor': [15, 1], 'floor': 2}, {'date': '2019-1-1 16:30:29', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:30:40', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:30:54', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:31:11', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:31:53', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:32:27', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:32:51', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:33:15', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:33:38', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:34:10', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:34:19', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:34:35', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:35:10', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 16:35:20', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:35:40', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:35:53', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 16:36:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 16:36:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 16:36:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 16:36:43', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 16:37:07', 'coor': [9, 3], 'floor': 1}, {'date': '2019-1-1 17:21:59', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 17:22:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 17:22:38', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 17:22:53', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 17:23:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 17:23:10', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 17:23:18', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 17:23:26', 'coor': [12, 10], 'floor': 1}, {'date': '2019-1-1 17:23:41', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 17:23:51', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 17:23:59', 'coor': [14, 12], 'floor': 1}, {'date': '2019-1-1 17:24:07', 'coor': [14, 13], 'floor': 1}, {'date': '2019-1-1 17:24:17', 'coor': [14, 14], 'floor': 1}, {'date': '2019-1-1 17:24:27', 'coor': [14, 15], 'floor': 1}, {'date': '2019-1-1 17:24:40', 'coor': [14, 16], 'floor': 1}, {'date': '2019-1-1 17:24:47', 'coor': [14, 17], 'floor': 1}, {'date': '2019-1-1 17:24:55', 'coor': [15, 17], 'floor': 1}]"
-
-    /*    $.ajax({
+     /*    $.ajax({
      url: "/day1_group",    //请求的url地址
      dataType: "json",   //返回格式为json
      async: true, //请求是否异步，默认为异步，这也是ajax重要特性
@@ -488,21 +468,36 @@ function initModel() {
      }
      });*/
 
-    /*d3.select(".all_view").append("div")
+    d3.select(".all_view").append("div")
+        .style({
+            "position":"absolute",
+            "top":"10%",
+            "left":"50%",
+            "pointer-events":"none",
+            "z-index":20
+        })
+        .append("span")
+        .attr("id","main_date")
+        .style({
+            "fill":"#1e1e1e",
+            "font-size":"10px"
+        });
+
+    d3.select(".all_view").append("div")
         .attr("id","heatmap")
         .style({
             "position":"absolute",
             "width":'1200px',
-            "height":'640px',
+            "height":'512px',
             "pointer-events":"none",
             "z-index":20,
             "display":"none"
-        });*/
+        });
 // minimal heatmap instance configuration
-    /*heatmapInstance = h337.create({
+    heatmapInstance = h337.create({
         container: document.querySelector('#heatmap'),
         gradient:{0.1: "#20C2E1", 0.3: "#23D561", 0.5: "#F1E229", 1.0: "#ff1815"},
-        radius:50,
+        radius:60,
         blur:1
     });
 
@@ -516,7 +511,7 @@ function initModel() {
     pic_box.position.y = 0.01;
     pic_box.name = "heatmap";
     pic_box.material.map = texture;
-    scene.add(pic_box);*/
+    scene.add(pic_box);
 
 }
 
@@ -631,6 +626,113 @@ function onWindowResize() {
 }
 
 
+let extent = [];
+
+for(let i = new Date(2019,0,1,7,0,0).getTime();i<=new Date(2019,0,1,18,0,0).getTime();i += 60000) {
+    let date = new Date(i);
+    extent.push(date);
+}
+
+
+let threshold=d3.scale.threshold()
+    .domain([3,10,20,30,40])
+    .range(["#23D561","#9CD523","#FFBF3A","#F1E229","#FB8C00","#FF5252"]);
+
+let y_scale = d3.scale.linear()
+    .domain([0,100])
+    .range([0,10]);
+
+function heatmap(date,floor) {
+    $.ajax({
+        url: "/day1_sensor",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        data:{
+            date:date,
+            floor:floor
+        },
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
+            //console.log(data);
+            let max = 5;
+            let points = [];
+            data.forEach((d)=>{
+                max = Math.max(max,d.data);
+                let point = {
+                    y:parseInt(d.x)*40,
+                    x:parseInt(d.y)*40,
+                    value: d.data,
+                };
+                points.push(point)
+            });
+
+            let heat_data = {
+                max:max,
+                data:points
+            }
+            heatmapInstance.setData(heat_data);
+            let canvas = document.getElementsByClassName("heatmap-canvas")[0];
+            let texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            scene.getObjectByName("heatmap").material.map = texture;
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });
+}
+function heatmap_3d(date,floor) {
+    $.ajax({
+        url: "/day1_sensor",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        data:{
+            date:date,
+            floor:floor
+        },
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        contentType: "application/json",
+        beforeSend: function () {//请求前的处理
+        },
+        success: function (data, textStatus) {
+
+            let index = 0;
+            let interval = setInterval(function () {
+                if(index>extent.length)
+                    clearInterval(interval);
+                if(scene.getObjectByName("sensor_group1"))
+                    scene.remove(scene.getObjectByName("sensor_group1"));
+                let sensor_group1 = new THREE.Group();
+                sensor_group1.name = 'sensor_group1';
+                scene.add(sensor_group1);
+                data.forEach((d)=>{
+                    if(d.data){
+                        let sensor = new THREE.Mesh(new THREE.BoxGeometry(1,y_scale(d.data), 1));
+                        sensor.name = "sensor_"+d.sid;
+                        sensor.material.color.set(threshold(d.data));
+                        sensor.material.transparent = true;
+                        sensor.material.needsUpdate = true;
+                        sensor.material.opacity = 0.5;
+                        sensor.position.x = d.y-14.5;
+                        sensor.position.y = y_scale(d.data)/2+0.011;
+                        sensor.position.z = d.x-7.5;
+                        sensor_group1.add(sensor);
+                    }
+                });
+            },500);
+        },
+        complete: function () {//请求完成的处理
+        },
+        error: function () {//请求出错处理
+        }
+    });
+}
+
+
 function animate() {
 
     //更新控制器
@@ -684,79 +786,15 @@ let type_legend = d3.select("#main").append("div")
         "cursor":"pointer"
     })
     .on("click",function (d,i) {
+        let index = 0;
+        let interval = setInterval(function () {
+            d3.select("#main_date").text(extent[index]);
+            if( index > extent.length)
+                clearInterval(interval);
+            heatmap(extent[index++],1);
+        },1000);
 
-
-        /*        let extent = [];
-         for(let i = new Date(2019,0,1,7,0,0).getTime();i<new Date(2019,0,1,18,0,0).getTime();i += 50000) {
-         let date_start = new Date(i);
-         let date_end = new Date(i + 50000);
-         extent.push([date_start,date_end]);
-         }
-
-         let index = 0;
-         let heatmap_interval = setInterval(function () {
-         if(index<extent.length-1){
-         heatmap(extent[index])
-         }
-         else
-         clearInterval(heatmap_interval);
-         index++;
-         },200);*/
-
-        function heatmap(extent){
-            $.ajax({
-                url: "day1_pro_date",    //请求的url地址
-                dataType: "json",   //返回格式为json
-                data: {
-                    date_start: extent[0],
-                    date_end:  extent[1]
-                },
-                async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-                type: "GET",   //请求方式
-                contentType: "application/json",
-                beforeSend: function () {//请求前的处理
-                },
-                success: function (data, textStatus) {
-                    let nest_sensor = d3.nest().key((d) => d.sid);
-                    let test = nest_sensor.entries(data);
-                    var points = [];
-                    let max = 0;
-                    test.forEach((d)=>{
-
-                        let val = d.values.length;
-                        let sid = d.key.toString();
-                        max = Math.max(max,val);
-
-                        if(sid.slice(0,1) === '1'){
-                            let point = {
-                                y:parseInt(sid.slice(1,3))*40,
-                                x:parseInt(sid.slice(3,5))*40,
-                                value: val,
-                            }
-                            points.push(point)
-                        }
-
-                    });
-
-                    let heat_data = {
-                        max:max,
-                        data:points
-                    }
-                    heatmapInstance.setData(heat_data);
-                    let canvas = document.getElementsByClassName("heatmap-canvas")[0];
-                    let texture = new THREE.Texture(canvas);
-                    texture.needsUpdate = true;
-                    scene.getObjectByName("heatmap").material.map = texture;
-                },
-                complete: function () {//请求完成的处理
-                },
-                error: function () {//请求出错处理
-                }
-            });
-        }
-
-
-        scene.getObjectByName('group'+i).visible = !scene.getObjectByName('group'+i).visible ;
+        //scene.getObjectByName('group'+i).visible = !scene.getObjectByName('group'+i).visible ;
     })
     .append("title")
     .text((d,i)=>"type"+i);

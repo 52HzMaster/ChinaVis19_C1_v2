@@ -107,28 +107,28 @@ router.get('/day1_pro_id', function(req, res, next) {
 
     MongoClient.connect(DB_CONN_STR, function(err, db) {
         selectData(db, function(result) {
-/*            let area_nest = d3.nest().key((d)=>d.area);
-            let data = area_nest.entries(result);
+            /*            let area_nest = d3.nest().key((d)=>d.area);
+             let data = area_nest.entries(result);
 
-            let areas = {
-                "id":req.query.id,
-                "area_A":0,"area_B":0,"area_C":0,"area_D":0,
-                "area_sign":0,"area_poster":0,
-                "area_wc1":0,"area_wc2":0,"area_wc3":0,
-                "area_room1":0,"area_room2":0,"area_room3":0,"area_room4":0,"area_room5":0,"area_room6":0,
-                "area_serve":0, "area_disc":0,"area_main":0,
-                "area_canteen":0,"area_leisure":0,
-                "area_other":0
-            };
+             let areas = {
+             "id":req.query.id,
+             "area_A":0,"area_B":0,"area_C":0,"area_D":0,
+             "area_sign":0,"area_poster":0,
+             "area_wc1":0,"area_wc2":0,"area_wc3":0,
+             "area_room1":0,"area_room2":0,"area_room3":0,"area_room4":0,"area_room5":0,"area_room6":0,
+             "area_serve":0, "area_disc":0,"area_main":0,
+             "area_canteen":0,"area_leisure":0,
+             "area_other":0
+             };
 
-            data.forEach((d)=>{
-                let stay = 0;
-                d.values.forEach((s)=>{
-                    stay += s.stay;
-                });
-                d.values = stay;
-                areas[d.key] = stay;
-            });*/
+             data.forEach((d)=>{
+             let stay = 0;
+             d.values.forEach((s)=>{
+             stay += s.stay;
+             });
+             d.values = stay;
+             areas[d.key] = stay;
+             });*/
             res.json(result);
             db.close();
         });
@@ -251,29 +251,29 @@ router.get('/day1_pro_date', function(req, res, next) {
 //query traj
 /*router.get('/day1_traj', function(req, res, next) {
 
-    let selectData = function(db, callback) {
-        //连接到表
-        let collection = db.collection('day1_id_tra');
-        collection.find({},{
-            "_id":0
-        }).toArray(function(err, result) {
-            if(err)
-            {
-                console.log('Error:'+ err);
-                return;
-            }
-            callback(result);
-        });
-    }
+ let selectData = function(db, callback) {
+ //连接到表
+ let collection = db.collection('day1_id_tra');
+ collection.find({},{
+ "_id":0
+ }).toArray(function(err, result) {
+ if(err)
+ {
+ console.log('Error:'+ err);
+ return;
+ }
+ callback(result);
+ });
+ }
 
-    MongoClient.connect(DB_CONN_STR, function(err, db) {
-        selectData(db, function(result) {
-            res.json(result);
-            db.close();
-        });
-    });
+ MongoClient.connect(DB_CONN_STR, function(err, db) {
+ selectData(db, function(result) {
+ res.json(result);
+ db.close();
+ });
+ });
 
-});*/
+ });*/
 
 //query traj id
 router.get('/day1_id_traj', function(req, res, next) {
@@ -335,7 +335,14 @@ router.get('/day1_sensor', function(req, res, next) {
     let selectData = function(db, callback) {
         //连接到表
         let collection = db.collection('day1_sensor');
-        collection.find({},{
+        let floor = req.query.floor;
+        let str={};
+        if(floor === '1')
+            str = {$lte:20000};
+        else
+            str ={$gte:20000};
+
+        collection.find({sid:str},{
             "_id":0
         }).toArray(function(err, result) {
             if(err)
@@ -348,9 +355,13 @@ router.get('/day1_sensor', function(req, res, next) {
     }
 
     MongoClient.connect(DB_CONN_STR, function(err, db) {
+        //console.log(req.query.date);
+        let minutes = new Date(req.query.date).getHours()*60 + new Date(req.query.date).getMinutes();
+        //console.log(minutes);
         selectData(db, function(result) {
             result.forEach((d)=>{
                 d.data =  JSON.parse(d.data);
+                d.data = d.data[minutes];
             });
             res.json(result);
             db.close();
