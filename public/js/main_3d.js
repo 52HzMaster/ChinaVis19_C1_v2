@@ -386,20 +386,6 @@ function initModel() {
         .domain([0,100])
         .range([0.3,0.8]);
 
-// 删除group，释放内存
-    function deleteGroup(group) {
-        //console.log(group);
-        if (!group) return;
-        // 删除掉所有的模型组内的mesh
-        group.traverse(function (item) {
-            if (item instanceof THREE.Mesh) {
-                item.geometry.dispose(); // 删除几何体
-                item.material.dispose(); // 删除材质
-            }
-        });
-    }
-
-
 
     $.ajax({
         url: "/day1_sensor",    //请求的url地址
@@ -411,9 +397,11 @@ function initModel() {
         },
         success: function (data, textStatus) {
 
+            let data_f1 = data.slice(0,338);
+            let data_f2 = data.slice(338,470);
             let index = 420;
             let interval = setInterval(function () {
-                if(index>1000)
+                if(index>1100)
                     clearInterval(interval);
                 index++;
                 if(scene.getObjectByName("sensor_group1"))
@@ -421,56 +409,32 @@ function initModel() {
                 let sensor_group1 = new THREE.Group();
                 sensor_group1.name = 'sensor_group1';
                 scene.add(sensor_group1);
-                data.forEach((d)=>{
-                    let sensor = new THREE.Mesh(new THREE.BoxGeometry(1,y_scale(d.data[index]), 1));
-                    sensor.name = "sensor_"+d.sid;
-                    sensor.material.color.set(threshold(d.data[index]));
-                    sensor.material.transparent = true;
-                    sensor.material.needsUpdate = true;
-                    sensor.material.opacity = 0.3;
-                    sensor.position.x = d.y-14.5;
-                    sensor.position.y = y_scale(d.data[index])/2+0.011;
-                    sensor.position.z = d.x-7.5;
-                    sensor_group1.add(sensor)
+                data_f2.forEach((d)=>{
+                    if(d.data[index]){
+                        let sensor = new THREE.Mesh(new THREE.BoxGeometry(1,y_scale(d.data[index]), 1));
+                        sensor.name = "sensor_"+d.sid;
+                        sensor.material.color.set(threshold(d.data[index]));
+                        sensor.material.transparent = true;
+                        sensor.material.needsUpdate = true;
+                        sensor.material.opacity = 0.5;
+                        sensor.position.x = d.y-14.5;
+                        sensor.position.y = y_scale(d.data[index])/2+0.011;
+                        sensor.position.z = d.x-7.5;
+                        sensor_group1.add(sensor);
+                    }
                 });
             },500);
-
-
-
-            /*           let sensor_group = new THREE.Group();
-             sensor_group.name = 'sensor_group';
-             data.forEach((d)=>{
-             let sensor = new THREE.Mesh(new THREE.BoxGeometry(1,1, 1));
-             sensor.name = "sensor_"+d.sid;
-             sensor.material.color.set("#ff9959");
-             sensor.material.transparent = true;
-             sensor.material.needsUpdate = true;
-             sensor.material.opacity = 0.7;
-             sensor.position.x = d.y-14.5;
-             sensor.position.y = 0.51;
-             sensor.position.z = d.x-7.5;
-             sensor_group.add(sensor)
-             });
-             scene.add(sensor_group);*/
         },
         complete: function () {//请求完成的处理
         },
         error: function () {//请求出错处理
         }
     });
+    /*
 
-    /*        let test = "[{'date': '2019-1-1 14:03:00', 'coor': [15, 2], 'floor': 1}, {'date': '2019-1-1 14:03:08', 'coor': [14, 2], 'floor': 1}, {'date': '2019-1-1 14:03:16', 'coor': [13, 3], 'floor': 1}, {'date': '2019-1-1 14:07:19', 'coor': [14, 3], 'floor': 1}, {'date': '2019-1-1 14:07:26', 'coor': [14, 4], 'floor': 1}, {'date': '2019-1-1 14:07:33', 'coor': [13, 5], 'floor': 1}, {'date': '2019-1-1 14:07:45', 'coor': [12, 6], 'floor': 1}, {'date': '2019-1-1 14:07:55', 'coor': [11, 6], 'floor': 1}, {'date': '2019-1-1 14:08:03', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 14:08:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 14:08:22', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 14:08:48', 'coor': [8, 5], 'floor': 1}, {'date': '2019-1-1 15:54:49', 'coor': [8, 6], 'floor': 1}, {'date': '2019-1-1 15:55:05', 'coor': [8, 7], 'floor': 1}, {'date': '2019-1-1 15:55:18', 'coor': [7, 8], 'floor': 1}, {'date': '2019-1-1 15:55:32', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:09:49', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:10:04', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:10:20', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:10:32', 'coor': [4, 10], 'floor': 1}, {'date': '2019-1-1 16:15:19', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:15:31', 'coor': [3, 8], 'floor': 1}, {'date': '2019-1-1 16:25:39', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:25:47', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:25:57', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:26:05', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:26:21', 'coor': [8, 8], 'floor': 1}, {'date': '2019-1-1 16:26:29', 'coor': [9, 8], 'floor': 1}, {'date': '2019-1-1 16:26:37', 'coor': [10, 9], 'floor': 1}, {'date': '2019-1-1 16:26:49', 'coor': [11, 9], 'floor': 1}, {'date': '2019-1-1 16:26:59', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:27:07', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:27:15', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:27:23', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:27:32', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:27:48', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:27:56', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:28:04', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:28:12', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:28:20', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:28:28', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:28:45', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:28:56', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:29:10', 'coor': [14, 2], 'floor': 2}, {'date': '2019-1-1 16:29:22', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:29:35', 'coor': [15, 1], 'floor': 2}, {'date': '2019-1-1 16:30:29', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:30:40', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:30:54', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:31:11', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:31:53', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:32:27', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:32:51', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:33:15', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:33:38', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:34:10', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:34:19', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:34:35', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:35:10', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 16:35:20', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:35:40', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:35:53', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 16:36:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 16:36:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 16:36:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 16:36:43', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 16:37:07', 'coor': [9, 3], 'floor': 1}, {'date': '2019-1-1 17:21:59', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 17:22:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 17:22:38', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 17:22:53', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 17:23:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 17:23:10', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 17:23:18', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 17:23:26', 'coor': [12, 10], 'floor': 1}, {'date': '2019-1-1 17:23:41', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 17:23:51', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 17:23:59', 'coor': [14, 12], 'floor': 1}, {'date': '2019-1-1 17:24:07', 'coor': [14, 13], 'floor': 1}, {'date': '2019-1-1 17:24:17', 'coor': [14, 14], 'floor': 1}, {'date': '2019-1-1 17:24:27', 'coor': [14, 15], 'floor': 1}, {'date': '2019-1-1 17:24:40', 'coor': [14, 16], 'floor': 1}, {'date': '2019-1-1 17:24:47', 'coor': [14, 17], 'floor': 1}, {'date': '2019-1-1 17:24:55', 'coor': [15, 17], 'floor': 1}]"
 
-     let traj_data = JSON.parse(test.replace(/'/g,'"'));
-     traj_data.forEach((d)=>d.date = new Date(d.date));
-     //console.log(traj_data);
-     let point_3d = [];
-     traj_data.forEach((d)=>{
-     point_3d.push(new THREE.Vector3( d.coor[1]-14.5, y_scale(d.date), d.coor[0]-7.5 ))
-     });
-     let geometry = new THREE.Geometry();
-     geometry.vertices = new THREE.CatmullRomCurve3(point_3d).getPoints( 1000 );
-     scene.add(new THREE.Line(geometry, trackMaterial[0]));*/
+    let test = "[{'date': '2019-1-1 14:03:00', 'coor': [15, 2], 'floor': 1}, {'date': '2019-1-1 14:03:08', 'coor': [14, 2], 'floor': 1}, {'date': '2019-1-1 14:03:16', 'coor': [13, 3], 'floor': 1}, {'date': '2019-1-1 14:07:19', 'coor': [14, 3], 'floor': 1}, {'date': '2019-1-1 14:07:26', 'coor': [14, 4], 'floor': 1}, {'date': '2019-1-1 14:07:33', 'coor': [13, 5], 'floor': 1}, {'date': '2019-1-1 14:07:45', 'coor': [12, 6], 'floor': 1}, {'date': '2019-1-1 14:07:55', 'coor': [11, 6], 'floor': 1}, {'date': '2019-1-1 14:08:03', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 14:08:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 14:08:22', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 14:08:48', 'coor': [8, 5], 'floor': 1}, {'date': '2019-1-1 15:54:49', 'coor': [8, 6], 'floor': 1}, {'date': '2019-1-1 15:55:05', 'coor': [8, 7], 'floor': 1}, {'date': '2019-1-1 15:55:18', 'coor': [7, 8], 'floor': 1}, {'date': '2019-1-1 15:55:32', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:09:49', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:10:04', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:10:20', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:10:32', 'coor': [4, 10], 'floor': 1}, {'date': '2019-1-1 16:15:19', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:15:31', 'coor': [3, 8], 'floor': 1}, {'date': '2019-1-1 16:25:39', 'coor': [4, 9], 'floor': 1}, {'date': '2019-1-1 16:25:47', 'coor': [5, 9], 'floor': 1}, {'date': '2019-1-1 16:25:57', 'coor': [6, 9], 'floor': 1}, {'date': '2019-1-1 16:26:05', 'coor': [7, 9], 'floor': 1}, {'date': '2019-1-1 16:26:21', 'coor': [8, 8], 'floor': 1}, {'date': '2019-1-1 16:26:29', 'coor': [9, 8], 'floor': 1}, {'date': '2019-1-1 16:26:37', 'coor': [10, 9], 'floor': 1}, {'date': '2019-1-1 16:26:49', 'coor': [11, 9], 'floor': 1}, {'date': '2019-1-1 16:26:59', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:27:07', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:27:15', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:27:23', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:27:32', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:27:48', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:27:56', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:28:04', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:28:12', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:28:20', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:28:28', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:28:45', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:28:56', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:29:10', 'coor': [14, 2], 'floor': 2}, {'date': '2019-1-1 16:29:22', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:29:35', 'coor': [15, 1], 'floor': 2}, {'date': '2019-1-1 16:30:29', 'coor': [15, 2], 'floor': 2}, {'date': '2019-1-1 16:30:40', 'coor': [14, 3], 'floor': 2}, {'date': '2019-1-1 16:30:54', 'coor': [14, 4], 'floor': 2}, {'date': '2019-1-1 16:31:11', 'coor': [14, 5], 'floor': 2}, {'date': '2019-1-1 16:31:53', 'coor': [14, 6], 'floor': 2}, {'date': '2019-1-1 16:32:27', 'coor': [14, 7], 'floor': 2}, {'date': '2019-1-1 16:32:51', 'coor': [14, 8], 'floor': 2}, {'date': '2019-1-1 16:33:15', 'coor': [14, 9], 'floor': 2}, {'date': '2019-1-1 16:33:38', 'coor': [14, 10], 'floor': 2}, {'date': '2019-1-1 16:34:10', 'coor': [14, 11], 'floor': 2}, {'date': '2019-1-1 16:34:19', 'coor': [14, 10], 'floor': 1}, {'date': '2019-1-1 16:34:35', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 16:35:10', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 16:35:20', 'coor': [13, 10], 'floor': 1}, {'date': '2019-1-1 16:35:40', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 16:35:53', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 16:36:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 16:36:12', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 16:36:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 16:36:43', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 16:37:07', 'coor': [9, 3], 'floor': 1}, {'date': '2019-1-1 17:21:59', 'coor': [9, 4], 'floor': 1}, {'date': '2019-1-1 17:22:21', 'coor': [9, 5], 'floor': 1}, {'date': '2019-1-1 17:22:38', 'coor': [9, 6], 'floor': 1}, {'date': '2019-1-1 17:22:53', 'coor': [10, 6], 'floor': 1}, {'date': '2019-1-1 17:23:02', 'coor': [10, 7], 'floor': 1}, {'date': '2019-1-1 17:23:10', 'coor': [11, 8], 'floor': 1}, {'date': '2019-1-1 17:23:18', 'coor': [12, 9], 'floor': 1}, {'date': '2019-1-1 17:23:26', 'coor': [12, 10], 'floor': 1}, {'date': '2019-1-1 17:23:41', 'coor': [13, 11], 'floor': 1}, {'date': '2019-1-1 17:23:51', 'coor': [14, 11], 'floor': 1}, {'date': '2019-1-1 17:23:59', 'coor': [14, 12], 'floor': 1}, {'date': '2019-1-1 17:24:07', 'coor': [14, 13], 'floor': 1}, {'date': '2019-1-1 17:24:17', 'coor': [14, 14], 'floor': 1}, {'date': '2019-1-1 17:24:27', 'coor': [14, 15], 'floor': 1}, {'date': '2019-1-1 17:24:40', 'coor': [14, 16], 'floor': 1}, {'date': '2019-1-1 17:24:47', 'coor': [14, 17], 'floor': 1}, {'date': '2019-1-1 17:24:55', 'coor': [15, 17], 'floor': 1}]"
+
     /*    $.ajax({
      url: "/day1_group",    //请求的url地址
      dataType: "json",   //返回格式为json
@@ -524,7 +488,7 @@ function initModel() {
      }
      });*/
 
-    d3.select(".all_view").append("div")
+    /*d3.select(".all_view").append("div")
         .attr("id","heatmap")
         .style({
             "position":"absolute",
@@ -533,9 +497,9 @@ function initModel() {
             "pointer-events":"none",
             "z-index":20,
             "display":"none"
-        });
-    // minimal heatmap instance configuration
-    heatmapInstance = h337.create({
+        });*/
+// minimal heatmap instance configuration
+    /*heatmapInstance = h337.create({
         container: document.querySelector('#heatmap'),
         gradient:{0.1: "#20C2E1", 0.3: "#23D561", 0.5: "#F1E229", 1.0: "#ff1815"},
         radius:50,
@@ -552,11 +516,14 @@ function initModel() {
     pic_box.position.y = 0.01;
     pic_box.name = "heatmap";
     pic_box.material.map = texture;
-    scene.add(pic_box);
+    scene.add(pic_box);*/
+
 }
 
 
 let raycaster = new THREE.Raycaster();
+
+
 let mouse = new THREE.Vector2();
 
 function onMouseClick( event ) {

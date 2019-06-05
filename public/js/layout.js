@@ -105,17 +105,17 @@ function Layout() {
     main.style.width = width*0.5  + 'px';
     main.style.height = height*0.6  + 'px';
 
-    var para_coor = document.getElementById("para_coor");
+/*    var para_coor = document.getElementById("para_coor");
     para_coor.style.width = width*0.7  + 'px';
-    para_coor.style.height = height*0.3  + 'px';
+    para_coor.style.height = height*0.3  + 'px';*/
 
     var bar = document.getElementById("bar");
     bar.style.width = width*0.3  + 'px';
     bar.style.height = height*0.4  + 'px';
 
-/*    var plot = document.getElementById("plot");
+    var plot = document.getElementById("plot");
     plot.style.width = width*0.9  + 'px';
-    plot.style.height = height*0.3  + 'px';*/
+    plot.style.height = height*0.3  + 'px';
 
 }
 
