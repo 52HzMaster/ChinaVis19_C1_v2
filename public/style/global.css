@@ -23,7 +23,7 @@ body{
     position: absolute;
     top:0;
     left: 0;
-    z-index: 1;
+    z-index: 10;
     transform: rotateX(180deg);
 }
 
@@ -31,7 +31,7 @@ body{
     position: absolute;
     top:0;
     right: 0;
-    z-index: 1;
+    z-index: 10;
     transform: rotateZ(180deg);
 }
 
@@ -39,7 +39,7 @@ body{
     position: absolute;
     bottom:0;
     left: 0;
-    z-index: 1;
+    z-index: 10;
     transform: rotateZ(360deg);
 }
 
@@ -47,7 +47,7 @@ body{
     position: absolute;
     bottom:0;
     right: 0;
-    z-index: 1;
+    z-index: 10;
     transform: rotateZ(270deg);
 }
 .border_1,

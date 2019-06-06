@@ -99,7 +99,10 @@ $.ajax({
         _charts.svg.append("g")
             .attr("class", "x axis")
             .attr("transform","translate("+_charts.margin.left+","+(_charts.height + _charts.margin.bottom) +")")
-            .call(_charts.x_axis);
+            .call(_charts.x_axis)
+            .selectAll("text")
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "start");
 
         _charts.g = _charts.svg.selectAll(".area_extent")
             .data(_charts.areas)
@@ -117,6 +120,7 @@ $.ajax({
                     d3.select(this).call(_charts.y_axis.tickFormat("").scale(_charts.y_scale[d]));
             })
             .attr("transform", function(d) { return "translate(0,"+_charts.height*0.2+")"; });
+
 
 // Add grey background lines for context.
         _charts.background = _charts.svg.append("g")
@@ -171,7 +175,7 @@ $.ajax({
             console.log(brush_data);
             d3.selectAll(".traj_path").remove();
             brush_data.forEach((d)=>{
-                all_traj_chart(d);
+                //all_traj_chart(d);
             });
         }
 

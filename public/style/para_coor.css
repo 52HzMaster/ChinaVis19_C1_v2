@@ -1,7 +1,7 @@
 #para_coor{
     position: absolute;
-/*    box-shadow:20px 20px 50px #302b63 inset;*/
-    bottom: 33%;
+    box-shadow:30px 30px 50px #302b63 inset;
+    bottom: 1%;
     right: 0.5%;
     z-index: 20;
 }
@@ -29,12 +29,11 @@
 
 .axis line, .axis path {
     fill: none;
-    stroke: #404040;
+    stroke: #ffffff;
     shape-rendering: crispEdges;
 }
 
 .axis text {
-    cursor: move;
-    fill: #404040;
-    font-size: 9px;
+    fill: #ffffff;
+    font-size: 11px;
 }

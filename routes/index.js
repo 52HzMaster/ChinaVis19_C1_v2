@@ -375,7 +375,7 @@ router.get('/day1_traj', function(req, res, next) {
 
     let selectData = function(db, callback) {
         //连接到表
-        let collection = db.collection('day1_traj');
+        let collection = db.collection('day1_traj_pro');
         collection.find({},{
             "_id":0
         }).toArray(function(err, result) {
@@ -390,7 +390,9 @@ router.get('/day1_traj', function(req, res, next) {
 
     MongoClient.connect(DB_CONN_STR, function(err, db) {
         selectData(db, function(result) {
-            res.json(result);
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            let group_nest = d3.nest().key((d)=>d.group).entries(result);
+            res.json(group_nest);
             db.close();
         });
     });
