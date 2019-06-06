@@ -1,8 +1,8 @@
 #para_coor{
     position: absolute;
 /*    box-shadow:20px 20px 50px #302b63 inset;*/
-    bottom: 0.5%;
-    right: 2%;
+    bottom: 33%;
+    right: 0.5%;
     z-index: 20;
 }
 
@@ -16,9 +16,9 @@
 
 .foreground path {
     fill: none;
-    stroke: #07a6ff;
+    stroke: #ff5213;
     stroke-width: .5;
-    stroke-opacity: .7;
+    stroke-opacity: .5;
 }
 
 .brush .extent {
@@ -36,5 +36,5 @@
 .axis text {
     cursor: move;
     fill: #404040;
-    font-size: 12px;
+    font-size: 9px;
 }

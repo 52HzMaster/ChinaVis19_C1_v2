@@ -11,6 +11,7 @@ $.ajax({
     beforeSend: function () {//请求前的处理
     },
     success: function (data, textStatus) {
+        //console.log(data);
         para_coor(data);
     },
     complete: function () {//请求完成的处理
@@ -55,9 +56,7 @@ $.ajax({
     function para_coor(data) {
 
         let _charts = {};
-
         let chart = $("#para_coor");
-
         _charts.areas = [
             "area_A","area_B","area_C","area_D",
             "area_sign","area_poster",
