@@ -1,32 +1,9 @@
 /*       Just setting CSS for the page   */
-
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body{
-	background-color: #1e1a3e;
-}
-
-html,
-css {
-  width: 100%;
-  height: 100%;
-}
-
 .position {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  margin-top: 15%;
-}
-
-#workarea {
-  width: 100%;
-  height: 100%;
-  background-color: #1e1a3e;
-  font-family: Raleway;
+  margin-top: 15px;
 }
 
 #personal {
@@ -60,11 +37,14 @@ css {
 .svg-wrapper {
   margin-top: 0;
   position: relative;
-  width: 150px;
+  width: 100px;
+  cursor: pointer;
+  align-content: center;
+  box-sizing: border-box;
   /*make sure to use same height/width as in the html*/
   height: 40px;
   display: inline-block;
-  border-radius: 3px;
+  border-radius: 5px;
   margin-left: 5px;
   margin-right: 5px
 }
@@ -78,26 +58,27 @@ css {
 #shape {
   stroke-width: 6px;
   fill: transparent;
-  stroke: #009FFD;
-  stroke-dasharray: 85 400;
-  stroke-dashoffset: -220;
-  transition: 1s all ease;
+  stroke: #d65a35;
+  stroke-dasharray: 90 400;
+  stroke-dashoffset: 180;
+  transition: 0.7s all ease;
 }
 /* 
     Pushing the text up into the SVG. Without this the
     text would be below the div's.
 */
 
-#text {
+.day_text {
   margin-top: -35px;
   text-align: center;
 }
 
-#text a {
+.day_text a{
   color: white;
   text-decoration: none;
+  pointer-events: none;
   font-weight: 100;
-  font-size: 1.1em;
+  font-size: 14px;
 }
 /* 
     Changing the shape on hover. I change the color of the stroke,
@@ -106,7 +87,14 @@ make it thinner, then set it to again wrap around the entire parent element.
 
 .svg-wrapper:hover #shape {
   stroke-dasharray: 50 0;
+  stroke-width: 4px;
+  stroke-dashoffset: 0;
+  stroke: #d65a35;
+}
+
+.svg-wrapper:active #shape {
+  stroke-dasharray: 50 0;
   stroke-width: 3px;
   stroke-dashoffset: 0;
-  stroke: #06D6A0;
+  stroke: #d65a35;
 }

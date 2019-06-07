@@ -3,6 +3,8 @@
  */
 let sensor_data;
 
+let day_url = '/day1';
+
 init_data();
 
 function init_data() {

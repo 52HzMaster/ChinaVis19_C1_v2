@@ -2,58 +2,52 @@
  * Created by Liang Liu on 2019/4/23.
  */
 
-$.ajax({
-    url: "/day1_stay",    //请求的url地址
-    dataType: "json",   //返回格式为json
-    async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-    type: "GET",   //请求方式
-    contentType: "application/json",
-    beforeSend: function () {//请求前的处理
-    },
-    success: function (data, textStatus) {
-        //console.log(data);
-        para_coor(data);
-    },
-    complete: function () {//请求完成的处理
-    },
-    error: function () {//请求出错处理
-    }
-})
+// $.ajax({
+//     url: "/day1_stay",    //请求的url地址
+//     dataType: "json",   //返回格式为json
+//     async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+//     type: "GET",   //请求方式
+//     contentType: "application/json",
+//     beforeSend: function () {//请求前的处理
+//     },
+//     success: function (data, textStatus) {
+//         //console.log(data);
+//         para_coor(data);
+//     },
+//     complete: function () {//请求完成的处理
+//     },
+//     error: function () {//请求出错处理
+//     }
+// })
 
-/*d3.csv("data/cluster_data/day1_group.csv",(data)=>{
-    //console.log(data);
-    let group = d3.nest().key((d)=>d.group).entries(data);
-    //console.log(group);
+// d3.csv("data/day2_id.csv",(id_data)=>{
+//     let stay_data = [];
+//     id_data.forEach((d)=>{
+//         $.ajax({
+//             url: "/day2_pro_id",    //请求的url地址
+//             dataType: "json",   //返回格式为json
+//             data:{id:d.id},
+//             async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+//             type: "GET",   //请求方式
+//             contentType: "application/json",
+//             beforeSend: function () {//请求前的处理
+//             },
+//             success: function (data, textStatus) {
+//                 stay_data.push(data);
+//                 if(stay_data.length ===  id_data.length){
+//                     console.log(JSON.stringify(stay_data));
+//                 }
+//             },
+//             complete: function () {//请求完成的处理
+//             },
+//             error: function () {//请求出错处理
+//             }
+//         });
+//
+//     });
+// });
 
-    let stay_data = [];
-    group[7].values.forEach((d)=>{
-
-        $.ajax({
-            url: "/day1_pro_id",    //请求的url地址
-            dataType: "json",   //返回格式为json
-            data:{id:d.id},
-            async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-            type: "GET",   //请求方式
-            contentType: "application/json",
-            beforeSend: function () {//请求前的处理
-            },
-            success: function (data, textStatus) {
-                stay_data.push(data);
-                if(stay_data.length ===  group[7].values.length){
-                    para_coor(stay_data);
-                }
-            },
-            complete: function () {//请求完成的处理
-            },
-            error: function () {//请求出错处理
-            }
-        });
-
-    });
-});*/
-    /*d3.csv("data/day1_stay.csv",(data)=>para_coor(data));*/
-
-    function para_coor(data) {
+function para_coor(data) {
 
         let _charts = {};
         let chart = $("#para_coor");
@@ -101,7 +95,7 @@ $.ajax({
             .attr("transform","translate("+_charts.margin.left+","+(_charts.height + _charts.margin.bottom) +")")
             .call(_charts.x_axis)
             .selectAll("text")
-            .attr("transform", "rotate(90)")
+            //.attr("transform", "rotate(90)")
             .style("text-anchor", "start");
 
         _charts.g = _charts.svg.selectAll(".area_extent")
@@ -162,10 +156,9 @@ $.ajax({
 
         function brush(){
             let brush_data = [];
-            let actives = _charts.areas.filter(function(p) {  return !_charts.y_scale[p].brush.empty(); }),
+            let actives = _charts.areas.filter(function(p) { return !_charts.y_scale[p].brush.empty(); }),
                 extents = actives.map(function(p) { return _charts.y_scale[p].brush.extent(); });
             _charts.foreground.style("display", function(d) {
-
                 return actives.every(function(p, i) {
                     if(extents[i][0] <= d[p] && d[p] <=  extents[i][1])
                         brush_data.push(d.id);
@@ -173,10 +166,6 @@ $.ajax({
                 }) ? null : "none";
             });
             console.log(brush_data);
-            d3.selectAll(".traj_path").remove();
-            brush_data.forEach((d)=>{
-                //all_traj_chart(d);
-            });
         }
 
 // Handles a brush event, toggling the display of foreground lines.

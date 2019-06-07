@@ -87,8 +87,6 @@ let all_areas = [
     "area_other"
 ];
 
-let day_url = '/day1_pro';
-
 Layout();
 
 function Layout() {
@@ -101,9 +99,10 @@ function Layout() {
     header.style.width = width * 0.99  + 'px';
     header.style.height = height * 0.08 + 'px';
 
-    let all_days = document.getElementById("all_days");
-    all_days.style.width = width*0.24  + 'px';
-    all_days.style.height = height*0.4  + 'px';
+    let control = document.getElementById("control");
+    control.style.width = width*0.24  + 'px';
+    control.style.height = height*0.4  + 'px';
+
 
     let main = document.getElementById('main');
     main.style.width = width*0.5  + 'px';
@@ -111,15 +110,19 @@ function Layout() {
 
     let para_coor = document.getElementById("para_coor");
     para_coor.style.width = width*0.4925  + 'px';
-    para_coor.style.height = height*0.27  + 'px';
+    para_coor.style.height = height*0.28  + 'px';
 
-    let bar = document.getElementById("bar");
-    bar.style.width = width*0.24  + 'px';
-    bar.style.height = height*0.4  + 'px';
+    let workarea = document.getElementById("workarea");
+    workarea.style.width = width*0.24  + 'px';
+    workarea.style.height = height*0.1  + 'px';
+
+    let pie_chart = document.getElementById("pie_chart");
+    pie_chart.style.width = width*0.24  + 'px';
+    pie_chart.style.height = height*0.5  + 'px';
 
     let time_line = document.getElementById("time_line");
     time_line.style.width = width*0.4925  + 'px';
-    time_line.style.height = height*0.27  + 'px';
+    time_line.style.height = height*0.28  + 'px';
     
     let plot = document.getElementById("plot");
     plot.style.width = width*0.4925  + 'px';
