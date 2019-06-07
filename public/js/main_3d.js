@@ -11,9 +11,9 @@ let height = floor_wh.height();
 let heatmapInstance;
 
 function initRender() {
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({alpha:true,antialias: true});
     renderer.setSize(width, height);
-    renderer.setClearColor('#2d285e',1);
+    renderer.setClearColor('#2d285e',0);
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
@@ -358,40 +358,6 @@ function initModel() {
      f2_room6.position.y = 10.51;
      f2_room6.position.z = -1;
      scene.add(f2_room6);*/
-
-    let canvas_text = document.getElementById("number");
-    let ctx = canvas_text.getContext("2d");
-    let x = 64;
-    let y = 64;
-    let radius = 20;
-    let startAngle = 0;
-    let endAngle = Math.PI * 2;
-
-    ctx.fillStyle = "rgba(0, 0, 0, 0)";
-    ctx.beginPath();
-    ctx.arc(x, y, radius, startAngle, endAngle);
-    ctx.fill();
-
-    ctx.fillStyle = "#1e1e1e";
-    ctx.font = "bold 24px Roboto Condensed";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "right";
-    ctx.fillText("主会场", x, y);
-
-    let numberTexture = new THREE.CanvasTexture(document.querySelector("#number"));
-    let spriteMaterial = new THREE.SpriteMaterial({
-        map: numberTexture,
-        alphaTest: 0.5,
-        transparent: true,
-        opacity:0.7,
-        depthTest: false,
-        depthWrite: false
-    });
-
-    let sprite = new THREE.Sprite(spriteMaterial);
-    sprite.position.set(8, 1, 0);
-    sprite.scale.set(2, 2, 2);
-    scene.add(sprite);
 
     let trackMaterial = [
         new THREE.LineBasicMaterial({color : "#7eff39",transparent: true,opacity: 0.8}),

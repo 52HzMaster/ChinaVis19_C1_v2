@@ -101,6 +101,10 @@ function Layout() {
     header.style.width = width * 0.99  + 'px';
     header.style.height = height * 0.08 + 'px';
 
+    let all_days = document.getElementById("all_days");
+    all_days.style.width = width*0.24  + 'px';
+    all_days.style.height = height*0.4  + 'px';
+
     let main = document.getElementById('main');
     main.style.width = width*0.5  + 'px';
     main.style.height = height*0.6  + 'px';
@@ -110,7 +114,7 @@ function Layout() {
     para_coor.style.height = height*0.27  + 'px';
 
     let bar = document.getElementById("bar");
-    bar.style.width = width*0.25  + 'px';
+    bar.style.width = width*0.24  + 'px';
     bar.style.height = height*0.4  + 'px';
 
     let time_line = document.getElementById("time_line");
