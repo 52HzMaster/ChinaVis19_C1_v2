@@ -114,7 +114,7 @@ function Layout() {
 
     let workarea = document.getElementById("workarea");
     workarea.style.width = width*0.24  + 'px';
-    workarea.style.height = height*0.1  + 'px';
+    workarea.style.height = height*0.09  + 'px';
 
     let pie_chart = document.getElementById("pie_chart");
     pie_chart.style.width = width*0.24  + 'px';

@@ -367,7 +367,9 @@ router.get('/day1_id_traj', function(req, res, next) {
 
 });
 
-//query date
+//-------------------------------------------------------------------------------------------------------//
+
+//query stay
 router.get('/day1_stay', function(req, res, next) {
 
     let selectData = function(db, callback) {
@@ -394,8 +396,149 @@ router.get('/day1_stay', function(req, res, next) {
 
 });
 
+//query stay
+router.get('/day2_stay', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day2_stay');
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//query stay
+router.get('/day3_stay', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day3_stay');
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
 
 //-------------------------------------------------------------------------------------------------------//
+
+//-------------------------------------------------------------------------------------------------------//
+
+//query stay by group
+router.get('/day1_group_stay', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day1_stay');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//query stay by group
+router.get('/day2_group_stay', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day2_stay');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//query stay by group
+router.get('/day3_group_stay', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day3_stay');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//-------------------------------------------------------------------------------------------------------//
+
+//-------------------------------------------------------------------------------------------------------//
+
 //   传感器人数统计
 //query day1_sensor
 router.get('/day1_sensor', function(req, res, next) {
@@ -465,7 +608,7 @@ router.get('/day2_sensor', function(req, res, next) {
     MongoClient.connect(DB_CONN_STR, function(err, db) {
         //console.log(req.query.date);
         let minutes = new Date(req.query.date).getHours()*60 + new Date(req.query.date).getMinutes();
-        //console.log(minutes);
+        console.log(minutes);
         selectData(db, function(result) {
             result.forEach((d)=>{
                 d.data =  JSON.parse(d.data);
@@ -516,17 +659,18 @@ router.get('/day3_sensor', function(req, res, next) {
         });
     });
 });
+
 //-------------------------------------------------------------------------------------------------------//
 
+//-------------------------------------------------------------------------------------------------------//
 
-
-
+//所有轨迹
 //query day1_traj
 router.get('/day1_traj', function(req, res, next) {
 
     let selectData = function(db, callback) {
         //连接到表
-        let collection = db.collection('day1_traj_pro');
+        let collection = db.collection('day1_traj');
         collection.find({},{
             "_id":0
         }).toArray(function(err, result) {
@@ -549,6 +693,154 @@ router.get('/day1_traj', function(req, res, next) {
     });
 
 });
+
+//query day2_traj
+router.get('/day2_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day2_traj');
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            let group_nest = d3.nest().key((d)=>d.group).entries(result);
+            res.json(group_nest);
+            db.close();
+        });
+    });
+
+});
+
+//query day3_traj
+router.get('/day3_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day3_traj');
+        collection.find({},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            let group_nest = d3.nest().key((d)=>d.group).entries(result);
+            res.json(group_nest);
+            db.close();
+        });
+    });
+
+});
+
+//-------------------------------------------------------------------------------------------------------//
+
+//-------------------------------------------------------------------------------------------------------//
+
+//query day1_traj by group
+router.get('/day1_group_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day1_traj');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//query day2_traj by group
+router.get('/day2_group_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day2_traj');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//query day3_traj by group
+router.get('/day3_group_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day3_traj');
+        collection.find({group:parseInt(req.query.group)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
+//-------------------------------------------------------------------------------------------------------//
 
 router.get('/day1_group', function(req, res, next) {
 

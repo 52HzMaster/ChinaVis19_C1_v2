@@ -5,6 +5,8 @@ let sensor_data;
 
 let day_url = '/day1';
 
+let GROUP = ["分会场D","VIP人员","普通参会人员","餐饮服务人员","分会场A,B","分会场C","游览人员","服务人员","媒体记者"];
+
 init_data();
 
 function init_data() {
