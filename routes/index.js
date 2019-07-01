@@ -752,6 +752,35 @@ router.get('/day3_traj', function(req, res, next) {
 
 });
 
+//
+router.get('/day1_one_traj', function(req, res, next) {
+
+    let selectData = function(db, callback) {
+        //连接到表
+        let collection = db.collection('day1_traj');
+        collection.find({id:parseInt(req.query.id)},{
+            "_id":0
+        }).toArray(function(err, result) {
+            if(err)
+            {
+                console.log('Error:'+ err);
+                return;
+            }
+            callback(result);
+        });
+    }
+
+    MongoClient.connect(DB_CONN_STR, function(err, db) {
+        selectData(db, function(result) {
+            result.forEach((d)=>d.traj = JSON.parse(d.traj.replace(/'/g,'"')));
+            //console.log(result);
+            res.json(result);
+            db.close();
+        });
+    });
+
+});
+
 //-------------------------------------------------------------------------------------------------------//
 
 //-------------------------------------------------------------------------------------------------------//

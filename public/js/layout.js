@@ -99,10 +99,17 @@ function Layout() {
     header.style.width = width * 0.99  + 'px';
     header.style.height = height * 0.08 + 'px';
 
+    let func_chart = document.getElementById("func_chart");
+    func_chart.style.width = width*0.24  + 'px';
+    func_chart.style.height = height*0.1  + 'px';
+
     let control = document.getElementById("control");
     control.style.width = width*0.24  + 'px';
-    control.style.height = height*0.4  + 'px';
+    control.style.height = height*0.49  + 'px';
 
+    let sensor_line = document.getElementById("sensor_line");
+    sensor_line.style.width = width*0.24  + 'px';
+    sensor_line.style.height = height*0.49  + 'px';
 
     let main = document.getElementById('main');
     main.style.width = width*0.5  + 'px';
@@ -112,6 +119,10 @@ function Layout() {
     para_coor.style.width = width*0.4925  + 'px';
     para_coor.style.height = height*0.28  + 'px';
 
+    let para_coor_main = document.getElementById("para_coor_main");
+    para_coor_main.style.width = width*0.4925  + 'px';
+    para_coor_main.style.height = height*0.28  + 'px';
+
     let workarea = document.getElementById("workarea");
     workarea.style.width = width*0.24  + 'px';
     workarea.style.height = height*0.09  + 'px';
@@ -120,13 +131,17 @@ function Layout() {
     pie_chart.style.width = width*0.24  + 'px';
     pie_chart.style.height = height*0.5  + 'px';
 
+    let pie_main = document.getElementById("pie_main");
+    pie_main.style.width = width*0.24  + 'px';
+    pie_main.style.height = height*0.5  + 'px';
+
     let time_line = document.getElementById("time_line");
     time_line.style.width = width*0.4925  + 'px';
     time_line.style.height = height*0.28  + 'px';
     
     let plot = document.getElementById("plot");
     plot.style.width = width*0.4925  + 'px';
-    plot.style.height = height*0.27  + 'px';
+    plot.style.height = height*0.28  + 'px';
 
     d3.select("#header").append("div")
         .attr("class","header_left")

@@ -49,7 +49,7 @@ function para_coor_group(group,param) {
 function para_coor(data,param) {
 
     let _charts = {};
-    let chart = $("#para_coor");
+    let chart = $("#para_coor_main");
     chart.html("");
     _charts.areas = [
         "area_A","area_B","area_C","area_D",
@@ -65,9 +65,20 @@ function para_coor(data,param) {
     _charts.width = chart.width()  - _charts.margin.left - _charts.margin.right;
     _charts.height = chart.height() - _charts.margin.top - _charts.margin.bottom;
 
-    _charts.svg = d3.select("#para_coor").append("svg")
+    _charts.svg = d3.select("#para_coor_main").append("svg")
         .attr("width", _charts.width + _charts.margin.left + _charts.margin.right)
         .attr("height", _charts.height + _charts.margin.top + _charts.margin.bottom);
+
+    _charts.svg.append("text")
+        .attr("x",10)
+        .attr("y",30)
+        .text("停留时间")
+        .style({
+            //"font-family":"Microsoft YaHei",
+            "fill":"#fff",
+            "font-size":20,
+            "font-weight":700
+        });
 
     _charts.x_scale = d3.scale.ordinal()
         .domain(_charts.areas)
@@ -77,7 +88,7 @@ function para_coor(data,param) {
 
     _charts.areas.forEach((d)=>{
         _charts.y_scale[d] = d3.scale.sqrt()
-            .domain([35000,0])
+            .domain([40000,0])
             .range([0, _charts.height*0.8]);
     });
 
@@ -92,18 +103,19 @@ function para_coor(data,param) {
 
     _charts.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform","translate("+_charts.margin.left+","+(_charts.height + _charts.margin.bottom) +")")
+        .attr("transform","translate("+_charts.margin.left*1.7+","+(_charts.height) +")")
         .call(_charts.x_axis)
         .selectAll("text")
-        //.attr("transform", "rotate(90)")
-        .style("text-anchor", "start");
+        .text((d)=>d.replace("area_",""))
+        //.attr("transform", "rotate(45)")
+        //.style("text-anchor", "start");
 
     _charts.g = _charts.svg.selectAll(".area_extent")
         .data(_charts.areas)
         .enter()
         .append("g")
         .attr("class", "area_extent")
-        .attr("transform", function(d) { return "translate(" + (_charts.x_scale(d) + _charts.margin.left)+ ")"; });
+        .attr("transform", function(d) { return "translate(" + (_charts.x_scale(d) + _charts.margin.left*1.7)+ ")"; });
 
     _charts.g.append("g")
         .attr("class", "axis")
@@ -124,7 +136,7 @@ function para_coor(data,param) {
         .enter()
         .append("path")
         .attr("d", path)
-        .attr("transform", function(d) { return "translate(" + _charts.margin.left + "," + _charts.height * 0.2 + ")"; });
+        .attr("transform", function(d) { return "translate(" + _charts.margin.left*1.7 + "," + _charts.height * 0.2 + ")"; });
 
 // Add blue foreground lines for focus.
     _charts.foreground = _charts.svg.append("g")
@@ -140,7 +152,7 @@ function para_coor(data,param) {
             "fill":"none",
             "stroke":param?param:"#ff5549"
         })
-        .attr("transform", function(d) { return "translate(" + _charts.margin.left + "," + _charts.height * 0.2 + ")"; });
+        .attr("transform", function(d) { return "translate(" + _charts.margin.left*1.7 + "," + _charts.height * 0.2 + ")"; });
 
 // Returns the path for a given data point.
     function path(d) {

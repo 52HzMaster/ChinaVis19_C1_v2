@@ -17,10 +17,17 @@
             width: 100%;
             height: 100%;
         }
+        #func_chart{
+            position: absolute;
+            box-shadow:20px 20px 50px #302b63 inset;
+            text-align: center;
+            top: 10%;
+            right: 0.5%;
+        }
         #control{
             position: absolute;
             box-shadow:20px 20px 50px #302b63 inset;
-            top: 10%;
+            top: 21%;
             right: 0.5%;
         }
 
@@ -44,6 +51,15 @@
             bottom: 1%;
             left: 0.5%;
         }
+        .id_info{
+            position: relative;
+            display: inline-block;
+            pointer-events: none;
+            font-size: 25px;
+            top: 40%;
+            margin: auto;
+            color: #ffffff;
+        }
 
     </style>
     <script src="lib/jquery-3.1.1.min.js"></script>
@@ -56,7 +72,6 @@
     <script src="lib/echarts.min.js"></script>
     <script src="lib/dat.gui.min.js"></script>
     <link rel="stylesheet" href="lib/dat.gui.css">
-    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.css">
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
@@ -64,8 +79,39 @@
 <body>
 <div class="all_view">
     <div id="header"><a class="header_title">CICSC会场数据可视分析系统</a></div>
+
     <div id="control">
+        <svg width="28" height="28" class="border_1">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_2">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_3">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_4">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <div id="sensor_line"></div>
     </div>
+
+    <div id="func_chart">
+        <a class="id_info"></a>
+        <svg width="28" height="28" class="border_1">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_2">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_3">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_4">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+    </div>
+
     <div id="main">
         <svg width="28" height="28" class="border_1">
             <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
@@ -81,6 +127,18 @@
         </svg>
     </div>
     <div id="workarea">
+        <svg width="28" height="28" class="border_1">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_2">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_3">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_4">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
         <div class="position">        <!--start button, nothing above this is necessary -->
             <div class="svg-wrapper" style="background: #d65a35">
                 <svg height="40" width="100">
@@ -101,7 +159,21 @@
                 <div class="day_text"><a><span class="spot"></span>Day3</a></div>
             </div>        <!--End button -->    </div>
     </div>
-    <div id="pie_chart"></div>
+    <div id="pie_chart">
+        <svg width="28" height="28" class="border_1">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_2">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_3">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <svg width="28" height="28" class="border_4">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
+        <div id="pie_main"></div>
+    </div>
     <div id="time_line">
         <svg width="28" height="28" class="border_1">
             <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
@@ -117,9 +189,11 @@
         </svg>
         <div id="plot"></div>
     </div>
-    <div id="para_coor"><svg width="28" height="28" class="border_1">
-        <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
-    </svg>
+
+    <div id="para_coor">
+        <svg width="28" height="28" class="border_1">
+            <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
+        </svg>
         <svg width="28" height="28" class="border_2">
             <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
         </svg>
@@ -128,20 +202,24 @@
         </svg>
         <svg width="28" height="28" class="border_4">
             <path d="M-0.000,-0.000 L2.240,-0.000 L2.240,25.846 L28.000,25.846 L28.000,28.000 L-0.000,28.000 L-0.000,-0.000 Z"></path>
-        </svg></div>
+        </svg>
+        <div id="para_coor_main"></div>
+    </div>
 </div>
 </body>
 
 <link rel="stylesheet" href="style/global.css">
 <link rel="stylesheet" href="style/all_view.css">
+<link rel="stylesheet" href="style/control.css">
 <link rel="stylesheet" href="style/header.css">
 <link rel="stylesheet" href="style/para_coor.css">
 
 <script src="js/init_data.js"></script>
 <script src="js/layout.js"></script>
-<script src="js\parallel_coordinates.js"></script>
-<script src="js/goodplot.js"></script>
-<script src="js\main_3d.js"></script>
-<script src="js/bar.js"></script>
+<script src="js/para_coor.js"></script>
+<script src="js/time_line.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pie_chart.js"></script>
+<script src="js/sensor_line.js"></script>
 <script src="js/control.js"></script>
 </html>
